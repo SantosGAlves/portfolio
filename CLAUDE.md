@@ -12,7 +12,7 @@ as decisões já tomadas; mudar qualquer uma delas exige pedido explícito do Gu
 - Trecho da tradução em inglês com dúvida vira `[REVISAR]` (comentário no arquivo de conteúdo).
 - **Nunca citar o nome do cliente da loja de baterias**, em nenhum idioma, arquivo ou commit.
 - Gaudium está sob NDA: só descrições genéricas do trabalho.
-- Todos os dados da assinatura do hero (veículos, preços, Ah) são ilustrativos e assim rotulados.
+- Todos os dados da assinatura e das conversas de exemplo (veículos, preços, Ah, nomes) são ilustrativos e assim rotulados.
 - Sem clichês de IA: nada de gradiente roxo/azul, glassmorphism, Inter como fonte principal, emoji.
 - Textos ficam só em `content/` (`site.ts` por idioma e um `.mdx` por projeto); componentes não têm texto solto.
 
@@ -30,9 +30,12 @@ Não é "só IA": desenvolvimento de produto e back-end tem o mesmo peso.
   Java e Go como "já trabalhei com".
 - Frase honesta em "Como eu trabalho": desenvolve com apoio de agentes de código (Claude Code),
   revisando e testando o que vai para produção.
-- Gaudium: automações com n8n, agentes e LLMs **e** produtos internos; texto genérico (NDA), com `[CONFIRMAR]`.
-- Hunt Sales: Gustavo desenvolveu o sistema completo da loja de baterias: agente de IA + sistema de
-  gestão integrado (painel de veículos, baterias e preços, autenticação, RLS, deploy e domínio).
+- Hunt Sales (ago/2025 – jun/2026): Gustavo propôs e desenvolveu sozinho o sistema completo da loja de baterias:
+  agente de IA (GPT-4o mini, WhatsApp) + sistema de gestão (Supabase, Auth, painel HTML/JS + Tailwind, domínio da empresa).
+  Resultado sem métricas formais: reverteu o churn do cliente e virou um novo tipo de produto, replicado
+  (ex.: carregadores de veículos elétricos). Fonte dos fatos: `docs/conteudo/conteudo-agente-baterias.md`.
+- Gaudium (jul/2026 – atual): "Automações de processos e integrações via API" e "Desenvolvimento de sites e
+  produtos web, com foco em back-end". Nada além disso (NDA).
 - O projeto principal é apresentado como "Agente de IA + sistema de gestão", nunca como "um chatbot".
 
 ### Traduções decididas
@@ -84,23 +87,26 @@ Destaque chapado e usado com parcimônia (rótulos, links, foco, detalhes). Sem 
 - Saudação pequena em mono ("olá, eu sou" / "hi, I'm"), depois o nome como `h1`:
   "Gustavo" em Schibsted bold e "Alves dos Santos" em Newsreader itálico, em linhas separadas
   (com `{" "}` entre os spans para o nome acessível ficar correto).
-- Abaixo: função ("Desenvolvedor de IA aplicada e automação"), parágrafo de apoio, CTAs e três fatos.
-- Ao lado (≥ 1024px) ou abaixo: a assinatura animada.
-- O nome é o elemento do LCP; fundo e assinatura só começam depois do evento `load` (`lib/after-load.ts`).
+- Abaixo: função, parágrafo de apoio e CTAs numa coluna (máx. 46rem); os três fatos em linha a partir de 1024px.
+  O lado direito fica para o fundo "Fluxo". A assinatura saiu do hero (foi para o estudo de caso do agente).
+- O nome é o elemento do LCP; o fundo só começa depois do evento `load` (`lib/after-load.ts`).
 
 ## Assinatura "da mensagem à consulta"
 
-`components/hero/signature.tsx` + `signature.module.css` + `lib/signature-player.ts`.
+`components/hero/signature.tsx` + `signature.module.css` + `lib/signature-player.ts`. Fica na seção
+"Como funciona" do estudo de caso `agente-baterias`, como `<Signature />` no MDX (texto em `site.ts` → `signature`).
 
 - Sequência: mensagem digitada → entidades destacadas uma a uma → `buscar_bateria({...})` escrita linha a linha
   → etapas da execução ficam ✓ → resposta aparece. Duração total entre 6 e 7 s (limite: 8 s).
   Tempos em `TIMING` no player.
-- Dois cenários: veículo cadastrado e veículo desconhecido (pré-cadastro + painel do vendedor, estado "aguardando").
+- Campos iguais aos do sistema real: `modelo`, `ano`, `cambio`, `start_stop` (as chaves da tabela `aplicacoes`).
+- Dois cenários: veículo encontrado (`aplicacoes` → `baterias (ativas)`, 3 opções) e veículo desconhecido
+  (`veiculos_sugeridos.insert()` + transferência para a equipe, estado "aguardando").
 - Botão "Reproduzir"; hover/foco num termo destaca o campo correspondente na chamada.
 - Sem JS ou com `prefers-reduced-motion`: estado final parado. Um script inline liga `data-live`
   antes da primeira pintura, para não haver flash do estado final.
 - Espaço reservado com texto fantasma (`data-g`): sem CLS. Pausa fora da tela (IntersectionObserver 0,35) e com a aba oculta.
-- O nome da função e das tabelas (`buscar_bateria`, `veiculos`, `precadastro`) fica em português nos dois idiomas, porque é código.
+- O nome da função e das tabelas (`buscar_bateria`, `aplicacoes`, `baterias`, `veiculos_sugeridos`) fica em português nos dois idiomas, porque é código.
 
 ## Fundo "Fluxo" e régua de progresso
 
@@ -121,12 +127,23 @@ Destaque chapado e usado com parcimônia (rótulos, links, foco, detalhes). Sem 
   geradas no build. `status: "planned"` vira faixa "em construção" sem página.
 - Sem versão EN: a página EN mostra o texto em português (`lang="pt-BR"`), com aviso,
   canonical para a versão PT e fora do sitemap.
-- Template: cabeçalho com metadados em mono → arte → "Resumo em 30 segundos" (`tldr`) →
-  corpo MDX na ordem contexto e problema → minha função → solução e arquitetura → stack →
-  decisões e trade-offs → resultado → aprendizados → próximo caso.
+- Template: cabeçalho com metadados em mono → vídeo ou arte → "Resumo em 30 segundos" (`tldr`) →
+  corpo MDX na ordem contexto e problema → minha função → (como funciona) → solução e arquitetura → stack →
+  decisões e trade-offs → resultado → (o mesmo padrão em outro nicho) → aprendizados → próximo caso.
 - Blocos no MDX sem import (`mdx-components.tsx`): `<Flow>` (diagrama; `alt` = caminho
-  alternativo, `altLabel` = "ou"/"or"), `<Decision>`, `<Metrics>`/`<Metric>`.
-- Imagens provisórias: `components/art/project-art.tsx`, composições HTML/SVG do servidor nas
+  alternativo, `altLabel` = "ou"/"or"), `<Decision>`, `<Metrics>`/`<Metric>`, `<Chat>` com
+  `<Message from="customer|agent">` e `<ChatNote>` (conversa com selo "exemplo ilustrativo"),
+  `<Gallery>`/`<Shot>` (capturas com `next/image`).
+- Blocos que dependem do idioma (`<Video>`, `<Signature>`) são passados por `case-study-page.tsx`
+  em `<Body components={...}>`, com os rótulos do `site.ts` do idioma do texto.
+- `meta.media.cover` = imagem real do card (moldura `surface-2`, cortada embaixo); `meta.media.video` =
+  vídeo no topo do caso no lugar da arte. `meta.draft` (padrão `true`) mostra o aviso de texto provisório.
+- Vídeos (`components/case-study/loop-video.tsx`): sem som, loop, `preload="none"` com poster; o arquivo
+  só é baixado depois do load e quando entra na tela, pausa fora dela; botão Pausar/Reproduzir (WCAG 2.2.2);
+  com reduced motion não toca sozinho.
+- Mídia do agente: `public/agente-baterias/midia-agente-baterias/` (já censurada). Os `.png` originais ficam
+  fora do git; o site usa só `.webp` e `.mp4`.
+- Imagens provisórias dos outros projetos: `components/art/project-art.tsx`, composições HTML/SVG do servidor nas
   cores do tema (painel de gestão + agente, pontos da mão, fluxo de nós), decorativas.
 - JSON-LD `Person` na página inicial; links com `[CONFIRMAR]` ficam fora do `sameAs`.
 
@@ -167,4 +184,5 @@ Chrome DevTools Protocol (`Emulation.setDeviceMetricsOverride` + `localStorage.t
 - 404 personalizada: com vários layouts raiz, o 404 padrão sai sem `lang`; resolver na Fase 3/4
   (`app/global-not-found.tsx`, ainda experimental no Next 16).
 - Imagem Open Graph: Fase 4.
-- Textos reais dos estudos de caso: o Gustavo preenche os `[CONFIRMAR]` dos `.mdx`.
+- Textos reais dos estudos de caso: `agente-baterias` está pronto (`draft: false`); LibrasFlow e n8n
+  ainda têm `[CONFIRMAR]`.
