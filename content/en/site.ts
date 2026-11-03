@@ -48,58 +48,59 @@ export const site: SiteContent = {
     replay: "Replay",
     caption: "Hover a highlighted term to see the field it fills.",
     summary:
-      "Illustrative example: a customer asks for a battery for their car; the agent extracts model, year, engine and transmission, queries the database and answers with the right battery. If the vehicle is not on file, it creates a draft entry and asks the seller to confirm.",
-    // The message is translated for English readers (decided with Gustavo); the real agent talks in Portuguese.
-    // Code identifiers (buscar_bateria, veiculos, precadastro) stay as in the real code.
+      "Illustrative example: a customer asks for a battery for their car; the agent extracts model, year, transmission and start-stop, queries the fitment table and the active batteries, and replies with the options. If the vehicle is not on file, it adds the car to the suggestions queue in the dashboard and hands the conversation over to the team.",
+    // The message is translated for English readers (decided with Gustavo); the real agent talks in Portuguese
+    // and asks for one detail at a time. Code identifiers (buscar_bateria, aplicacoes, veiculos_sugeridos)
+    // stay as in the real code.
     scenarios: {
       known: {
         message: [
-          "do you have a battery for an ",
-          { field: "modelo", text: "onix" },
+          "do you have a battery for a ",
+          { field: "ano", text: "2010" },
           " ",
-          { field: "ano", text: "2019" },
-          " ",
-          { field: "motor", text: "1.0" },
-          " ",
+          { field: "modelo", text: "corsa maxx" },
+          ", ",
           { field: "cambio", text: "manual" },
+          ", ",
+          { field: "start_stop", text: "no start-stop" },
           "?",
         ],
         call: [
-          { field: "modelo", value: '"Onix"' },
-          { field: "ano", value: "2019" },
-          { field: "motor", value: '"1.0"' },
+          { field: "modelo", value: '"Corsa Maxx"' },
+          { field: "ano", value: "2010" },
           { field: "cambio", value: '"manual"' },
+          { field: "start_stop", value: "false" },
         ],
         trace: [
-          { label: "supabase · veiculos → baterias", status: "RLS ok", state: "done" },
-          { label: "1 match", status: "ok", state: "done" },
+          { label: "supabase · aplicacoes", status: "60 Ah · standard", state: "done" },
+          { label: "supabase · baterias (active)", status: "3 options", state: "done" },
         ],
-        reply: "For the 2019 Onix 1.0 manual, the right one is the 60 Ah, at R$ 459.00. Want me to reserve it?",
+        reply: "For your 2010 Corsa Maxx (60 Ah), I have 3 options, with 12 to 24 months of warranty. Want to see the prices?",
       },
       unknown: {
         message: [
           "do you have a battery for a ",
-          { field: "modelo", text: "kwid" },
+          { field: "ano", text: "2007" },
           " ",
-          { field: "ano", text: "2024" },
-          " ",
-          { field: "motor", text: "1.0" },
-          " ",
+          { field: "modelo", text: "kombi 1.4" },
+          ", ",
           { field: "cambio", text: "manual" },
+          ", ",
+          { field: "start_stop", text: "no start-stop" },
           "?",
         ],
         call: [
-          { field: "modelo", value: '"Kwid"' },
-          { field: "ano", value: "2024" },
-          { field: "motor", value: '"1.0"' },
+          { field: "modelo", value: '"Kombi 1.4"' },
+          { field: "ano", value: "2007" },
           { field: "cambio", value: '"manual"' },
+          { field: "start_stop", value: "false" },
         ],
         trace: [
-          { label: "supabase · veiculos → baterias", status: "0 results", state: "done" },
-          { label: "precadastro.insert(veiculo)", status: "created", state: "done" },
-          { label: "seller dashboard", status: "waiting", state: "wait" },
+          { label: "supabase · aplicacoes", status: "0 results", state: "done" },
+          { label: "veiculos_sugeridos.insert()", status: "queued", state: "done" },
+          { label: "handoff to the team", status: "waiting", state: "wait" },
         ],
-        reply: "I don't have that model on file yet. I've asked the seller to confirm and I'll get back to you shortly.",
+        reply: "I couldn't find a battery on file for your 2007 Kombi. I'm handing you over to our team, who already have your details.",
       },
     },
   },
@@ -173,22 +174,20 @@ export const site: SiteContent = {
         tags: ["under NDA"],
         context:
           "B2B technology company for ride-hailing and delivery agencies. The details of this work are confidential.",
-        highlights: [
-          "Internal process automation with n8n, AI agents and LLMs. [CONFIRMAR]",
-          "Building internal products, from back-end to interface. [CONFIRMAR]",
-        ],
+        highlights: ["Process automation and API integrations.", "Building websites and web products, focused on back-end."],
       },
       {
         company: "Hunt Sales",
         role: "Development & Automation Intern", // [REVISAR] official title in English
-        period: "Aug 2025 – [CONFIRMAR]",
+        period: "Aug 2025 – Jun 2026",
         tags: [],
-        context: "Development and automation for clients. [CONFIRMAR]",
+        context:
+          "A company with its own customer service platform (CRM), where the agents and dashboards I built for its clients run.",
         highlights: [
-          "Built the whole system for a car battery store, end to end: the customer service AI agent and the management system integrated with it.",
-          "Dashboard to manage vehicles, batteries and prices, with authentication, row-level security in Supabase, deployment and domain.",
-          "Automatic draft entries for unknown vehicles, confirmed by the seller in the dashboard.",
-          "I proposed the project; it helped retain a client who was about to cancel.",
+          "Proposed and delivered the company's first AI agent with a management system; after that, I became responsible for similar projects for other clients.",
+          "AI agents for WhatsApp customer service (GPT-4o mini) that query a database and hand over to humans.",
+          "Management systems that feed the agents (Supabase, authentication, web dashboards).",
+          "API integrations with CRMs and Meta ads, among others.",
         ],
         caseStudy: "agente-baterias",
       },
@@ -220,6 +219,7 @@ export const site: SiteContent = {
     next: "Next case study",
     fallbackNotice: "This case study is only available in Portuguese for now.",
     illustrativeNotice: "Draft text. Parts marked [CONFIRMAR] are still under review; sample data is illustrative.",
+    video: { play: "Play", pause: "Pause" },
   },
   nav: ["projects", "build", "experience", "contact"],
   ui: {

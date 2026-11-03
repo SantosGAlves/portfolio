@@ -37,6 +37,11 @@ export const meta = {
     { label: "Solução", text: "..." },
     { label: "Resultado", text: "..." },
   ],
+  draft: true,              // false quando o texto estiver revisado (tira o aviso do topo)
+  media: {                  // opcional; arquivos em public/
+    cover: { src: "/pasta/imagem.webp", alt: "...", width: 1540, height: 824 },
+    video: { src: "/pasta/video.mp4", poster: "/pasta/poster.webp", width: 1280, height: 720, label: "...", caption: "..." },
+  },
 }
 
 ## Contexto e problema
@@ -66,6 +71,24 @@ export const meta = {
 </Metrics>
 
 ## Aprendizados
+```
+
+Outros blocos disponíveis:
+
+```mdx
+<Chat title="Cenário 1" badge="exemplo ilustrativo" customer="Cliente" agent="Agente">
+<Message from="customer">Pergunta do cliente</Message>
+<Message from="agent">Resposta do agente</Message>
+<ChatNote label="nos bastidores">O que o sistema fez.</ChatNote>
+</Chat>
+
+<Video src="/pasta/video.mp4" poster="/pasta/poster.webp" width={1280} height={720} label="Descrição" caption="Legenda" />
+
+<Gallery>
+  <Shot src="/pasta/tela.webp" width={1540} height={824} alt="Descrição" caption="Legenda" />
+</Gallery>
+
+<Signature />   {/* demonstração interativa do agente (texto em site.ts) */}
 ```
 
 3. (Opcional) Crie `content/en/projects/<slug>.mdx` com o mesmo `order`, `featured`,

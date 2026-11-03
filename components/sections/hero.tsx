@@ -1,13 +1,13 @@
 import { FlowBackground } from "@/components/hero/flow-background"
-import { Signature } from "@/components/hero/signature"
 import { StatusIndicator } from "@/components/status-indicator"
-import { Button, buttonVariants } from "@/components/ui/button"
+import { Button } from "@/components/ui/button"
 import { getContent, type Locale } from "@/lib/i18n"
 
 // O nome (texto puro, fontes pré-carregadas) é o elemento do LCP.
-// Fundo e assinatura só começam a animar depois do load.
+// O fundo só começa a animar depois do load. A assinatura interativa fica no
+// estudo de caso do agente (seção "Como funciona").
 export function Hero({ locale }: { locale: Locale }) {
-  const { hero, profile, signature, sections, ui } = getContent(locale)
+  const { hero, profile, sections, ui } = getContent(locale)
 
   return (
     <section id="topo" data-rail aria-labelledby="hero-heading" className="relative isolate overflow-hidden">
@@ -28,8 +28,8 @@ export function Hero({ locale }: { locale: Locale }) {
           </div>
         </div>
 
-        <div className="grid gap-10 lg:grid-cols-[minmax(0,0.85fr)_minmax(0,1.15fr)] lg:items-start lg:gap-14">
-          <div className="grid content-start gap-6">
+        <div className="grid gap-10 lg:gap-12">
+          <div className="grid max-w-[46rem] content-start gap-6">
             <p className="max-w-[30ch] text-role">
               {/* "função · foco": a linha só quebra depois do "·" */}
               {hero.role.split(" · ").map((part, i, all) => (
@@ -61,17 +61,18 @@ export function Hero({ locale }: { locale: Locale }) {
                 </a>
               </Button>
             </div>
-            <dl className="grid">
-              {hero.facts.map((fact) => (
-                <div key={fact.label} className="grid grid-cols-[5.75rem_minmax(0,1fr)] gap-3 border-t py-3 text-small">
-                  <dt className="pt-0.5 font-mono text-meta text-subtle">{fact.label}</dt>
-                  <dd>{fact.value}</dd>
-                </div>
-              ))}
-            </dl>
           </div>
-
-          <Signature content={signature} buttonClassName={buttonVariants({ variant: "outline", size: "sm" })} />
+          <dl className="grid lg:grid-cols-3 lg:gap-8">
+            {hero.facts.map((fact) => (
+              <div
+                key={fact.label}
+                className="grid grid-cols-[5.75rem_minmax(0,1fr)] content-start gap-3 border-t py-3 text-small lg:grid-cols-1 lg:gap-1.5 lg:pt-4"
+              >
+                <dt className="pt-0.5 font-mono text-meta text-subtle">{fact.label}</dt>
+                <dd>{fact.value}</dd>
+              </div>
+            ))}
+          </dl>
         </div>
       </div>
     </section>

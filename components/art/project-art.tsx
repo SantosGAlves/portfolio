@@ -43,7 +43,7 @@ function BatteryArt() {
           <table className="w-full border-collapse font-mono text-[max(9px,1.4cqi)]">
             <thead>
               <tr className="text-left text-subtle">
-                {["modelo", "ano", "motor", "bateria", "preço"].map((h) => (
+                {["modelo", "ano", "câmbio", "bateria", "preço"].map((h) => (
                   <th key={h} className={`${cell} font-normal`}>
                     {h}
                   </th>

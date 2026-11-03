@@ -6,6 +6,9 @@ import { z } from "zod"
 export const projectStatuses = ["shipped", "in-progress", "planned"] as const
 export const projectArts = ["battery", "librasflow", "automation", "planned"] as const
 
+/** Arquivo em public/ (caminho começando com "/"). */
+const publicPath = z.string().regex(/^\/[^\s]+$/, "use um caminho de public/ começando com /")
+
 export const projectMetaSchema = z.object({
   /** Ordem na página inicial (menor primeiro). */
   order: z.number().int(),
@@ -27,6 +30,29 @@ export const projectMetaSchema = z.object({
   tldr: z
     .array(z.object({ label: z.string().min(1), text: z.string().min(1) }))
     .default([]),
+  /** Texto ainda provisório: mostra o aviso de "[CONFIRMAR]" no topo do estudo de caso. */
+  draft: z.boolean().default(true),
+  /** Mídia real. Sem ela, card e estudo de caso usam a composição de `art`. */
+  media: z
+    .object({
+      /** Imagem do card na página inicial. */
+      cover: z
+        .object({ src: publicPath, alt: z.string().min(1), width: z.number().int(), height: z.number().int() })
+        .optional(),
+      /** Vídeo no topo do estudo de caso: sem som, em loop, carregado depois da página. */
+      video: z
+        .object({
+          src: publicPath,
+          poster: publicPath,
+          width: z.number().int(),
+          height: z.number().int(),
+          /** Descrição do vídeo para leitores de tela. */
+          label: z.string().min(1),
+          caption: z.string().optional(),
+        })
+        .optional(),
+    })
+    .default({}),
 })
 
 export type ProjectMeta = z.output<typeof projectMetaSchema>

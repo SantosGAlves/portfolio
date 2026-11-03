@@ -1,5 +1,10 @@
+import type { ComponentProps } from "react"
 import { notFound } from "next/navigation"
 import { ProjectArt } from "@/components/art/project-art"
+import { MediaFigure } from "@/components/case-study/blocks"
+import { LoopVideo } from "@/components/case-study/loop-video"
+import { Signature } from "@/components/hero/signature"
+import { buttonVariants } from "@/components/ui/button"
 import { getContent, homePath, type Locale } from "@/lib/i18n"
 import { caseStudyPath, getCaseStudy, getNextCaseStudy } from "@/lib/projects"
 
@@ -13,6 +18,27 @@ export function CaseStudyPage({ locale, slug }: { locale: Locale; slug: string }
   const { caseStudy: copy, projects, sections } = getContent(locale)
   const { meta, Body, fallback, contentLocale } = project
   const next = getNextCaseStudy(locale, slug)
+  const video = meta.media.video
+
+  // Blocos do MDX que dependem do idioma do texto (rótulos de botão e conteúdo do site).
+  const textCopy = getContent(contentLocale)
+  const bodyComponents = {
+    Video: ({ caption, ...props }: Omit<ComponentProps<typeof LoopVideo>, "playLabel" | "pauseLabel"> & { caption?: string }) => (
+      <MediaFigure caption={caption}>
+        <LoopVideo
+          {...props}
+          playLabel={textCopy.caseStudy.video.play}
+          pauseLabel={textCopy.caseStudy.video.pause}
+          className="rounded-xl border border-line"
+        />
+      </MediaFigure>
+    ),
+    Signature: () => (
+      <div className="my-10">
+        <Signature content={textCopy.signature} buttonClassName={buttonVariants({ variant: "outline", size: "sm" })} />
+      </div>
+    ),
+  }
   const metaRows = [
     { label: copy.meta.role, value: meta.role },
     { label: copy.meta.period, value: meta.period },
@@ -52,7 +78,23 @@ export function CaseStudyPage({ locale, slug }: { locale: Locale; slug: string }
         ))}
       </dl>
 
-      <ProjectArt art={meta.art} className="mt-10 aspect-[4/3] rounded-card border border-line sm:aspect-[16/9] lg:aspect-[16/7]" />
+      {video ? (
+        <figure className="mt-10 grid gap-3">
+          <LoopVideo
+            {...video}
+            playLabel={copy.video.play}
+            pauseLabel={copy.video.pause}
+            className="rounded-card border border-line bg-surface"
+          />
+          {video.caption ? (
+            <figcaption lang={fallback ? contentLocale : undefined} className="font-mono text-meta text-subtle">
+              {video.caption}
+            </figcaption>
+          ) : null}
+        </figure>
+      ) : (
+        <ProjectArt art={meta.art} className="mt-10 aspect-[4/3] rounded-card border border-line sm:aspect-[16/9] lg:aspect-[16/7]" />
+      )}
 
       {meta.tldr.length ? (
         <section aria-labelledby="resumo" className="mt-12 grid gap-5 rounded-card border border-line bg-surface p-5 sm:p-7">
@@ -71,10 +113,12 @@ export function CaseStudyPage({ locale, slug }: { locale: Locale; slug: string }
       ) : null}
 
       <div className="mx-auto mt-16 max-w-[46rem]">
-        <p lang={fallback ? locale : undefined} className="mb-10 font-mono text-meta text-subtle">
-          {copy.illustrativeNotice}
-        </p>
-        <Body />
+        {meta.draft ? (
+          <p lang={fallback ? locale : undefined} className="mb-10 font-mono text-meta text-subtle">
+            {copy.illustrativeNotice}
+          </p>
+        ) : null}
+        <Body components={bodyComponents} />
       </div>
 
       {next ? (

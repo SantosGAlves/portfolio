@@ -1,7 +1,7 @@
 import type { SiteContent } from "@/content/types"
 
 // Conteúdo provisório. Tudo marcado com [CONFIRMAR] precisa de dado real.
-// Dados da assinatura do hero são ilustrativos; nunca citar o nome do cliente.
+// Dados da assinatura (no estudo de caso do agente) são ilustrativos; nunca citar o nome do cliente.
 export const site: SiteContent = {
   locale: "pt-BR",
   ogLocale: "pt_BR",
@@ -44,56 +44,58 @@ export const site: SiteContent = {
     replay: "Reproduzir",
     caption: "Passe o mouse num termo destacado para ver o campo que ele preenche.",
     summary:
-      "Exemplo ilustrativo: o cliente pergunta por uma bateria para um carro; o agente extrai modelo, ano, motor e câmbio, consulta o banco de dados e responde com a bateria indicada. Se o veículo não estiver cadastrado, cria um pré-cadastro e pede a confirmação do vendedor.",
+      "Exemplo ilustrativo: o cliente pede uma bateria para o carro; o agente extrai modelo, ano, câmbio e start-stop, consulta a tabela de aplicações e as baterias ativas e responde com as opções. Se o veículo não estiver cadastrado, registra o carro na fila de sugestões do painel e transfere o atendimento para a equipe.",
+    // Na conversa real o agente pergunta um dado de cada vez; aqui a mensagem já traz tudo.
+    // Nomes de função e tabelas ficam como no código (buscar_bateria, aplicacoes, veiculos_sugeridos).
     scenarios: {
       known: {
         message: [
           "tem bateria pro ",
-          { field: "modelo", text: "onix" },
+          { field: "modelo", text: "corsa maxx" },
           " ",
-          { field: "ano", text: "2019" },
-          " ",
-          { field: "motor", text: "1.0" },
+          { field: "ano", text: "2010" },
           " ",
           { field: "cambio", text: "manual" },
+          ", ",
+          { field: "start_stop", text: "sem start-stop" },
           "?",
         ],
         call: [
-          { field: "modelo", value: '"Onix"' },
-          { field: "ano", value: "2019" },
-          { field: "motor", value: '"1.0"' },
+          { field: "modelo", value: '"Corsa Maxx"' },
+          { field: "ano", value: "2010" },
           { field: "cambio", value: '"manual"' },
+          { field: "start_stop", value: "false" },
         ],
         trace: [
-          { label: "supabase · veiculos → baterias", status: "RLS ok", state: "done" },
-          { label: "1 correspondência", status: "ok", state: "done" },
+          { label: "supabase · aplicacoes", status: "60 Ah · comum", state: "done" },
+          { label: "supabase · baterias (ativas)", status: "3 opções", state: "done" },
         ],
-        reply: "Para o Onix 2019 1.0 manual, a indicada é a 60 Ah, por R$ 459,00. Quer que eu reserve?",
+        reply: "Para o seu Corsa Maxx 2010 (60 Ah), tenho 3 opções, com 12 a 24 meses de garantia. Quer ver os preços?",
       },
       unknown: {
         message: [
-          "tem bateria pro ",
-          { field: "modelo", text: "kwid" },
+          "tem bateria pra ",
+          { field: "modelo", text: "kombi 1.4" },
           " ",
-          { field: "ano", text: "2024" },
-          " ",
-          { field: "motor", text: "1.0" },
+          { field: "ano", text: "2007" },
           " ",
           { field: "cambio", text: "manual" },
+          ", ",
+          { field: "start_stop", text: "sem start-stop" },
           "?",
         ],
         call: [
-          { field: "modelo", value: '"Kwid"' },
-          { field: "ano", value: "2024" },
-          { field: "motor", value: '"1.0"' },
+          { field: "modelo", value: '"Kombi 1.4"' },
+          { field: "ano", value: "2007" },
           { field: "cambio", value: '"manual"' },
+          { field: "start_stop", value: "false" },
         ],
         trace: [
-          { label: "supabase · veiculos → baterias", status: "0 resultados", state: "done" },
-          { label: "precadastro.insert(veiculo)", status: "criado", state: "done" },
-          { label: "painel do vendedor", status: "aguardando", state: "wait" },
+          { label: "supabase · aplicacoes", status: "0 resultados", state: "done" },
+          { label: "veiculos_sugeridos.insert()", status: "na fila", state: "done" },
+          { label: "transferência para a equipe", status: "aguardando", state: "wait" },
         ],
-        reply: "Ainda não tenho esse modelo no cadastro. Pedi a confirmação ao vendedor e te respondo em seguida.",
+        reply: "Não encontrei uma bateria cadastrada para a sua Kombi 2007. Vou te transferir para a nossa equipe, que já recebeu os seus dados.",
       },
     },
   },
@@ -171,21 +173,22 @@ export const site: SiteContent = {
         context:
           "Empresa B2B de tecnologia para agências de corrida e entrega. Os detalhes deste trabalho são confidenciais.",
         highlights: [
-          "Automação de processos internos com n8n, agentes de IA e LLMs. [CONFIRMAR]",
-          "Desenvolvimento de produtos internos, do back-end à interface. [CONFIRMAR]",
+          "Automações de processos e integrações via API.",
+          "Desenvolvimento de sites e produtos web, com foco em back-end.",
         ],
       },
       {
         company: "Hunt Sales",
         role: "Estagiário de Desenvolvimento e Automação",
-        period: "ago/2025 – [CONFIRMAR]",
+        period: "ago/2025 – jun/2026",
         tags: [],
-        context: "Desenvolvimento e automação para clientes. [CONFIRMAR]",
+        context:
+          "Empresa com plataforma própria de atendimento (CRM), onde rodam os agentes e painéis que desenvolvi para os clientes.",
         highlights: [
-          "Desenvolvi de ponta a ponta o sistema de uma loja de baterias automotivas: o agente de IA de atendimento e o sistema de gestão integrado a ele.",
-          "Painel de cadastro de veículos, baterias e preços, com autenticação, RLS no Supabase, deploy e domínio.",
-          "Pré-cadastro automático de veículos desconhecidos, confirmado pelo vendedor no painel.",
-          "Projeto proposto por mim; ajudou a reter um cliente em risco de cancelamento.",
+          "Propus e entreguei o primeiro agente de IA com sistema de gestão da empresa; a partir dele, fiquei responsável pelos projetos similares para outros clientes.",
+          "Agentes de IA para atendimento no WhatsApp (GPT-4o mini), com consulta a banco de dados e transferência para humanos.",
+          "Sistemas de gestão que alimentam os agentes (Supabase, autenticação, painéis web).",
+          "Integrações via API com CRMs e com anúncios da Meta, entre outras.",
         ],
         caseStudy: "agente-baterias",
       },
@@ -218,6 +221,7 @@ export const site: SiteContent = {
     fallbackNotice: "",
     illustrativeNotice:
       "Texto provisório. Trechos marcados com [CONFIRMAR] ainda serão revisados; dados de exemplo são ilustrativos.",
+    video: { play: "Reproduzir", pause: "Pausar" },
   },
   nav: ["projects", "build", "experience", "contact"],
   ui: {

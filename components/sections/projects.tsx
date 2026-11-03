@@ -1,3 +1,4 @@
+import Image from "next/image"
 import { ProjectArt } from "@/components/art/project-art"
 import { Section } from "@/components/layout/section"
 import { getContent, type Locale } from "@/lib/i18n"
@@ -45,6 +46,8 @@ function ProjectCard({ project, locale, featured = false }: { project: Project; 
   const { projects: copy } = getContent(locale)
   const { meta, slug, fallback, contentLocale } = project
   const titleId = `projeto-${slug}`
+  const cover = meta.media.cover
+  const frame = featured ? "aspect-[4/3] sm:aspect-[16/9] lg:aspect-[16/7]" : "aspect-[16/10]"
 
   return (
     <article
@@ -52,10 +55,25 @@ function ProjectCard({ project, locale, featured = false }: { project: Project; 
       lang={fallback ? contentLocale : undefined}
       className="group/card relative grid overflow-hidden rounded-card border border-line bg-surface transition-colors duration-300 hover:border-line-strong has-[a:focus-visible]:outline-2 has-[a:focus-visible]:outline-offset-3 has-[a:focus-visible]:outline-brand"
     >
-      <ProjectArt
-        art={meta.art}
-        className={featured ? "aspect-[4/3] sm:aspect-[16/9] lg:aspect-[16/7]" : "aspect-[16/10]"}
-      />
+      {cover ? (
+        // Captura real em moldura: a tela "sobe" do fundo e é cortada embaixo.
+        <div
+          className={`relative overflow-hidden bg-surface-2 px-4 pt-4 sm:px-8 sm:pt-8 lg:px-14 lg:pt-10 ${
+            featured ? "aspect-[16/9] lg:aspect-[16/7]" : "aspect-[16/10]"
+          }`}
+        >
+          <Image
+            src={cover.src}
+            alt={cover.alt}
+            width={cover.width}
+            height={cover.height}
+            sizes={featured ? "(min-width: 1280px) 1100px, 92vw" : "(min-width: 768px) 45vw, 92vw"}
+            className="h-auto w-full rounded-t-lg border border-b-0 border-line-strong transition-transform duration-500 ease-out group-hover/card:-translate-y-1 motion-reduce:transition-none"
+          />
+        </div>
+      ) : (
+        <ProjectArt art={meta.art} className={frame} />
+      )}
       <div className={`grid content-start gap-3 border-t border-line ${featured ? "p-5 sm:p-7 lg:grid-cols-[1fr_auto] lg:gap-x-12" : "p-5 sm:p-6"}`}>
         <div className="grid gap-3">
           <p className="flex flex-wrap gap-x-2 font-mono text-meta">

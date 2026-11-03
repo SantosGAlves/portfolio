@@ -1,4 +1,5 @@
-import type { ReactNode } from "react"
+import Image from "next/image"
+import { Children, cloneElement, isValidElement, type ReactElement, type ReactNode } from "react"
 
 // Blocos disponíveis dentro dos .mdx dos estudos de caso (sem import:
 // registrados em mdx-components.tsx). Todos são componentes de servidor.
@@ -71,5 +72,120 @@ export function Metric({ value, label }: { value: string; label: string }) {
       <dt className="order-2 text-small text-muted-foreground">{label}</dt>
       <dd className="order-1 text-h3 text-foreground">{value}</dd>
     </div>
+  )
+}
+
+type ChatLabels = { customer: string; agent: string }
+
+/**
+ * Conversa de exemplo no formato de chat, com selo (ex.: "exemplo ilustrativo").
+ * Filhos: <Message from="customer|agent"> e <ChatNote label="...">.
+ * Cliente à direita, agente à esquerda; o nome de quem fala fica só para leitores de tela.
+ */
+export function Chat({
+  title,
+  badge,
+  customer,
+  agent,
+  children,
+}: {
+  title: string
+  badge: string
+  customer: string
+  agent: string
+  children: ReactNode
+}) {
+  const labels: ChatLabels = { customer, agent }
+  const items = Children.toArray(children)
+    .filter(isValidElement)
+    .map((child) => cloneElement(child as ReactElement<{ labels?: ChatLabels }>, { labels }))
+
+  return (
+    <figure className="my-8 overflow-hidden rounded-xl border border-line bg-surface">
+      <figcaption className="flex flex-wrap items-center justify-between gap-x-4 gap-y-2 border-b border-line px-4 py-3">
+        <span className="font-mono text-meta text-foreground">{title}</span>
+        <span className="rounded-full border border-brand-line bg-brand-soft px-2.5 py-0.5 font-mono text-meta text-brand">
+          {badge}
+        </span>
+      </figcaption>
+      <ol className="grid gap-2 p-3 sm:p-4">{items}</ol>
+    </figure>
+  )
+}
+
+export function Message({
+  from,
+  labels,
+  children,
+}: {
+  from: "customer" | "agent"
+  labels?: ChatLabels
+  children: ReactNode
+}) {
+  const customer = from === "customer"
+  return (
+    <li
+      className={`grid max-w-[88%] gap-2 rounded-2xl border px-3.5 py-2.5 text-small text-foreground sm:max-w-[80%] [&_ol]:my-0 [&_ol]:gap-1 [&_ol]:text-foreground [&_p]:m-0 [&_p]:text-foreground ${
+        customer
+          ? "justify-self-end rounded-br-md border-brand-line bg-brand-soft"
+          : "justify-self-start rounded-bl-md border-line bg-surface-2"
+      }`}
+    >
+      {labels ? <span className="sr-only">{customer ? labels.customer : labels.agent}:</span> : null}
+      {children}
+    </li>
+  )
+}
+
+/** Linha de sistema dentro do chat: o que acontece nos bastidores. */
+export function ChatNote({ label, children }: { label: string; labels?: ChatLabels; children: ReactNode }) {
+  return (
+    <li className="mt-2 grid gap-1 rounded-lg border border-dashed border-line-strong px-3.5 py-2.5 text-small text-muted-foreground [&_code]:text-[0.8125rem] [&_p]:m-0">
+      <span className="font-mono text-meta text-brand">{label}</span>
+      <div>{children}</div>
+    </li>
+  )
+}
+
+/** Moldura para mídia larga (vídeo ou imagem), um pouco além da coluna de texto no desktop. */
+export function MediaFigure({ caption, children }: { caption?: string; children: ReactNode }) {
+  return (
+    <figure className="my-10 grid gap-3 lg:-mx-24">
+      {children}
+      {caption ? <figcaption className="font-mono text-meta text-subtle">{caption}</figcaption> : null}
+    </figure>
+  )
+}
+
+/** Grade de capturas de tela; cada uma é um <Shot>. */
+export function Gallery({ children }: { children: ReactNode }) {
+  return <div className="my-10 grid gap-x-5 gap-y-7 sm:grid-cols-2 lg:-mx-24">{children}</div>
+}
+
+export function Shot({
+  src,
+  alt,
+  width,
+  height,
+  caption,
+}: {
+  src: string
+  alt: string
+  width: number
+  height: number
+  caption?: string
+}) {
+  return (
+    <figure className="grid content-start gap-2.5">
+      <Image
+        src={src}
+        alt={alt}
+        width={width}
+        height={height}
+        sizes="(min-width: 1024px) 456px, (min-width: 640px) 50vw, 100vw"
+        className="h-auto w-full rounded-lg border border-line"
+      />
+      {caption ? <figcaption className="text-small text-muted-foreground">{caption}</figcaption> : null}
+    </figure>
   )
 }

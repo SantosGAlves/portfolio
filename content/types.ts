@@ -17,8 +17,8 @@ export type SectionHeading = {
 
 export type Fact = { label: string; value: string }
 
-/** Campos que o agente extrai da mensagem na assinatura do hero. */
-export type SignatureField = "modelo" | "ano" | "motor" | "cambio"
+/** Campos que o agente extrai da mensagem na assinatura (as chaves da tabela `aplicacoes`). */
+export type SignatureField = "modelo" | "ano" | "cambio" | "start_stop"
 
 export type SignatureScenario = {
   /** Texto da mensagem; os objetos são entidades destacadas. */
@@ -130,7 +130,10 @@ export type SiteContent = {
     meta: { role: string; period: string; status: string; stack: string }
     next: string
     fallbackNotice: string
+    /** Aviso de texto provisório (só em casos com `draft: true`). */
     illustrativeNotice: string
+    /** Botão dos vídeos em loop. */
+    video: { play: string; pause: string }
   }
   /** Ordem dos links do header (seções da página inicial). */
   nav: SectionKey[]
