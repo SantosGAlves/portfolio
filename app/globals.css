@@ -2,33 +2,69 @@
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
 
-/* O site é só escuro: a classe .dark fica fixa no <html>. */
-@custom-variant dark (&:is(.dark *));
+/* Tema: data-theme="dark" (padrão) ou "light" no <html>.
+   Um script inline no <head> aplica a preferência salva antes da primeira pintura. */
+@custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
+@custom-variant light (&:where([data-theme="light"], [data-theme="light"] *));
 
 /* ------------------------------------------------------------------
-   Tokens da Direção A ("Console").
-   Fonte única da verdade: todas as cores, fontes e raios saem daqui.
-   Contraste medido contra --bg (#0E0F12).
+   Tokens da Direção A ("Console"), versão verde terminal.
+   Fonte única da verdade: cores, fontes, tamanhos e raios saem daqui.
+   Contrastes medidos contra o fundo e o card de cada tema (ver CLAUDE.md).
    ------------------------------------------------------------------ */
-:root {
+:root,
+:root[data-theme="dark"] {
   color-scheme: dark;
 
-  /* Paleta base */
   --bg: #0e0f12;
   --bg-deep: #0a0b0d;
   --surface: #15171b;
   --surface-2: #1b1e23;
-  --line: #26282e; /* 1,3:1 — só decorativo */
+  --line: #26282e; /* decorativo */
   --line-strong: #33363d;
   --text: #ededf0; /* 16,4:1 */
-  --text-muted: #9a9da6; /* 7,1:1 — texto de apoio */
-  --text-subtle: #6b6f78; /* 3,8:1 — só texto grande, metadados e ícones */
-  --brand: #a9acf5; /* 9,0:1 — rótulos, links, foco, estado ativo */
-  --brand-soft: rgb(169 172 245 / 0.14);
-  --brand-line: rgb(169 172 245 / 0.35);
-  --brand-glow: rgb(169 172 245 / 0.16);
+  --text-muted: #9a9da6; /* 7,1:1 */
+  --text-subtle: #82868f; /* 5,3:1 */
+  --brand: #7ee08f; /* 11,8:1 — identidade: rótulos, links, foco, estado ativo */
+  --brand-rgb: 126 224 143;
+  --ok: #6cc7e0; /* 9,9:1 — só sucesso: ✓ da execução, status ok */
+  --ok-rgb: 108 199 224;
+  --on-primary: #0e0f12;
+  --fx-strength: 1; /* intensidade do fundo Fluxo */
+  --shadow-card: 0 24px 60px -24px rgb(0 0 0 / 0.8);
+  --brand-soft: rgb(var(--brand-rgb) / 0.12);
+  --brand-line: rgb(var(--brand-rgb) / 0.34);
+  --brand-glow: rgb(var(--brand-rgb) / 0.12);
+  --ok-line: rgb(var(--ok-rgb) / 0.4);
+}
 
-  /* Mapeamento para os nomes que o shadcn/ui espera */
+:root[data-theme="light"] {
+  color-scheme: light;
+
+  --bg: #f5f6f7;
+  --bg-deep: #edeff1;
+  --surface: #ffffff;
+  --surface-2: #eceef1;
+  --line: #dcdfe3;
+  --line-strong: #c5c9cf;
+  --text: #101215; /* 17,3:1 */
+  --text-muted: #4d525a; /* 7,3:1 */
+  --text-subtle: #5f646d; /* 5,5:1 */
+  --brand: #17773a; /* 5,2:1 — o verde terminal teria só 1,6:1 aqui */
+  --brand-rgb: 23 119 58;
+  --ok: #0e6f87; /* 5,3:1 */
+  --ok-rgb: 14 111 135;
+  --on-primary: #ffffff;
+  --fx-strength: 1.25;
+  --shadow-card: 0 1px 2px rgb(16 18 21 / 0.05), 0 18px 40px -22px rgb(16 18 21 / 0.25);
+  --brand-soft: rgb(var(--brand-rgb) / 0.09);
+  --brand-line: rgb(var(--brand-rgb) / 0.32);
+  --brand-glow: rgb(var(--brand-rgb) / 0.1);
+  --ok-line: rgb(var(--ok-rgb) / 0.4);
+}
+
+:root {
+  /* Nomes que o shadcn/ui espera, apontando para a paleta acima */
   --background: var(--bg);
   --foreground: var(--text);
   --card: var(--surface);
@@ -36,20 +72,19 @@
   --popover: var(--surface-2);
   --popover-foreground: var(--text);
   --primary: var(--text);
-  --primary-foreground: var(--bg);
+  --primary-foreground: var(--on-primary);
   --secondary: var(--surface-2);
   --secondary-foreground: var(--text);
   --muted: var(--surface-2);
   --muted-foreground: var(--text-muted);
   --accent: var(--surface-2); /* no shadcn, "accent" é o fundo de hover */
   --accent-foreground: var(--text);
-  --destructive: #f2a19a;
+  --destructive: #d9534f;
   --border: var(--line);
   --input: var(--line-strong);
   --ring: var(--brand);
   --radius: 0.625rem; /* 10px */
 
-  /* Ritmo */
   --header-h: 4rem;
 }
 
@@ -84,17 +119,26 @@
   --color-brand-soft: var(--brand-soft);
   --color-brand-line: var(--brand-line);
   --color-brand-glow: var(--brand-glow);
+  --color-ok: var(--ok);
+  --color-ok-line: var(--ok-line);
 
-  /* Fontes (definidas por next/font no layout) */
+  --shadow-card: var(--shadow-card);
+
+  /* Fontes (definidas por next/font em lib/fonts.ts) */
   --font-sans: var(--font-schibsted), "Helvetica Neue", Arial, sans-serif;
   --font-heading: var(--font-schibsted), "Helvetica Neue", Arial, sans-serif;
+  --font-serif: var(--font-newsreader), Georgia, "Times New Roman", serif;
   --font-mono: var(--font-geist-mono), ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
 
   /* Escala tipográfica */
-  --text-display: clamp(2.5rem, 1.4rem + 4.4vw, 4.5rem);
-  --text-display--line-height: 1.02;
-  --text-display--letter-spacing: -0.035em;
-  --text-display--font-weight: 700;
+  --text-name: clamp(3.5rem, 0.5rem + 10.5vw, 9.5rem);
+  --text-name--line-height: 0.86;
+  --text-name--letter-spacing: -0.055em;
+  --text-name--font-weight: 700;
+  --text-role: clamp(1.25rem, 1rem + 1.1vw, 1.875rem);
+  --text-role--line-height: 1.2;
+  --text-role--letter-spacing: -0.02em;
+  --text-role--font-weight: 500;
   --text-h2: clamp(1.625rem, 1.3rem + 1.2vw, 2.125rem);
   --text-h2--line-height: 1.15;
   --text-h2--letter-spacing: -0.025em;
@@ -200,6 +244,18 @@
       border-color: var(--line);
     }
   }
+
+  /* Fundo Fluxo do hero: some embaixo e à esquerda, para o texto ficar sempre na frente. */
+  .hero-bg {
+    -webkit-mask-image:
+      linear-gradient(to bottom, #000 55%, transparent 98%),
+      linear-gradient(to right, rgb(0 0 0 / 0.25), #000 60%);
+    -webkit-mask-composite: source-in;
+    mask-image:
+      linear-gradient(to bottom, #000 55%, transparent 98%),
+      linear-gradient(to right, rgb(0 0 0 / 0.25), #000 60%);
+    mask-composite: intersect;
+  }
 }
 
 @layer base {
@@ -207,7 +263,7 @@
     @apply border-border outline-ring/50;
   }
   html {
-    @apply font-sans;
+    @apply bg-background font-sans;
     scroll-padding-top: calc(var(--header-h) + 1.5rem);
     -webkit-text-size-adjust: 100%;
     text-rendering: optimizeLegibility;

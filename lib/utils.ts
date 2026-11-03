@@ -6,7 +6,7 @@ import { createCn } from "cn/config"
 export const cn = createCn({
   extend: {
     classGroups: {
-      "font-size": [{ text: ["display", "h2", "h3", "body", "small", "meta"] }],
+      "font-size": [{ text: ["name", "role", "h2", "h3", "body", "small", "meta"] }],
     },
   },
 })
