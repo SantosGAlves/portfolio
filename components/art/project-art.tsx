@@ -17,6 +17,7 @@ export function ProjectArt({ art, className = "" }: { art: ArtKind; className?: 
       {art === "battery" ? <BatteryArt /> : null}
       {art === "librasflow" ? <LibrasArt /> : null}
       {art === "automation" ? <AutomationArt /> : null}
+      {art === "kanban" ? <KanbanArt /> : null}
     </div>
   )
 }
@@ -159,6 +160,56 @@ function AutomationArt() {
           <circle cx="120" cy="106" r="2.5" />
         </g>
         <text x="14" y="70" fontSize="9" fontFamily="var(--font-mono)" fill="var(--text-subtle)">n8n · fluxo</text>
+      </svg>
+    </div>
+  )
+}
+
+// Kanban com barras de SLA e o evento que vai para o n8n. Status como no código.
+type KanbanCard = { w: number; sla: number; alert?: boolean; done?: boolean }
+const columns: { title: string; cards: KanbanCard[] }[] = [
+  { title: "entrada", cards: [{ w: 62, sla: 30 }, { w: 48, sla: 12 }] },
+  { title: "andamento", cards: [{ w: 70, sla: 92, alert: true }, { w: 54, sla: 60 }] },
+  { title: "concluido", cards: [{ w: 58, sla: 100, done: true }] },
+]
+
+// O SVG ocupa a área toda e se ajusta pela menor dimensão (preserveAspectRatio padrão),
+// para caber tanto no card (16:10) quanto no topo do estudo de caso (16:7).
+function KanbanArt() {
+  return (
+    <div className="absolute inset-[7%]">
+      <svg viewBox="0 0 330 214" className="size-full overflow-visible transition-transform duration-500 ease-out-soft group-hover/card:-translate-y-1">
+        {columns.map((col, ci) => {
+          const x = 8 + ci * 100
+          return (
+            <g key={col.title} fontFamily="var(--font-mono)">
+              <text x={x + 4} y="22" fontSize="9" fill="var(--text-subtle)">
+                {col.title}
+              </text>
+              <rect x={x} y="30" width="88" height="150" rx="9" fill="none" stroke="var(--line)" />
+              {col.cards.map((card, i) => {
+                const y = 38 + i * 50
+                const bar = card.alert ? "var(--brand)" : card.done ? "var(--ok)" : "var(--line-strong)"
+                return (
+                  <g key={i}>
+                    <rect x={x + 6} y={y} width="76" height="42" rx="6" fill="var(--surface)" stroke={card.alert ? "var(--brand-line)" : "var(--line-strong)"} />
+                    <rect x={x + 13} y={y + 9} width={card.w * 0.8} height="5" rx="2.5" fill="var(--text-muted)" opacity="0.55" />
+                    <rect x={x + 13} y={y + 19} width={card.w * 0.5} height="4" rx="2" fill="var(--text-subtle)" opacity="0.4" />
+                    <rect x={x + 13} y={y + 31} width="62" height="3" rx="1.5" fill="var(--surface-2)" />
+                    <rect x={x + 13} y={y + 31} width={(62 * card.sla) / 100} height="3" rx="1.5" fill={bar} />
+                  </g>
+                )
+              })}
+            </g>
+          )
+        })}
+        <g fontFamily="var(--font-mono)">
+          <path d="M184 80 C 214 80 214 196 244 196" fill="none" stroke="var(--brand)" strokeOpacity="0.6" strokeDasharray="3 4" />
+          <rect x="222" y="186" width="100" height="22" rx="6" fill="var(--surface)" stroke="var(--brand-line)" />
+          <text x="230" y="200" fontSize="8.5" fill="var(--brand)">
+            n8n · ticket_assumido
+          </text>
+        </g>
       </svg>
     </div>
   )

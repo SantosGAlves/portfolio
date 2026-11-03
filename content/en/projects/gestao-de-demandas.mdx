@@ -1,0 +1,109 @@
+export const meta = {
+  order: 3,
+  tier: "featured",
+  status: "shipped",
+  art: "kanban",
+  repo: "https://github.com/SantosGAlves/desafio-Gaudium",
+  title: "Internal request management platform",
+  kind: "Back-end · automation",
+  summary:
+    "A single portal for requests between departments: Flask with Supabase Auth and roles, a Kanban board with SLA and events that n8n turns into email notifications. Deployed on Render.",
+  role: "Back-end, interface, automations and deployment",
+  period: "2026",
+  stack: ["Python", "Flask", "Supabase", "n8n", "JavaScript", "Gunicorn", "Render"],
+  draft: false,
+  tldr: [
+    {
+      label: "Problem",
+      text: "Internal requests arrived by email and Discord, with no flow, no clear deadline, and the requester never knew who was handling them.",
+    },
+    {
+      label: "Solution",
+      text: "Structured request intake, a per-department Kanban with visual SLA, roles with permissions and events so n8n notifies each person at the right moment.",
+    },
+    {
+      label: "Outcome",
+      text: "The system is deployed on Render with the full flow working end to end. There are no usage metrics.",
+    },
+  ],
+}
+
+{/* [CONFIRMAR] Can I say this was the selection-process case that led to the Gaudium internship? If so, add a sentence at the end of "Context and problem". */}
+
+## Context and problem
+
+In many companies, a request from one department to another starts as a loose message: an email, a Discord channel. There is no single place to log it, the deadline is unclear and the requester never knows whether someone has picked it up.
+
+The goal was a single portal for internal requests, with visual management and automatic communication between departments.
+
+## My role
+
+I built the system end to end: the Flask API, authentication and roles in Supabase, the Kanban front-end, the notification flows in n8n and the deployment on Render.
+
+## Solution and architecture
+
+<Flow
+  caption="One request, from intake to completion."
+  steps={[
+    { title: "Intake", detail: "Title, priority, target department and deadline" },
+    { title: "Flask API", detail: "Session, role and permission rules" },
+    { title: "Supabase", detail: "Auth and the requests table" },
+    { title: "Department Kanban", detail: "To do → in progress → paused → done" },
+    { title: "n8n", detail: "Receives the event and sends the right email" },
+  ]}
+/>
+
+- **Roles and permissions.** Login, sessions and password recovery use Supabase Auth; each person has a profile with a department and an access level. Managers see every request, create users and delete tickets. Regular users see only their own department's requests, and only the target department can pick up or change a request. Anyone can add a note to the history.
+- **Kanban with SLA.** Each card shows how much of the deadline has passed, from creation to the end of the deadline day. From 75% it shows "Attention", from 90% "Critical risk", and past the deadline, "Late".
+- **Handling time.** Picking up, pausing and resuming a request records who is responsible and adds up the minutes actually spent.
+- **Events for n8n.** The API fires three events (`novo_ticket`, `ticket_assumido` and `ticket_concluido`, new, picked up and done) to an n8n webhook, which emails the requester and the assignee. n8n also alerts managers about idle requests.
+- **Reports.** A button exports the requests on screen as CSV.
+- **Deployment.** Gunicorn on Render, with keys in environment variables.
+
+## Stack
+
+- **Back-end:** Python with Flask, served by Gunicorn.
+- **Database and authentication:** Supabase (PostgreSQL and Auth).
+- **Automation:** n8n, with a webhook and email sending.
+- **Front-end:** HTML, CSS and JavaScript, no framework.
+- **Hosting:** Render.
+
+## Decisions and trade-offs
+
+<Decision
+  title="The back-end announces, n8n decides"
+  tradeoff="One more service to run. In the deployed version, the webhook pointed to n8n on my machine, so the emails were demonstrated live rather than from Render."
+>
+  The API only publishes what happened, with the ticket data. Who gets notified, with what text and through which channel lives in n8n, and changes without a deploy.
+</Decision>
+
+<Decision
+  title="Events sent in the background"
+  tradeoff="If n8n is down, the event is lost: today it is only logged, with no retry."
+>
+  The call runs on a separate thread with a 5 s timeout. A failure in the automation never blocks creating or moving a request.
+</Decision>
+
+<Decision
+  title="Permissions checked in the API"
+  tradeoff="The server uses Supabase's service key, which bypasses the database rules. So every route has to check session, department and role before acting."
+>
+  The rules for who sees and who can change each request live in one place, the back-end, and don't depend on the interface.
+</Decision>
+
+<Decision
+  title="SLA calculated from the deadline"
+  tradeoff="The calculation happens on screen; the database stores the deadline and time spent, but not the history of when each request became at risk."
+>
+  A bar that changes color tells you faster what needs attention than a list of dates.
+</Decision>
+
+## Outcome
+
+The system is deployed on Render with the full flow: intake, per-department Kanban, permissions, SLA, export and email notifications through n8n. There are no usage metrics, so there are no numbers here.
+
+## What I learned
+
+- Separating what happened (the event) from who needs to know (the automation) makes both parts simpler.
+- A service key on the back-end is convenient, but it moves all the security responsibility into the API code.
+- An external integration should never be able to break the main flow.

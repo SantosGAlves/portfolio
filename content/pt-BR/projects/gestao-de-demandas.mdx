@@ -1,0 +1,109 @@
+export const meta = {
+  order: 3,
+  tier: "featured",
+  status: "shipped",
+  art: "kanban",
+  repo: "https://github.com/SantosGAlves/desafio-Gaudium",
+  title: "Plataforma de gestão de demandas internas",
+  kind: "Back-end · automação",
+  summary:
+    "Um portal único para pedidos entre setores: Flask com Supabase Auth e perfis, Kanban com SLA e eventos que o n8n transforma em avisos por e-mail. Publicado no Render.",
+  role: "Back-end, interface, automações e deploy",
+  period: "2026",
+  stack: ["Python", "Flask", "Supabase", "n8n", "JavaScript", "Gunicorn", "Render"],
+  draft: false,
+  tldr: [
+    {
+      label: "Problema",
+      text: "Pedidos internos chegavam por e-mail e Discord, sem fluxo, sem prazo claro, e quem pedia não sabia quem estava atendendo.",
+    },
+    {
+      label: "Solução",
+      text: "Abertura estruturada de demandas, Kanban por setor com SLA visual, perfis com permissões e eventos para o n8n avisar cada pessoa no momento certo.",
+    },
+    {
+      label: "Resultado",
+      text: "Sistema publicado no Render, com o fluxo completo de ponta a ponta. Não há métricas de uso.",
+    },
+  ],
+}
+
+{/* [CONFIRMAR] Posso citar que este foi o case do processo seletivo que me levou à vaga na Gaudium? Se sim, entra uma frase no fim de "Contexto e problema". */}
+
+## Contexto e problema
+
+Em muitas empresas, um pedido de um setor para outro começa numa mensagem solta: um e-mail, um canal do Discord. Não existe um lugar único para registrar, o prazo não fica claro e quem pediu fica sem saber se alguém já assumiu.
+
+A proposta foi um portal único de demandas internas, com gestão visual e comunicação automática entre os setores.
+
+## Minha função
+
+Desenvolvi o sistema de ponta a ponta: a API em Flask, a autenticação e os perfis no Supabase, o Kanban no front-end, os fluxos de notificação no n8n e a publicação no Render.
+
+## Solução e arquitetura
+
+<Flow
+  caption="Uma demanda, da abertura à conclusão."
+  steps={[
+    { title: "Abertura", detail: "Título, prioridade, setor de destino e prazo" },
+    { title: "API Flask", detail: "Sessão, perfil e regras de permissão" },
+    { title: "Supabase", detail: "Auth e a tabela de demandas" },
+    { title: "Kanban do setor", detail: "Entrada → andamento → pausado → concluído" },
+    { title: "n8n", detail: "Recebe o evento e manda o e-mail certo" },
+  ]}
+/>
+
+- **Perfis e permissões.** O login, a sessão e a recuperação de senha usam o Supabase Auth; cada pessoa tem um perfil com setor e nível de acesso. Quem é gestor vê todas as demandas, cria usuários e exclui tickets. Quem é colaborador vê só as do próprio setor, e só o setor de destino pode assumir ou mudar uma demanda. Qualquer um pode registrar uma nota no histórico.
+- **Kanban com SLA.** Cada card mostra quanto do prazo já passou, do momento da abertura até o fim do dia do prazo. A partir de 75% aparece "Atenção", a partir de 90%, "Risco crítico", e depois do prazo, "Atrasado".
+- **Tempo de atendimento.** Assumir, pausar e retomar uma demanda registra o responsável e soma os minutos efetivamente gastos.
+- **Eventos para o n8n.** A API dispara três eventos (`novo_ticket`, `ticket_assumido` e `ticket_concluido`) para um webhook do n8n, que manda os e-mails para quem pediu e para quem atende. O n8n também avisa gestores sobre demandas paradas.
+- **Relatórios.** Um botão exporta em CSV as demandas da tela.
+- **Deploy.** Gunicorn no Render, com as chaves em variáveis de ambiente.
+
+## Stack
+
+- **Back-end:** Python com Flask, servido pelo Gunicorn.
+- **Banco e autenticação:** Supabase (PostgreSQL e Auth).
+- **Automação:** n8n, com webhook e envio de e-mail.
+- **Front-end:** HTML, CSS e JavaScript, sem framework.
+- **Hospedagem:** Render.
+
+## Decisões e trade-offs
+
+<Decision
+  title="O back-end avisa, o n8n decide"
+  tradeoff="Mais um serviço para manter. Na versão publicada, o webhook apontava para o n8n na minha máquina, então os e-mails foram demonstrados ao vivo, e não a partir do Render."
+>
+  A API só publica o que aconteceu, com os dados do ticket. Quem recebe o aviso, com que texto e por qual canal fica no n8n, e muda sem deploy.
+</Decision>
+
+<Decision
+  title="Envio do evento em segundo plano"
+  tradeoff="Se o n8n estiver fora do ar, o evento se perde: hoje ele só é registrado no log, sem nova tentativa."
+>
+  O disparo roda numa thread separada, com tempo limite de 5 s. Uma falha na automação nunca trava a criação ou a movimentação de uma demanda.
+</Decision>
+
+<Decision
+  title="Permissões checadas na API"
+  tradeoff="O servidor usa a chave de serviço do Supabase, que ignora as regras do banco. Por isso toda rota precisa conferir sessão, setor e perfil antes de agir."
+>
+  As regras de quem vê e de quem pode mudar cada demanda ficam num lugar só, no back-end, e não dependem da interface.
+</Decision>
+
+<Decision
+  title="SLA calculado a partir do prazo"
+  tradeoff="O cálculo acontece na tela; o banco guarda o prazo e o tempo gasto, mas não o histórico de quando cada demanda entrou em risco."
+>
+  Uma barra que muda de cor diz mais rápido o que precisa de atenção do que uma lista de datas.
+</Decision>
+
+## Resultado
+
+O sistema foi publicado no Render com o fluxo completo: abertura, Kanban por setor, permissões, SLA, exportação e os avisos por e-mail via n8n. Não há métricas de uso, então não há números aqui.
+
+## Aprendizados
+
+- Separar o que aconteceu (o evento) de quem precisa saber (a automação) deixa as duas partes mais simples.
+- Uma chave de serviço no back-end é prática, mas transfere toda a responsabilidade de segurança para o código da API.
+- Uma integração externa nunca deve conseguir derrubar o fluxo principal.
