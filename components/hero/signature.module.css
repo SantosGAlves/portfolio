@@ -1,0 +1,381 @@
+/* Assinatura "da mensagem à consulta".
+   Sem [data-live] (sem JS ou com movimento reduzido) tudo aparece no estado final.
+   Com [data-live], lib/signature-player.ts controla os estados por atributos data-*. */
+
+.sig {
+  margin: 0;
+  min-width: 0;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-card);
+  background: color-mix(in srgb, var(--surface) 94%, transparent);
+  box-shadow: var(--shadow-card);
+}
+
+.bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid var(--line);
+  color: var(--text-muted);
+}
+
+.chip {
+  padding: 0.1875rem 0.5rem;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-tag);
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+}
+
+.body {
+  display: grid;
+  gap: 1.125rem;
+  padding: 1.25rem 1rem 0.5rem;
+}
+
+.label {
+  margin-bottom: 0.5rem;
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-subtle);
+}
+
+/* --- mensagem --- */
+.msg {
+  display: inline-block;
+  max-width: 100%;
+  padding: 0.625rem 0.875rem;
+  border: 1px solid var(--line);
+  border-radius: 14px 14px 14px 4px;
+  background: var(--surface-2);
+  font-size: 1.0625rem;
+  line-height: 1.7;
+}
+.msg mark {
+  margin: 0 -3px;
+  padding: 1px 3px;
+  border-radius: 4px;
+  background: transparent;
+  color: inherit;
+  cursor: default;
+  transition:
+    background-color 0.3s var(--ease-out-soft),
+    box-shadow 0.3s var(--ease-out-soft);
+}
+.sig:not([data-live]) .msg mark,
+.msg mark[data-on] {
+  background: var(--brand-soft);
+  box-shadow: inset 0 -1.5px 0 var(--brand);
+}
+.msg mark[data-hl],
+.msg mark:focus-visible {
+  background: rgb(var(--brand-rgb) / 0.24);
+}
+.sig[data-live] [data-g] {
+  visibility: hidden;
+}
+.sig[data-live] [data-typing] > [data-v],
+.sig[data-live] .msg[data-idle] > [data-seg]:first-child > [data-v] {
+  box-shadow: 2px 0 0 var(--brand);
+  animation: caret 1s steps(1) infinite;
+}
+.sig[data-live] .msg[data-idle] > [data-seg]:first-child > [data-v] {
+  padding-left: 1px;
+}
+@keyframes caret {
+  50% {
+    box-shadow: 2px 0 0 transparent;
+  }
+}
+
+/* --- chamada de ferramenta --- */
+.call {
+  margin: 0;
+  overflow-x: auto;
+  padding: 0.875rem 1rem;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--bg-deep);
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  font-size: 0.8125rem;
+  line-height: 1.75;
+}
+.fn {
+  color: var(--text);
+}
+.line {
+  display: block;
+  width: max-content;
+  border-radius: 4px;
+  transition:
+    background-color 0.25s var(--ease-out-soft),
+    color 0.25s var(--ease-out-soft);
+}
+.field {
+  padding-left: 2ch;
+}
+.field b {
+  font-weight: 400;
+  color: var(--brand);
+}
+.field[data-hl] {
+  background: var(--brand-soft);
+  color: var(--text);
+}
+.sig[data-live] .line {
+  clip-path: inset(0 100% 0 0);
+}
+.sig[data-live] .line[data-typing] {
+  animation: type var(--d, 300ms) steps(var(--n, 12)) forwards;
+}
+.sig[data-live] .line[data-on] {
+  clip-path: none;
+}
+@keyframes type {
+  from {
+    clip-path: inset(0 100% 0 0);
+  }
+  to {
+    clip-path: inset(0 0 0 0);
+  }
+}
+
+/* --- execução --- */
+.trace {
+  display: grid;
+  gap: 0.5rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-family: var(--font-mono);
+  font-size: 0.8125rem;
+}
+.step {
+  display: grid;
+  grid-template-columns: 16px minmax(0, 1fr) auto;
+  align-items: baseline;
+  gap: 0.625rem;
+  color: var(--text-subtle);
+  transition: color 0.3s var(--ease-out-soft);
+}
+.icon {
+  display: inline-grid;
+  place-items: center;
+  align-self: center;
+  width: 14px;
+  height: 14px;
+}
+.icon::before {
+  content: "";
+  width: 7px;
+  height: 7px;
+  border: 1px solid var(--line-strong);
+  border-radius: 50%;
+}
+.status {
+  opacity: 0;
+  white-space: nowrap;
+  transition: opacity 0.3s var(--ease-out-soft);
+}
+.sig:not([data-live]) .step,
+.step[data-state] {
+  color: var(--text-muted);
+}
+.step[data-state="run"] .icon::before {
+  width: 10px;
+  height: 10px;
+  border: 1.5px solid var(--brand);
+  border-right-color: transparent;
+  animation: spin 0.7s linear infinite;
+}
+.sig:not([data-live]) .step[data-final="done"] .icon::before,
+.step[data-state="done"] .icon::before {
+  content: "✓";
+  width: auto;
+  height: auto;
+  border: 0;
+  color: var(--ok);
+  font-size: 0.8125rem;
+  line-height: 1;
+}
+.sig:not([data-live]) .step[data-final="done"] .status,
+.step[data-state="done"] .status {
+  opacity: 1;
+  color: var(--ok);
+}
+.sig:not([data-live]) .step[data-final="wait"] .icon::before,
+.step[data-state="wait"] .icon::before {
+  width: 8px;
+  height: 8px;
+  border: 1px solid var(--brand);
+  background: var(--brand-soft);
+  animation: breathe 1.8s var(--ease-out-soft) infinite;
+}
+.sig:not([data-live]) .step[data-final="wait"] .status,
+.step[data-state="wait"] .status {
+  opacity: 1;
+  color: var(--brand);
+}
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+@keyframes breathe {
+  50% {
+    transform: scale(1.35);
+    opacity: 0.6;
+  }
+}
+
+/* --- resposta --- */
+.replyWrap {
+  display: grid;
+}
+.reply {
+  position: relative;
+  justify-self: end;
+  max-width: 92%;
+  padding: 0.625rem 0.875rem;
+  border: 1px solid var(--brand-line);
+  border-radius: 14px 14px 4px 14px;
+  background: var(--brand-soft);
+  font-size: 0.9375rem;
+  line-height: 1.55;
+  transition:
+    opacity 0.35s var(--ease-out-soft),
+    transform 0.35s var(--ease-out-soft);
+}
+.replyText {
+  transition: opacity 0.25s var(--ease-out-soft);
+}
+.sig[data-live] .reply {
+  opacity: 0;
+  transform: translateY(6px);
+}
+.sig[data-live] .reply[data-typing],
+.sig[data-live] .reply[data-on] {
+  opacity: 1;
+  transform: none;
+}
+.sig[data-live] .reply[data-typing] .replyText {
+  opacity: 0;
+}
+.dots {
+  position: absolute;
+  top: 50%;
+  left: 0.875rem;
+  display: none;
+  gap: 4px;
+  translate: 0 -50%;
+}
+.reply[data-typing] .dots {
+  display: inline-flex;
+}
+.dots i {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--brand);
+  animation: dots 1s var(--ease-out-soft) infinite;
+}
+.dots i:nth-child(2) {
+  animation-delay: 0.15s;
+}
+.dots i:nth-child(3) {
+  animation-delay: 0.3s;
+}
+@keyframes dots {
+  0%,
+  100% {
+    opacity: 0.25;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+/* --- pausa fora da tela --- */
+.sig[data-paused] *,
+.sig[data-paused] *::before {
+  animation-play-state: paused !important;
+}
+
+/* --- rodapé --- */
+.foot {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem 1.25rem;
+  margin-top: 0.75rem;
+  padding: 0.875rem 1rem 1.125rem;
+  border-top: 1px solid var(--line);
+}
+.switch {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.625rem;
+  min-height: 2.75rem;
+  color: var(--text-muted);
+  font-size: 0.875rem;
+  cursor: pointer;
+  user-select: none;
+}
+.switch input {
+  position: relative;
+  width: 34px;
+  height: 20px;
+  margin: 0;
+  border: 1px solid var(--line-strong);
+  border-radius: 20px;
+  background: var(--surface-2);
+  appearance: none;
+  cursor: pointer;
+  transition: background-color 0.2s var(--ease-out-soft);
+}
+.switch input::after {
+  content: "";
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--text-muted);
+  transition:
+    transform 0.2s var(--ease-out-soft),
+    background-color 0.2s var(--ease-out-soft);
+}
+.switch input:checked {
+  border-color: var(--brand);
+  background: var(--brand-soft);
+}
+.switch input:checked::after {
+  transform: translateX(14px);
+  background: var(--brand);
+}
+
+@media (min-width: 480px) {
+  .body {
+    padding: 1.5rem 1.375rem 0.5rem;
+  }
+  .bar,
+  .foot {
+    padding-inline: 1.375rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sig .line {
+    clip-path: none !important;
+  }
+}
