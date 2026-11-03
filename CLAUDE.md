@@ -27,7 +27,7 @@ Não é "só IA": desenvolvimento de produto e back-end tem o mesmo peso.
 - "O que eu construo": três áreas de peso igual: Agentes de IA, Automação de processos e
   Produtos e back-end (APIs, bancos de dados, painéis, autenticação, deploy).
 - Linguagens sem barras de nível, porcentagens ou parede de badges: Python como principal,
-  Java e Go como "já trabalhei com".
+  Java, Go e C# como "já trabalhei com".
 - Frase honesta em "Como eu trabalho": desenvolve com apoio de agentes de código (Claude Code),
   revisando e testando o que vai para produção.
 - Hunt Sales (ago/2025 – jun/2026): Gustavo propôs e desenvolveu sozinho o sistema completo da loja de baterias:
@@ -121,10 +121,18 @@ Destaque chapado e usado com parcimônia (rótulos, links, foco, detalhes). Sem 
 - Um `.mdx` por projeto em `content/<idioma>/projects/<slug>.mdx`, com `export const meta`
   validado por zod (`content/project-schema.ts`). Passo a passo em `content/README.md`.
 - `lib/projects.ts` carrega tudo com `import.meta.glob` (Turbopack), sem `fs`: o build falha com
-  meta inválido, projeto sem versão PT ou campos compartilhados (`order`, `featured`, `status`,
-  `art`, `stack`) diferentes entre idiomas. Por isso `stack` usa só nomes de ferramenta.
+  meta inválido, projeto sem versão PT ou campos compartilhados (`order`, `tier`, `page`, `repo`,
+  `status`, `art`, `stack`) diferentes entre idiomas. Por isso `stack` usa só nomes de ferramenta.
 - Rotas: `app/(pt)/projetos/[slug]` e `app/(en)/en/projects/[slug]`, mesmo slug nos dois idiomas,
-  geradas no build. `status: "planned"` vira faixa "em construção" sem página.
+  geradas no build. `status: "planned"` vira faixa "em construção" sem página; `page: false` também
+  não gera página (o card leva ao `repo`).
+- Seção de projetos (`components/sections/projects.tsx`), nesta hierarquia:
+  1. Destaques (`tier: "featured"`), por `order`: o primeiro em largura total, os demais em duas colunas.
+     Ordem atual: agente de baterias, LibrasFlow, plataforma de gestão de demandas.
+  2. "Outros projetos" (`tier: "secondary"`): cards menores, sem imagem. Ajuda animal (com página),
+     Barbearia Premium App e VoiceSnap (sem página, link para o GitHub).
+  3. "Mais no GitHub": lista compacta em `site.ts` → `projects.more` (API .NET 10, Streamlit + Azure,
+     concorrência em Java) + link para todos os repositórios.
 - Sem versão EN: a página EN mostra o texto em português (`lang="pt-BR"`), com aviso,
   canonical para a versão PT e fora do sitemap.
 - Template: cabeçalho com metadados em mono → vídeo ou arte → "Resumo em 30 segundos" (`tldr`) →
@@ -136,16 +144,29 @@ Destaque chapado e usado com parcimônia (rótulos, links, foco, detalhes). Sem 
   `<Gallery>`/`<Shot>` (capturas com `next/image`).
 - Blocos que dependem do idioma (`<Video>`, `<Signature>`) são passados por `case-study-page.tsx`
   em `<Body components={...}>`, com os rótulos do `site.ts` do idioma do texto.
-- `meta.media.cover` = imagem real do card (moldura `surface-2`, cortada embaixo); `meta.media.video` =
-  vídeo no topo do caso no lugar da arte. `meta.draft` (padrão `true`) mostra o aviso de texto provisório.
+- `meta.media.cover` = imagem real do card (`fit: "frame"`: captura em moldura `surface-2`, cortada embaixo;
+  `fit: "fill"`: foto ocupando a área); `meta.media.video` = vídeo no topo do caso no lugar da arte
+  (vídeo com menos de 1000 px de largura fica na largura da coluna de texto, sem esticar). `meta.draft` (padrão `true`) mostra o aviso de texto provisório.
 - Vídeos (`components/case-study/loop-video.tsx`): sem som, loop, `preload="none"` com poster; o arquivo
   só é baixado depois do load e quando entra na tela, pausa fora dela; botão Pausar/Reproduzir (WCAG 2.2.2);
   com reduced motion não toca sozinho.
 - Mídia do agente: `public/agente-baterias/midia-agente-baterias/` (já censurada). Os `.png` originais ficam
   fora do git; o site usa só `.webp` e `.mp4`.
-- Imagens provisórias dos outros projetos: `components/art/project-art.tsx`, composições HTML/SVG do servidor nas
-  cores do tema (painel de gestão + agente, pontos da mão, fluxo de nós), decorativas.
+- Mídia do LibrasFlow: `public/librasflow/` (vídeo e poster convertidos do GIF de demonstração do repositório,
+  sem a faixa do editor; `librasflow-card.webp` sem a barra de texto do topo). O banner do repositório não é usado
+  (estética de "IA brilhante", contra as regras visuais).
+- Artes abstratas (`components/art/project-art.tsx`), composições HTML/SVG do servidor nas cores do tema,
+  decorativas: painel + agente, pontos da mão, fluxo de nós e Kanban com SLA (plataforma de demandas).
+  As telas do repositório da plataforma não são usadas: têm o logo da Gaudium e dados de teste.
 - JSON-LD `Person` na página inicial; links com `[CONFIRMAR]` ficam fora do `sameAs`.
+
+### Fatos dos casos (fonte: os repositórios)
+
+- LibrasFlow (commit V4.0): 34.374 linhas → ~6.270 grupos com DBSCAN por letra (eps 0,05); split 80/20 por
+  grupo, balanceado por amostras; validação em 3.812 imagens reais (15 das 21 letras): 69% de acerto,
+  E/M/N ~0%, S/U ~5%, R 10%, L 44%; B, V, A, I, W, D acima de 95%. Nunca escrever "100% de acurácia".
+- Plataforma de demandas: o README fala em RLS, mas o código usa a chave de serviço e checa permissões
+  no Flask. O caso descreve o que o código faz. Citar que foi o case do processo seletivo: `[CONFIRMAR]`.
 
 ## Idiomas
 
@@ -180,9 +201,9 @@ Chrome DevTools Protocol (`Emulation.setDeviceMetricsOverride` + `localStorage.t
 ## Pendências conhecidas
 
 - Repositório: github.com/SantosGAlves/portfolio (público).
-- CV em PDF (PT e EN), e-mail, LinkedIn e GitHub: `[CONFIRMAR]`.
+- CV em PDF (PT e EN), e-mail e LinkedIn: `[CONFIRMAR]`. GitHub confirmado: github.com/SantosGAlves.
 - 404 personalizada: com vários layouts raiz, o 404 padrão sai sem `lang`; resolver na Fase 3/4
   (`app/global-not-found.tsx`, ainda experimental no Next 16).
 - Imagem Open Graph: Fase 4.
-- Textos reais dos estudos de caso: `agente-baterias` está pronto (`draft: false`); LibrasFlow e n8n
-  ainda têm `[CONFIRMAR]`.
+- Textos reais dos estudos de caso: agente, LibrasFlow e plataforma de demandas prontos (`draft: false`);
+  ajuda animal ainda tem `[CONFIRMAR]`.
