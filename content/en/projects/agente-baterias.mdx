@@ -6,90 +6,243 @@ export const meta = {
   title: "Sales agent and management system for a car battery store",
   kind: "AI agent + management system",
   summary:
-    "The agent finds the right battery from the car's model, year, engine and transmission. Behind it, the dashboard where the store keeps vehicles, batteries and prices.",
-  role: "Proposal, development and delivery, end to end",
-  period: "2025 · [CONFIRMAR]",
-  stack: ["Supabase", "PostgreSQL", "RLS", "API", "LLM [CONFIRMAR]", "Front-end [CONFIRMAR]"],
+    "It serves customers on WhatsApp, finds the right battery from the car's model, year, transmission and start-stop, and hands over to a person when it doesn't know. Behind it, the store's catalog dashboard.",
+  role: "Proposed and built end to end, on my own",
+  period: "2025–2026 · Hunt Sales",
+  stack: ["GPT-4o mini", "WhatsApp", "Supabase", "PostgreSQL", "Supabase Auth", "JavaScript", "Tailwind CSS"],
+  draft: false,
   tldr: [
     {
       label: "Problem",
-      text: "A car battery store needed to answer quickly which battery fits each car, and the client was about to cancel the service. [CONFIRMAR]",
+      text: "A car battery store served customers on WhatsApp, and every order depended on a salesperson figuring out which battery fit which car. The store, a Hunt Sales client, was at risk of cancelling.",
     },
     {
       label: "Solution",
-      text: "An AI agent that queries a database of vehicles and batteries, plus a management system where the store keeps that data, with authentication and RLS.",
+      text: "An AI agent that collects the vehicle details, queries a fitment database and presents the options, plus the management system that feeds that database. An unknown car becomes a task in the dashboard, not a guess.",
     },
-    { label: "Outcome", text: "The project, which I proposed, helped retain the client." },
+    {
+      label: "Outcome",
+      text: "It reversed the client's churn and opened a new kind of product at the company, later replicated for other clients. There was no formal measurement of metrics.",
+    },
   ],
+  media: {
+    cover: {
+      src: "/agente-baterias/midia-agente-baterias/03-veiculos-sugeridos-ia.webp",
+      alt: "Management dashboard on the “IA Sugere” (AI suggests) tab: cards for vehicles the agent couldn't find, each with “Ver chat” (see chat) and “+ Cadastrar” (add) buttons.",
+      width: 1540,
+      height: 824,
+    },
+    video: {
+      src: "/agente-baterias/midia-agente-baterias/fluxo-agente.mp4",
+      poster: "/agente-baterias/midia-agente-baterias/fluxo-agente-poster.webp",
+      width: 1280,
+      height: 720,
+      label:
+        "Animation of the full flow: the WhatsApp conversation, the extracted data and the database call, an unknown vehicle handed over to the team, the management dashboard and the closed loop. On-screen text in Portuguese.",
+      caption:
+        "The full flow in 34 s, no sound, on-screen text in Portuguese. Illustrative example with real dashboard screens; client names blurred.",
+    },
+  },
 }
 
 ## Context and problem
 
-Every day, a car battery store got the same question: "do you have a battery for my car?". The answer depends on four details (model, year, engine and transmission) and on a table that maps each vehicle to the right battery and price. [CONFIRMAR] how the store handled this before (spreadsheet, the seller's memory, a catalog).
+A car battery store, with delivery and installation, served its customers on WhatsApp. Finding the right battery means matching the vehicle's **model, year, transmission and start-stop system** against amperage, type (standard or EFB) and case size. That knowledge lived in the salespeople's heads, and every order depended on one of them stopping to work it out.
 
-The client was about to cancel the service. [CONFIRMAR] what was behind that.
+At the same time, the store was an unhappy Hunt Sales client at risk of cancelling.
 
 ## My role
 
-I proposed the project and built the whole system: the customer service AI agent and the management system integrated with it, including the database, authentication, access rules, deployment and domain. [CONFIRMAR] whether other people were involved and in what.
+I proposed the project and ran it on my own. I built the system end to end: the agent flow (starting from a standard company flow, shaped for this case), the database model, the management dashboard, login and authentication, and the deployment on the company's domain.
+
+The dashboard runs embedded in Hunt Sales' customer service platform (CRM), so salespeople use everything in one place. It was the first project of its kind at the company; after it, I became responsible for automations and similar systems for other clients.
+
+## How it works
+
+The agent turns the conversation into a database query. First it asks whether the customer already knows the amperage; if not, it collects model, year, transmission and start-stop, which are exactly the keys of the fitment table. In the real conversation it asks for one detail at a time; the demo below packs everything into a single message.
+
+<Signature />
+
+### Two conversations
+
+Reconstructed from real tests of the agent on WhatsApp, with names and prices changed. The agent talks in Portuguese; these are translations.
+
+<Chat title="Scenario 1 · vehicle found" badge="illustrative example" customer="Customer" agent="Agent">
+<Message from="customer">Good evening, I need a battery. Which models do you have?</Message>
+<Message from="agent">Hi! This is the store's virtual assistant. To help you, what's your name?</Message>
+<Message from="customer">Leonardo</Message>
+<Message from="agent">Thanks, Leonardo! Which city are you in?</Message>
+<Message from="customer">Jacareí</Message>
+<Message from="agent">Do you already know the battery's amperage, or would you like me to check it from your vehicle's model and year?</Message>
+<Message from="customer">I think it's 60, but better check. 2010 Corsa Maxx.</Message>
+<Message from="agent">Let's check! Does your 2010 Corsa Maxx have a manual or automatic transmission?</Message>
+<Message from="customer">Manual</Message>
+<Message from="agent">And does it have a start-stop system? (yes or no)</Message>
+<Message from="customer">No</Message>
+<Message from="agent">
+Here are the options for your 2010 Corsa Maxx (60 Ah):
+
+1. Brand A 60 Ah · 24-month warranty · upfront R$ 4XX.00 · in installments R$ 4XX.00
+2. Brand B 60 Ah · 18-month warranty · upfront R$ 4XX.00 · in installments R$ 4XX.00
+3. Brand C 60 Ah · 12-month warranty · upfront R$ 3XX.00 · in installments R$ 3XX.00
+
+Delivery is today, with free installation and eco-friendly disposal of the old battery. Would you like to confirm one?
+</Message>
+<Message from="customer">Brand A, please.</Message>
+</Chat>
+
+<Chat title="Scenario 2 · unknown vehicle" badge="illustrative example" customer="Customer" agent="Agent">
+<Message from="customer">Hi! I need a battery. Kombi 1.4 Flex, how much is it?</Message>
+<Message from="agent">To help you, I just need to know your Kombi's year and whether it has a manual or automatic transmission.</Message>
+<Message from="customer">Manual. 2007.</Message>
+<Message from="agent">One last thing: does it have a start-stop system?</Message>
+<Message from="customer">No</Message>
+<Message from="agent">I couldn't find a battery on file for your 2007 Kombi. I'm handing you over to our team, who can help you better. I've passed on all the details and they'll get in touch.</Message>
+<ChatNote label="behind the scenes">The 2007 manual Kombi without start-stop joins the “IA Sugere” queue in the dashboard, with a link to this conversation.</ChatNote>
+</Chat>
 
 ## Solution and architecture
 
-Two parts that depend on each other.
-
-**The agent** reads the customer's message, extracts model, year, engine and transmission, and queries, through an API, the database that maps vehicle, battery and price. The answer always comes from the database, never from the model's memory.
-
-**The management system** is the dashboard where the store registers vehicles, batteries and prices. When the agent gets a vehicle that is not on file, it creates a draft entry and notifies the seller, who confirms the data in the dashboard. From then on, the agent can answer for that vehicle.
+The key point is that **the agent and the dashboard close a loop**. Every car the agent doesn't know becomes a task for a salesperson, and every task solved teaches the agent. The knowledge base grows with use.
 
 <Flow
   altLabel="or"
-  caption="How one question flows (illustrative example)."
+  caption="Customer service: from message to answer."
   steps={[
-    { title: "Customer message", detail: "\"do you have a battery for an onix 2019 1.0 manual?\"" },
-    { title: "AI agent", detail: "Extracts model, year, engine and transmission" },
-    { title: "API + Supabase", detail: "veiculos → baterias, with RLS" },
-    { title: "Answer", detail: "Recommended battery and price" },
-    { title: "Not on file", detail: "Draft entry and seller confirmation in the dashboard", alt: true },
+    { title: "Customer on WhatsApp", detail: "Asks for a battery" },
+    { title: "AI agent", detail: "Collects name, city, model, year, transmission and start-stop" },
+    { title: "Supabase query", detail: "aplicacoes → active baterias" },
+    { title: "Options and order", detail: "Brand, warranty, upfront and installment price" },
+    { title: "Unknown car", detail: "Logs it in veiculos_sugeridos and hands over to the team", alt: true },
   ]}
 />
 
+<Flow
+  caption="Dashboard: the unknown car becomes a catalog entry."
+  steps={[
+    { title: "“IA Sugere” queue", detail: "Cars the agent couldn't find, with a link to the conversation" },
+    { title: "“+ Cadastrar”", detail: "Form already filled in with what the AI collected" },
+    { title: "Salesperson completes it", detail: "Amperage, type and case size" },
+    { title: "Fitment saved", detail: "The suggestion leaves the queue and the agent now knows the car" },
+  ]}
+/>
+
+### Data model
+
+Table names are in Portuguese, as in the code.
+
+- **`baterias`** (batteries): brand, amperage, type (standard or EFB), case size, warranty in months, upfront and installment price, active or paused status.
+- **`aplicacoes`** (fitments): vehicle model, year range, transmission, start-stop, recommended amperage and battery type, required case size.
+- **`veiculos_sugeridos`** (suggested vehicles): model, year, transmission and start-stop collected by the agent, contact name and a link to the conversation.
+
+### Management dashboard
+
+<Video
+  src="/agente-baterias/midia-agente-baterias/painel-demo.mp4"
+  poster="/agente-baterias/midia-agente-baterias/painel-demo-poster.webp"
+  width={1280}
+  height={684}
+  label="Dashboard demo: battery catalog, fitment table, the “IA Sugere” queue and the add form already filled in by the AI. Interface in Portuguese."
+  caption="The dashboard in 11 s, no sound: catalog → fitments → IA Sugere → prefilled form. Interface in Portuguese."
+/>
+
+- **Battery catalog** grouped by amperage, with search, brand and amperage filters, pagination, and actions to edit, **pause or activate** (takes out-of-stock items offline without deleting them) and delete with confirmation.
+- **Vehicle fitments**: the compatibility table, with transmission, recommended amperage, case size and a start-stop highlight.
+- **IA Sugere** (AI suggests): the queue of cars the agent couldn't find during conversations. Each card has “Ver chat”, which opens the original conversation, and “+ Cadastrar” (add).
+- **Prefilled form**: it opens with model, year, transmission and start-stop from the AI. The salesperson only completes the battery spec and saves; the suggestion is resolved automatically.
+- **Login** with Supabase Auth (email and password), a session limited to the browser tab and every page protected.
+
+<Gallery>
+  <Shot
+    src="/agente-baterias/midia-agente-baterias/01-catalogo-baterias.webp"
+    width={1540}
+    height={824}
+    alt="Batteries tab of the dashboard: batteries grouped by amperage, with search, brand and amperage filters and Edit, Pause and Delete buttons."
+    caption="Catalog grouped by amperage (prices blurred)."
+  />
+  <Shot
+    src="/agente-baterias/midia-agente-baterias/02-aplicacoes-veiculos.webp"
+    width={1540}
+    height={824}
+    alt="Fitments tab: one card per vehicle with year range, transmission, recommended amperage and type, case size and a start-stop tag."
+    caption="Compatibility table by vehicle."
+  />
+  <Shot
+    src="/agente-baterias/midia-agente-baterias/03-veiculos-sugeridos-ia.webp"
+    width={1540}
+    height={824}
+    alt="IA Sugere tab: pending cards for vehicles identified by the agent, with year, transmission and the See chat and Add buttons."
+    caption="The “IA Sugere” queue (client names blurred)."
+  />
+  <Shot
+    src="/agente-baterias/midia-agente-baterias/04-cadastro-pre-preenchido.webp"
+    width={1540}
+    height={824}
+    alt="New fitment form with model, transmission, year and start-stop already filled in and the battery spec fields still empty."
+    caption="Form prefilled by the AI; the salesperson completes the battery."
+  />
+</Gallery>
+
 ## Stack
 
-- **Database and back-end:** Supabase (PostgreSQL), with authentication and Row Level Security.
-- **Agent:** [CONFIRMAR] language model and messaging channel.
-- **Dashboard:** [CONFIRMAR] framework and hosting; deployed on its own domain.
+- **Agent:** GPT-4o mini (OpenAI), on Hunt Sales' customer service platform, over WhatsApp.
+- **Database and authentication:** Supabase (PostgreSQL and Auth, with RLS).
+- **Dashboard:** HTML and JavaScript with Tailwind CSS, static, no server of its own. Deployed on the company's domain and embedded in the CRM.
 
 ## Decisions and trade-offs
 
 <Decision
-  title="Data lives in the database, not in the prompt"
-  tradeoff="The catalog has to be kept up to date, which is why the management dashboard is part of the project rather than an extra."
+  title="A human in the loop for anything uncertain"
+  tradeoff="For unknown cars, the customer waits for the team instead of getting an instant answer."
 >
-  Prices and compatibility change. With the table in the database, the agent never makes up a battery: it only answers what is on file, and the store updates everything without touching the agent.
+  The agent never guesses a battery for an unknown car: it hands over to the team and creates a pending task in the dashboard. The wrong battery means a lost delivery and a frustrated customer.
 </Decision>
 
 <Decision
-  title="An unknown vehicle becomes a draft entry, not a guess"
-  tradeoff="The customer waits for the seller's confirmation instead of getting an instant answer."
+  title="The AI collects, the human confirms"
+  tradeoff="Every new car still needs someone who knows the product to complete the entry."
 >
-  Getting the battery wrong costs a sale and the customer's trust. The agent would rather say it will confirm, and each confirmation makes the catalog more complete.
+  The technical part (amperage, type and case) stays with whoever knows the product. The AI saves the typing for the rest: the form arrives filled in with what was said in the conversation.
 </Decision>
 
-<Decision title="Access rules in the database (RLS)" tradeoff="More setup at the start of the project.">
-  Permissions apply to every access path (the dashboard, the API or the agent) instead of relying on each screen to run the right check.
+<Decision title="Questions in the right order">
+  First, the agent asks whether the customer already knows the amperage. If not, it collects model, year, transmission and start-stop, which are exactly the keys of the fitment table. Each answer becomes a filter in the query.
+</Decision>
+
+<Decision title="Pause instead of delete">
+  Every battery has an active or paused status, and the agent only offers active ones. That way the store takes out-of-stock items offline without losing the entry.
+</Decision>
+
+<Decision
+  title="A simple, static front-end"
+  tradeoff="With no server of its own, data protection relies on authentication and Supabase's access rules."
+>
+  HTML and JavaScript on top of Supabase, with no server of its own, so it stays light and easy to deploy on the company's domain.
 </Decision>
 
 ## Outcome
 
-The project helped retain a client who was about to cancel.
+- The client was at risk of cancelling, and the solution reversed the churn.
+- Customer service now answers known cases on its own and turns unknown ones into catalog entries.
+- It opened a new kind of product at the company: an AI agent integrated with a database and a management interface. With that, the AI actually knows the client's business and is far more useful than a generic chatbot.
 
-<Metrics>
-  <Metric value="[CONFIRMAR]" label="Vehicles on file" />
-  <Metric value="[CONFIRMAR]" label="Questions answered by the agent" />
-  <Metric value="[CONFIRMAR]" label="Response time" />
-</Metrics>
+There was no formal measurement of metrics, so there are no numbers here.
+
+## The same pattern in another niche
+
+The model was replicated for a company that sells electric vehicle charging solutions:
+
+- **Vehicles** with battery capacity (kWh) and alternating current charging limit (kW).
+- **Products with several outputs:** one charger can have several plugs with different power ratings (a product → outputs relation, with cascading deletes).
+- **Charging simulator:** for the chosen vehicle, it calculates the time on each charger from the technical bottleneck, `time (h) = battery (kWh) ÷ min(car's AC limit, plug power)`. The agent does the same calculation in the conversation, using AC and DC charging data, so the customer gets an idea before buying.
+- **Multi-tenant:** the dashboard checks that the company is active before loading data, and every query is filtered by company.
+- **Real time:** Supabase Realtime updates the screen when data changes, without reloading.
+- **Business rules in n8n:** writes go through an n8n webhook, which centralizes validation before reaching the database.
+
+Stack for that project: Node.js with Express serving the front-end, HTML, CSS and JavaScript, Supabase and n8n.
 
 ## What I learned
 
-- [CONFIRMAR] What you would do differently today.
-- [CONFIRMAR] What you learned about putting an agent in front of real customers.
+- In applied AI, the value is as much in the system around the model (data, dashboard, handoff) as in the prompt.
+- Design for "I don't know" first: the unknown-vehicle path is what made the system reliable.
+- The "agent + database + dashboard for humans" pattern is reusable: it worked for batteries and then for EV chargers.

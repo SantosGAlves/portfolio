@@ -6,93 +6,240 @@ export const meta = {
   title: "Agente de vendas e sistema de gestão para uma loja de baterias",
   kind: "Agente de IA + sistema de gestão",
   summary:
-    "O agente encontra a bateria certa pelo modelo, ano, motor e câmbio do carro. Por trás dele, o painel onde a loja mantém veículos, baterias e preços.",
-  role: "Proposta, desenvolvimento e entrega de ponta a ponta",
-  period: "2025 · [CONFIRMAR]",
-  stack: ["Supabase", "PostgreSQL", "RLS", "API", "LLM [CONFIRMAR]", "Front-end [CONFIRMAR]"],
+    "Atende no WhatsApp, descobre a bateria certa pelo modelo, ano, câmbio e start-stop do carro e, quando não sabe, passa para um humano. Por trás, o painel onde a loja mantém o catálogo.",
+  role: "Proposta e desenvolvimento de ponta a ponta, sozinho",
+  period: "2025–2026 · Hunt Sales",
+  stack: ["GPT-4o mini", "WhatsApp", "Supabase", "PostgreSQL", "Supabase Auth", "JavaScript", "Tailwind CSS"],
+  draft: false,
   tldr: [
     {
       label: "Problema",
-      text: "Uma loja de baterias automotivas precisava responder rápido qual bateria serve para cada carro, e o cliente estava em risco de cancelar o serviço. [CONFIRMAR]",
+      text: "Uma loja de baterias automotivas atendia pelo WhatsApp, e cada pedido dependia de um vendedor descobrir qual bateria servia em qual carro. O cliente da Hunt Sales estava em risco de cancelar.",
     },
     {
       label: "Solução",
-      text: "Um agente de IA que consulta um banco de veículos e baterias e um sistema de gestão onde a loja mantém esses dados, com autenticação e RLS.",
+      text: "Um agente de IA que coleta os dados do veículo, consulta um banco de compatibilidade e apresenta as opções, mais o sistema de gestão que alimenta esse banco. Carro desconhecido vira tarefa no painel, não palpite.",
     },
-    { label: "Resultado", text: "O projeto, proposto por mim, ajudou a reter o cliente." },
+    {
+      label: "Resultado",
+      text: "Reverteu o churn do cliente e abriu um novo tipo de produto na empresa, depois replicado para outros clientes. Não houve medição formal de métricas.",
+    },
   ],
+  media: {
+    cover: {
+      src: "/agente-baterias/midia-agente-baterias/03-veiculos-sugeridos-ia.webp",
+      alt: "Painel de gestão na aba “IA Sugere”: cards de veículos que o agente não encontrou, cada um com os botões “Ver chat” e “+ Cadastrar”.",
+      width: 1540,
+      height: 824,
+    },
+    video: {
+      src: "/agente-baterias/midia-agente-baterias/fluxo-agente.mp4",
+      poster: "/agente-baterias/midia-agente-baterias/fluxo-agente-poster.webp",
+      width: 1280,
+      height: 720,
+      label:
+        "Animação do fluxo completo: a conversa no WhatsApp, os dados extraídos e a chamada ao banco, um veículo desconhecido transferido para a equipe, o painel de gestão e o ciclo fechado.",
+      caption: "O fluxo completo em 34 s, sem som. Exemplo ilustrativo com telas reais do painel; nomes de clientes desfocados.",
+    },
+  },
 }
 
 ## Contexto e problema
 
-Uma loja de baterias automotivas recebia, todos os dias, a mesma pergunta: "tem bateria para o meu carro?". A resposta depende de quatro dados (modelo, ano, motor e câmbio) e de uma tabela que relaciona cada veículo à bateria certa e ao preço. [CONFIRMAR] como a loja fazia isso antes (planilha, memória do vendedor, catálogo).
+Uma loja de baterias automotivas, com entrega e instalação, atendia os clientes pelo WhatsApp. Para saber a bateria certa, é preciso cruzar **modelo, ano, câmbio e sistema start-stop** do veículo com a amperagem, o tipo (comum ou EFB) e o formato da caixa. Esse conhecimento ficava na cabeça dos vendedores, e cada pedido dependia de um deles parar para descobrir.
 
-O cliente estava em risco de cancelar o serviço. [CONFIRMAR] o que motivava o risco.
+Ao mesmo tempo, a loja era um cliente da Hunt Sales insatisfeito e com risco de cancelar.
 
 ## Minha função
 
-Propus o projeto e desenvolvi o sistema inteiro: o agente de IA de atendimento e o sistema de gestão integrado a ele, incluindo banco de dados, autenticação, regras de acesso, deploy e domínio. [CONFIRMAR] se houve outras pessoas envolvidas e em quê.
+Propus o projeto e o conduzi sozinho. Desenvolvi o sistema de ponta a ponta: o fluxo do agente (a partir de um fluxo padrão da empresa, modelado para este caso), a modelagem do banco, o painel de gestão, o login e a autenticação, e a publicação no domínio da empresa.
+
+O painel roda embutido na plataforma de atendimento (CRM) da Hunt Sales, então o vendedor usa tudo no mesmo lugar. Foi o primeiro projeto desse tipo na empresa; com o resultado, passei a ser o responsável pelas automações e pelos sistemas parecidos para outros clientes.
+
+## Como funciona
+
+O agente transforma a conversa em uma consulta ao banco. Primeiro pergunta se o cliente já sabe a amperagem; se não sabe, coleta modelo, ano, câmbio e start-stop, que são exatamente as chaves da tabela de aplicações. Na conversa real ele pergunta um dado de cada vez; a demonstração abaixo junta tudo numa mensagem só.
+
+<Signature />
+
+### Duas conversas
+
+Reconstituídas a partir de testes reais do agente no WhatsApp, com nomes e preços alterados.
+
+<Chat title="Cenário 1 · veículo encontrado" badge="exemplo ilustrativo" customer="Cliente" agent="Agente">
+<Message from="customer">Boa noite, preciso de uma bateria, quais modelos vocês têm?</Message>
+<Message from="agent">Olá! Aqui é a assistente virtual da loja. Para eu te ajudar, qual o seu nome?</Message>
+<Message from="customer">Leonardo</Message>
+<Message from="agent">Obrigado, Leonardo! De qual cidade você está falando?</Message>
+<Message from="customer">Jacareí</Message>
+<Message from="agent">Você já sabe a amperagem da bateria ou prefere que eu verifique pelo modelo e ano do seu veículo?</Message>
+<Message from="customer">Acho que é 60, mas melhor conferir. Corsa Maxx 2010.</Message>
+<Message from="agent">Vamos conferir! O seu Corsa Maxx 2010 tem câmbio manual ou automático?</Message>
+<Message from="customer">Manual</Message>
+<Message from="agent">E ele tem sistema start-stop? (sim ou não)</Message>
+<Message from="customer">Não</Message>
+<Message from="agent">
+Aqui vão as opções para o seu Corsa Maxx 2010 (60 Ah):
+
+1. Marca A 60 Ah · 24 meses de garantia · à vista R$ 4XX,00 · parcelado R$ 4XX,00
+2. Marca B 60 Ah · 18 meses de garantia · à vista R$ 4XX,00 · parcelado R$ 4XX,00
+3. Marca C 60 Ah · 12 meses de garantia · à vista R$ 3XX,00 · parcelado R$ 3XX,00
+
+A entrega é hoje, com instalação gratuita e descarte ecológico da bateria antiga. Quer confirmar alguma?
+</Message>
+<Message from="customer">A Marca A, por favor.</Message>
+</Chat>
+
+<Chat title="Cenário 2 · veículo desconhecido" badge="exemplo ilustrativo" customer="Cliente" agent="Agente">
+<Message from="customer">Olá! Preciso de uma bateria. Kombi 1.4 Flex, qual o valor?</Message>
+<Message from="agent">Para te ajudar, só preciso saber o ano da sua Kombi e se ela tem câmbio manual ou automático.</Message>
+<Message from="customer">Manual. 2007.</Message>
+<Message from="agent">Agora só falta saber: ela tem sistema start-stop?</Message>
+<Message from="customer">Não</Message>
+<Message from="agent">Não encontrei um modelo de bateria cadastrado para a sua Kombi 2007. Vou te transferir para a nossa equipe, que vai te ajudar melhor. Já passei todas as informações e eles vão entrar em contato.</Message>
+<ChatNote label="nos bastidores">A Kombi 2007 manual sem start-stop entra na fila “IA Sugere” do painel, com link para esta conversa.</ChatNote>
+</Chat>
 
 ## Solução e arquitetura
 
-São duas partes que dependem uma da outra.
-
-**O agente** lê a mensagem do cliente, extrai modelo, ano, motor e câmbio e consulta, via API, o banco que relaciona veículo, bateria e preço. A resposta sempre vem do banco, nunca da memória do modelo.
-
-**O sistema de gestão** é o painel em que a loja cadastra veículos, baterias e preços. Quando o agente recebe um veículo que não existe no cadastro, ele cria um pré-cadastro e avisa o vendedor, que confirma os dados no painel. A partir daí, o agente passa a responder por aquele veículo.
+O ponto central é que **o agente e o painel fecham um ciclo**. Cada carro que o agente não conhece vira uma tarefa para o vendedor, e cada tarefa resolvida ensina o agente. A base de conhecimento cresce com o próprio uso.
 
 <Flow
   altLabel="ou"
-  caption="Fluxo de uma pergunta (exemplo ilustrativo)."
+  caption="Atendimento: da mensagem à resposta."
   steps={[
-    { title: "Mensagem do cliente", detail: "\"tem bateria pro onix 2019 1.0 manual?\"" },
-    { title: "Agente de IA", detail: "Extrai modelo, ano, motor e câmbio" },
-    { title: "API + Supabase", detail: "veiculos → baterias, com RLS" },
-    { title: "Resposta", detail: "Bateria indicada e preço" },
-    { title: "Sem cadastro", detail: "Pré-cadastro e confirmação do vendedor no painel", alt: true },
+    { title: "Cliente no WhatsApp", detail: "Pede uma bateria" },
+    { title: "Agente de IA", detail: "Coleta nome, cidade, modelo, ano, câmbio e start-stop" },
+    { title: "Consulta no Supabase", detail: "aplicacoes → baterias ativas" },
+    { title: "Opções e pedido", detail: "Marca, garantia, preço à vista e parcelado" },
+    { title: "Carro desconhecido", detail: "Registra em veiculos_sugeridos e transfere para a equipe", alt: true },
   ]}
 />
 
+<Flow
+  caption="Painel: o carro desconhecido vira cadastro."
+  steps={[
+    { title: "Fila “IA Sugere”", detail: "Carros que o agente não encontrou, com link para a conversa" },
+    { title: "“+ Cadastrar”", detail: "Formulário já preenchido com o que a IA coletou" },
+    { title: "Vendedor completa", detail: "Amperagem, tipo e formato da caixa" },
+    { title: "Aplicação salva", detail: "A sugestão sai da fila e o agente passa a conhecer o carro" },
+  ]}
+/>
+
+### Modelo de dados
+
+- **`baterias`**: marca, amperagem, tipo (comum ou EFB), formato da caixa, garantia em meses, preço à vista e parcelado, status ativo ou pausado.
+- **`aplicacoes`**: modelo do veículo, faixa de anos, câmbio, start-stop, amperagem e tipo de bateria recomendados, formato de caixa exigido.
+- **`veiculos_sugeridos`**: modelo, ano, câmbio e start-stop coletados pelo agente, nome do contato e link para a conversa.
+
+### Painel de gestão
+
+<Video
+  src="/agente-baterias/midia-agente-baterias/painel-demo.mp4"
+  poster="/agente-baterias/midia-agente-baterias/painel-demo-poster.webp"
+  width={1280}
+  height={684}
+  label="Demonstração do painel: catálogo de baterias, tabela de aplicações, fila “IA Sugere” e o formulário de cadastro já preenchido pela IA."
+  caption="O painel em 11 s, sem som: catálogo → aplicações → IA Sugere → cadastro pré-preenchido."
+/>
+
+- **Catálogo de baterias** agrupado por amperagem, com busca, filtros por marca e amperagem, paginação e ações de editar, **pausar ou ativar** (tira do ar o que está sem estoque sem apagar) e excluir com confirmação.
+- **Aplicações de veículos**: a tabela de compatibilidade, com câmbio, amperagem recomendada, formato da caixa e destaque para start-stop.
+- **IA Sugere**: a fila de carros que o agente não encontrou durante os atendimentos. Cada card tem “Ver chat”, que abre a conversa original, e “+ Cadastrar”.
+- **Cadastro pré-preenchido**: o formulário já abre com modelo, ano, câmbio e start-stop vindos da IA. O vendedor só completa a especificação da bateria e salva; a sugestão é resolvida automaticamente.
+- **Login** com Supabase Auth (e-mail e senha), sessão restrita à aba e todas as páginas protegidas.
+
+<Gallery>
+  <Shot
+    src="/agente-baterias/midia-agente-baterias/01-catalogo-baterias.webp"
+    width={1540}
+    height={824}
+    alt="Aba Baterias do painel: baterias agrupadas por amperagem, com busca, filtros por marca e amperagem e os botões Editar, Pausar e Excluir."
+    caption="Catálogo agrupado por amperagem (preços desfocados)."
+  />
+  <Shot
+    src="/agente-baterias/midia-agente-baterias/02-aplicacoes-veiculos.webp"
+    width={1540}
+    height={824}
+    alt="Aba Aplicações: cards por veículo com faixa de anos, câmbio, amperagem e tipo recomendados, formato da caixa e selo de start-stop."
+    caption="Tabela de compatibilidade por veículo."
+  />
+  <Shot
+    src="/agente-baterias/midia-agente-baterias/03-veiculos-sugeridos-ia.webp"
+    width={1540}
+    height={824}
+    alt="Aba IA Sugere: cards pendentes de veículos identificados pelo agente, com ano, câmbio e os botões Ver chat e Cadastrar."
+    caption="Fila “IA Sugere” (nomes de clientes desfocados)."
+  />
+  <Shot
+    src="/agente-baterias/midia-agente-baterias/04-cadastro-pre-preenchido.webp"
+    width={1540}
+    height={824}
+    alt="Formulário de nova aplicação com modelo, câmbio, ano e start-stop já preenchidos e os campos de especificação da bateria em branco."
+    caption="Cadastro já preenchido pela IA; o vendedor completa a bateria."
+  />
+</Gallery>
+
 ## Stack
 
-- **Banco e back-end:** Supabase (PostgreSQL), com autenticação e Row Level Security.
-- **Agente:** [CONFIRMAR] modelo de linguagem e canal de atendimento.
-- **Painel:** [CONFIRMAR] framework e hospedagem; deploy com domínio próprio.
+- **Agente:** GPT-4o mini (OpenAI), sobre a plataforma de atendimento da Hunt Sales, no WhatsApp.
+- **Banco e autenticação:** Supabase (PostgreSQL e Auth, com RLS).
+- **Painel:** HTML e JavaScript com Tailwind CSS, estático, sem servidor próprio. Publicado no domínio da empresa e embutido no CRM.
 
 ## Decisões e trade-offs
 
 <Decision
-  title="Os dados ficam no banco, não no prompt"
-  tradeoff="Exige manter o cadastro em dia; por isso o painel de gestão faz parte do projeto, e não é um extra."
+  title="Humano no circuito para o que é incerto"
+  tradeoff="Nos carros desconhecidos, o cliente espera a equipe em vez de receber a resposta na hora."
 >
-  Preço e compatibilidade mudam. Com a tabela no banco, o agente nunca inventa uma bateria: ele só responde o que está cadastrado, e a loja atualiza tudo sem mexer no agente.
+  O agente nunca chuta uma bateria para um carro desconhecido: transfere para a equipe e cria a pendência no painel. Errar a bateria significa entrega perdida e cliente frustrado.
 </Decision>
 
 <Decision
-  title="Veículo desconhecido vira pré-cadastro, não palpite"
-  tradeoff="O cliente espera a confirmação do vendedor em vez de receber uma resposta na hora."
+  title="A IA coleta, o humano confirma"
+  tradeoff="Cada carro novo ainda depende de alguém que entende do produto para completar o cadastro."
 >
-  Errar a bateria custa uma venda e a confiança do cliente. O agente prefere dizer que vai confirmar, e cada confirmação deixa o cadastro mais completo.
+  A parte técnica (amperagem, tipo e caixa) fica com quem conhece o produto. A IA economiza a digitação do resto: o formulário já chega preenchido com o que foi dito na conversa.
+</Decision>
+
+<Decision title="Perguntas na ordem certa">
+  Primeiro, o agente pergunta se o cliente já sabe a amperagem. Se não sabe, coleta modelo, ano, câmbio e start-stop, que são exatamente as chaves da tabela de aplicações. Cada resposta vira um filtro da consulta.
+</Decision>
+
+<Decision title="Pausar em vez de apagar">
+  Cada bateria tem status ativo ou pausado, e o agente só oferece as ativas. Assim a loja tira do ar o que está sem estoque sem perder o cadastro.
 </Decision>
 
 <Decision
-  title="Regras de acesso no banco (RLS)"
-  tradeoff="Mais configuração no início do projeto."
+  title="Front-end simples e estático"
+  tradeoff="Sem servidor próprio, a proteção dos dados fica na autenticação e nas regras de acesso do Supabase."
 >
-  As permissões valem para qualquer caminho de acesso, seja o painel, a API ou o agente, em vez de depender de cada tela fazer a checagem certa.
+  HTML e JavaScript sobre o Supabase, sem servidor próprio, para ser leve e fácil de publicar no domínio da empresa.
 </Decision>
 
 ## Resultado
 
-O projeto ajudou a reter um cliente que estava em risco de cancelar.
+- O cliente estava em risco de cancelamento, e a solução reverteu o churn.
+- O atendimento passou a responder sozinho os casos conhecidos e a transformar os desconhecidos em cadastro.
+- Abriu um novo tipo de produto na empresa: agente de IA integrado a um banco de dados com uma interface de gestão. Com isso, a IA passa a conhecer o negócio do cliente e fica muito mais útil do que um chatbot genérico.
 
-<Metrics>
-  <Metric value="[CONFIRMAR]" label="Veículos cadastrados" />
-  <Metric value="[CONFIRMAR]" label="Perguntas respondidas pelo agente" />
-  <Metric value="[CONFIRMAR]" label="Tempo de resposta" />
-</Metrics>
+Não houve medição formal de métricas, então não há números aqui.
+
+## O mesmo padrão em outro nicho
+
+O modelo foi replicado para uma empresa de soluções de recarga de veículos elétricos:
+
+- **Veículos** com capacidade da bateria (kWh) e limite de recarga em corrente alternada (kW).
+- **Produtos com várias saídas:** um carregador pode ter vários plugs com potências diferentes (relação produto → saídas, com exclusão em cascata).
+- **Simulador de recarga:** para o veículo escolhido, calcula o tempo em cada carregador pelo gargalo técnico, `tempo (h) = bateria (kWh) ÷ min(limite AC do carro, potência do plug)`. O agente faz a mesma conta na conversa, com os dados de recarga em AC e DC, para o cliente ter uma ideia antes de comprar.
+- **Multiempresa:** o painel valida se a empresa está ativa antes de carregar os dados, e cada consulta é filtrada por empresa.
+- **Tempo real:** o Supabase Realtime atualiza a tela quando os dados mudam, sem recarregar.
+- **Regras de negócio no n8n:** as gravações passam por um webhook do n8n, que centraliza a validação antes de chegar ao banco.
+
+Stack desse projeto: Node.js com Express servindo o front-end, HTML, CSS e JavaScript, Supabase e n8n.
 
 ## Aprendizados
 
-- [CONFIRMAR] O que você faria diferente hoje.
-- [CONFIRMAR] O que aprendeu sobre colocar um agente em contato com clientes reais.
+- Em IA aplicada, o valor está tanto no sistema em volta do modelo (dados, painel, transbordo) quanto no prompt.
+- Projetar para o “não sei” primeiro: o caminho do veículo desconhecido foi o que deixou o sistema confiável.
+- O padrão “agente + base de dados + painel para humanos” é reaproveitável: serviu para baterias e depois para carregadores de veículos elétricos.

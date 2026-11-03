@@ -42,3 +42,6 @@ next-env.d.ts
 
 # briefing e capturas de referência (não vão para o repositório público)
 /docs/
+
+# originais em resolução cheia da mídia dos projetos (o site usa só .webp e .mp4)
+/public/**/*.png
