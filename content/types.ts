@@ -95,6 +95,16 @@ export type SiteContent = {
     caseStudyFallbackLink: string
     plannedLabel: string
     status: Record<"shipped" | "in-progress" | "planned", string>
+    /** Título do grupo de cards menores. */
+    secondaryTitle: string
+    /** Link para o repositório de um projeto. */
+    repoLink: string
+    /** Lista compacta de repositórios menores, sem card. */
+    more: {
+      title: string
+      items: Array<{ title: string; text: string; stack: string; href: string }>
+      allLink: string
+    }
   }
   build: {
     intro: string

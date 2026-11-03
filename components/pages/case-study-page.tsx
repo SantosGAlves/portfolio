@@ -15,7 +15,7 @@ export function CaseStudyPage({ locale, slug }: { locale: Locale; slug: string }
   const project = getCaseStudy(locale, slug)
   if (!project) notFound()
 
-  const { caseStudy: copy, projects, sections } = getContent(locale)
+  const { caseStudy: copy, projects, sections, ui } = getContent(locale)
   const { meta, Body, fallback, contentLocale } = project
   const next = getNextCaseStudy(locale, slug)
   const video = meta.media.video
@@ -67,6 +67,19 @@ export function CaseStudyPage({ locale, slug }: { locale: Locale; slug: string }
         <p className="eyebrow">{meta.kind}</p>
         <h1 className="text-title">{meta.title}</h1>
         <p className="max-w-[60ch] text-role font-normal text-muted-foreground">{meta.summary}</p>
+        {meta.repo ? (
+          <a
+            href={meta.repo}
+            target="_blank"
+            rel="noopener noreferrer"
+            lang={fallback ? locale : undefined}
+            className="inline-flex min-h-11 items-center gap-2 justify-self-start rounded-sm text-small font-semibold text-brand hover:underline hover:underline-offset-4"
+          >
+            {projects.repoLink}
+            <span aria-hidden="true">↗</span>
+            <span className="sr-only">{ui.opensInNewTab}</span>
+          </a>
+        ) : null}
       </header>
 
       <dl className="mt-10 grid border-y border-line sm:grid-cols-2 lg:grid-cols-4">
@@ -79,7 +92,8 @@ export function CaseStudyPage({ locale, slug }: { locale: Locale; slug: string }
       </dl>
 
       {video ? (
-        <figure className="mt-10 grid gap-3">
+        // Vídeo de origem estreita (ex.: gravação de webcam) fica na largura da coluna de texto, sem esticar.
+        <figure className={`mt-10 grid gap-3 ${video.width < 1000 ? "mx-auto w-full max-w-[46rem]" : ""}`}>
           <LoopVideo
             {...video}
             playLabel={copy.video.play}

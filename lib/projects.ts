@@ -75,14 +75,19 @@ export function getProjects(locale: Locale): Project[] {
     .sort((a, b) => a.meta.order - b.meta.order)
 }
 
-/** Projetos com página de estudo de caso (todos, menos os "planned"). */
+/** Tem página de estudo de caso: não é "planned" nem marcado com `page: false`. */
+export function hasCaseStudy(project: Project): boolean {
+  return project.meta.page && project.meta.status !== "planned"
+}
+
+/** Projetos com página de estudo de caso, na ordem da página inicial. */
 export function getCaseStudies(locale: Locale): Project[] {
-  return getProjects(locale).filter((p) => p.meta.status !== "planned")
+  return getProjects(locale).filter(hasCaseStudy)
 }
 
 export function getCaseStudy(locale: Locale, slug: string): Project | undefined {
   const project = resolve(locale, slug)
-  return project && project.meta.status !== "planned" ? project : undefined
+  return project && hasCaseStudy(project) ? project : undefined
 }
 
 /** O próximo estudo de caso na ordem da página inicial (volta ao primeiro no fim). */

@@ -4,7 +4,8 @@ import { z } from "zod"
 // Validados no build por lib/projects.ts: campo faltando ou errado derruba o build.
 
 export const projectStatuses = ["shipped", "in-progress", "planned"] as const
-export const projectArts = ["battery", "librasflow", "automation", "planned"] as const
+export const projectArts = ["battery", "librasflow", "automation", "kanban", "planned"] as const
+export const projectTiers = ["featured", "secondary"] as const
 
 /** Arquivo em public/ (caminho começando com "/"). */
 const publicPath = z.string().regex(/^\/[^\s]+$/, "use um caminho de public/ começando com /")
@@ -12,8 +13,15 @@ const publicPath = z.string().regex(/^\/[^\s]+$/, "use um caminho de public/ com
 export const projectMetaSchema = z.object({
   /** Ordem na página inicial (menor primeiro). */
   order: z.number().int(),
-  /** Projeto principal: card grande, em largura total. */
-  featured: z.boolean().default(false),
+  /**
+   * featured = destaque (o primeiro em largura total, os outros em duas colunas);
+   * secondary = card menor, sem imagem.
+   */
+  tier: z.enum(projectTiers),
+  /** false = sem página de estudo de caso: o card leva ao repositório. */
+  page: z.boolean().default(true),
+  /** Repositório público (link "Código no GitHub"). */
+  repo: z.string().url().optional(),
   /** planned = card "em construção", sem página de estudo de caso. */
   status: z.enum(projectStatuses),
   /** Composição abstrata do card (components/art). */
@@ -37,7 +45,14 @@ export const projectMetaSchema = z.object({
     .object({
       /** Imagem do card na página inicial. */
       cover: z
-        .object({ src: publicPath, alt: z.string().min(1), width: z.number().int(), height: z.number().int() })
+        .object({
+          src: publicPath,
+          alt: z.string().min(1),
+          width: z.number().int(),
+          height: z.number().int(),
+          /** frame = captura de tela em moldura, cortada embaixo; fill = foto ocupando o card. */
+          fit: z.enum(["frame", "fill"]).default("frame"),
+        })
         .optional(),
       /** Vídeo no topo do estudo de caso: sem som, em loop, carregado depois da página. */
       video: z
@@ -58,6 +73,7 @@ export const projectMetaSchema = z.object({
 export type ProjectMeta = z.output<typeof projectMetaSchema>
 export type ProjectStatus = (typeof projectStatuses)[number]
 export type ProjectArt = (typeof projectArts)[number]
+export type ProjectTier = (typeof projectTiers)[number]
 
 /** Campos que precisam ser iguais nos dois idiomas. */
-export const sharedProjectFields = ["order", "featured", "status", "art", "stack"] as const
+export const sharedProjectFields = ["order", "tier", "page", "repo", "status", "art", "stack"] as const

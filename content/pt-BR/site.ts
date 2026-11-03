@@ -12,7 +12,7 @@ export const site: SiteContent = {
     availability: "Aberto a estágio em GenAI",
     email: "[CONFIRMAR]@email.com",
     links: {
-      github: "https://github.com/SantosGAlves", // [CONFIRMAR]
+      github: "https://github.com/SantosGAlves",
       linkedin: "https://www.linkedin.com/in/[CONFIRMAR]",
       cv: "/cv/gustavo-alves-dos-santos-cv.pdf", // [CONFIRMAR] arquivo ainda não existe
     },
@@ -112,6 +112,32 @@ export const site: SiteContent = {
     caseStudyFallbackLink: "Ver estudo de caso",
     plannedLabel: "Próximo projeto",
     status: { shipped: "entregue", "in-progress": "em andamento", planned: "em construção" },
+    secondaryTitle: "Outros projetos",
+    repoLink: "Código no GitHub",
+    more: {
+      title: "Mais no GitHub",
+      items: [
+        {
+          title: "API de produtos em .NET 10",
+          text: "Web API de catálogo com Entity Framework Core, migrações, injeção de dependência e Swagger.",
+          stack: "C# · .NET 10 · EF Core · MySQL",
+          href: "https://github.com/SantosGAlves/api-produtos-dotnet",
+        },
+        {
+          title: "Cadastro com Streamlit e Azure",
+          text: "Cadastro de produtos com imagens no Azure Blob Storage e dados no Azure SQL.",
+          stack: "Python · Streamlit · Azure",
+          href: "https://github.com/SantosGAlves/cadastro-produtos-streamlit-azure",
+        },
+        {
+          title: "Concorrência em Java",
+          text: "O jantar dos filósofos em quatro versões: deadlock, hierarquia de recursos, semáforos e monitores.",
+          stack: "Java · threads",
+          href: "https://github.com/SantosGAlves/prova-jantar-filosofos",
+        },
+      ],
+      allLink: "Todos os repositórios",
+    },
   },
   build: {
     intro:
@@ -155,7 +181,7 @@ export const site: SiteContent = {
       primaryLabel: "Principal",
       primary: { name: "Python", note: "a que mais uso, em agentes, automações e back-end" },
       otherLabel: "Já trabalhei com",
-      other: ["Java", "Go"],
+      other: ["Java", "Go", "C#"],
     },
     workflow: {
       title: "Como eu trabalho",
