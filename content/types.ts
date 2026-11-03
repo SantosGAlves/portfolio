@@ -11,6 +11,8 @@ export type SectionHeading = {
   id: string
   eyebrow: string
   title: string
+  /** Rótulo curto no menu do header. */
+  nav: string
 }
 
 export type Fact = { label: string; value: string }
@@ -39,6 +41,29 @@ export type SignatureContent = {
   scenarios: { known: SignatureScenario; unknown: SignatureScenario }
 }
 
+export type CapabilityArea = {
+  title: string
+  /** Uma frase de resultado: o que essa área entrega. */
+  text: string
+  /** O que costuma entrar (sistemas, não badges). */
+  includes: string[]
+  /** Ferramentas, em mono e em uma linha. */
+  tools: string[]
+}
+
+export type ExperienceItem = {
+  company: string
+  role: string
+  period: string
+  /** Rótulos curtos, ex.: "sob NDA". */
+  tags: string[]
+  /** Uma linha sobre a empresa ou o contexto. */
+  context: string
+  highlights: string[]
+  /** Estudo de caso relacionado (slug em content/<idioma>/projects). */
+  caseStudy?: string
+}
+
 export type SiteContent = {
   locale: Locale
   /** Valor de og:locale. */
@@ -63,6 +88,50 @@ export type SiteContent = {
   }
   signature: SignatureContent
   sections: Record<SectionKey, SectionHeading>
+  projects: {
+    intro: string
+    caseStudyLink: string
+    /** Link de um caso que só existe em português (versão EN). */
+    caseStudyFallbackLink: string
+    plannedLabel: string
+    status: Record<"shipped" | "in-progress" | "planned", string>
+  }
+  build: {
+    intro: string
+    areas: CapabilityArea[]
+    includesLabel: string
+    toolsLabel: string
+    languages: {
+      title: string
+      primaryLabel: string
+      primary: { name: string; note: string }
+      otherLabel: string
+      other: string[]
+    }
+    workflow: { title: string; text: string }
+  }
+  experience: { items: ExperienceItem[]; caseStudyLink: string }
+  education: {
+    degree: string
+    school: string
+    period: string
+    note: string
+    capstone: { label: string; title: string; text: string; slug: string; link: string }
+  }
+  contact: {
+    intro: string
+    emailLabel: string
+    copyEmail: string
+    copied: string
+  }
+  caseStudy: {
+    back: string
+    summaryTitle: string
+    meta: { role: string; period: string; status: string; stack: string }
+    next: string
+    fallbackNotice: string
+    illustrativeNotice: string
+  }
   /** Ordem dos links do header (seções da página inicial). */
   nav: SectionKey[]
   ui: {
@@ -73,8 +142,6 @@ export type SiteContent = {
     themeToLight: string
     themeToDark: string
     opensInNewTab: string
-    sectionPlaceholder: string
-    inProgress: string
     footerNote: string
   }
 }

@@ -18,21 +18,22 @@ export const site: SiteContent = {
     },
   },
   seo: {
-    title: "Gustavo Alves dos Santos · IA aplicada e automação",
+    title: "Gustavo Alves dos Santos · Software, IA aplicada e automação",
     description:
-      "Desenvolvedor de IA aplicada e automação. Agentes que consultam bancos de dados, automações no n8n e integrações via API.",
+      "Desenvolvedor de software com foco em back-end, IA aplicada e automação: agentes que consultam bancos de dados, automações no n8n e os sistemas por trás deles.",
   },
   hero: {
     greeting: "olá, eu sou",
     firstName: "Gustavo",
     lastName: "Alves dos Santos",
-    role: "Desenvolvedor de IA aplicada e automação",
-    lede: "Gosto de transformar processos manuais em sistemas que rodam sozinhos e chamam uma pessoa quando precisam. Hoje construo agentes que consultam bancos de dados, automações no n8n e integrações via API.",
+    // Opção A (em uso). Opção B: "Desenvolvedor back-end com foco em IA aplicada".
+    role: "Desenvolvedor de software · IA aplicada e automação",
+    lede: "Desenvolvo software, principalmente back-end, e gosto de transformar processos manuais em sistemas que rodam sozinhos e chamam uma pessoa quando precisam. Hoje construo agentes de IA que consultam bancos de dados, automações no n8n e os sistemas por trás deles: APIs, painéis e autenticação.",
     ctaProjects: "Ver projetos",
     facts: [
-      { label: "Agora", value: "Estagiário de Automação e Inovação · Gaudium" },
+      { label: "Agora", value: "Estagiário de Automação e Inovação II · Gaudium" },
       { label: "Formação", value: "Análise e Desenvolvimento de Sistemas · IFSP Jacareí · dez/2026" },
-      { label: "Foco", value: "Agentes com dados reais, n8n e integrações via API" },
+      { label: "Foco", value: "Back-end, agentes de IA com dados reais e automação" },
     ],
   },
   signature: {
@@ -97,11 +98,126 @@ export const site: SiteContent = {
     },
   },
   sections: {
-    projects: { id: "projetos", eyebrow: "Projetos selecionados", title: "Projetos" },
-    build: { id: "construo", eyebrow: "O que eu construo", title: "Sistemas e resultados" },
-    experience: { id: "experiencia", eyebrow: "Experiência", title: "Onde trabalhei" },
-    education: { id: "formacao", eyebrow: "Formação", title: "Formação e TCC" },
-    contact: { id: "contato", eyebrow: "Contato", title: "Vamos conversar" },
+    projects: { id: "projetos", eyebrow: "Projetos selecionados", title: "Projetos", nav: "Projetos" },
+    build: { id: "construo", eyebrow: "O que eu construo", title: "Do agente ao back-end", nav: "O que construo" },
+    experience: { id: "experiencia", eyebrow: "Experiência", title: "Onde trabalhei", nav: "Experiência" },
+    education: { id: "formacao", eyebrow: "Formação", title: "Formação e TCC", nav: "Formação" },
+    contact: { id: "contato", eyebrow: "Contato", title: "Vamos conversar", nav: "Contato" },
+  },
+  projects: {
+    intro: "Do problema ao sistema em produção. O principal é um agente de IA com o sistema de gestão por trás dele.",
+    caseStudyLink: "Ver estudo de caso",
+    caseStudyFallbackLink: "Ver estudo de caso",
+    plannedLabel: "Próximo projeto",
+    status: { shipped: "entregue", "in-progress": "em andamento", planned: "em construção" },
+  },
+  build: {
+    intro:
+      "Três frentes com o mesmo peso. Na prática elas se misturam: um agente só é útil com um back-end confiável por trás.",
+    areas: [
+      {
+        title: "Agentes de IA",
+        text: "Agentes que entendem o pedido, consultam dados reais por meio de ferramentas e chamam uma pessoa quando não têm a resposta.",
+        includes: [
+          "Extração de dados da mensagem",
+          "Chamada de ferramentas e consultas ao banco",
+          "Encaminhamento para atendimento humano",
+        ],
+        tools: ["APIs de LLM", "tool calling", "Python", "Supabase"],
+      },
+      {
+        title: "Automação de processos",
+        text: "Fluxos que tiram tarefas repetitivas das mãos das pessoas: recebem um evento, decidem o que fazer e registram o resultado.",
+        includes: [
+          "Chatbots e atendimento automatizado",
+          "Integrações entre sistemas via API e webhooks",
+          "Rotinas agendadas e notificações",
+        ],
+        tools: ["n8n", "webhooks", "APIs REST", "Python"],
+      },
+      {
+        title: "Produtos e back-end",
+        text: "Os sistemas por trás dos agentes, de ponta a ponta: APIs, bancos de dados, painéis de gestão, autenticação e deploy.",
+        includes: [
+          "APIs e modelagem de banco de dados",
+          "Painéis de gestão e cadastro",
+          "Autenticação, RLS, deploy e domínio",
+        ],
+        tools: ["Python", "PostgreSQL · Supabase", "RLS", "[CONFIRMAR] hospedagem"],
+      },
+    ],
+    includesLabel: "Inclui",
+    toolsLabel: "Ferramentas",
+    languages: {
+      title: "Linguagens",
+      primaryLabel: "Principal",
+      primary: { name: "Python", note: "a que mais uso, em agentes, automações e back-end" },
+      otherLabel: "Já trabalhei com",
+      other: ["Java", "Go"],
+    },
+    workflow: {
+      title: "Como eu trabalho",
+      text: "Desenvolvo com apoio de agentes de código, como o Claude Code. Eles aceleram a escrita; eu decido o que construir, reviso cada mudança e testo o que vai para produção. Este site foi feito assim.",
+    },
+  },
+  experience: {
+    caseStudyLink: "Ver o estudo de caso",
+    items: [
+      {
+        company: "Gaudium",
+        role: "Estagiário de Automação e Inovação II",
+        period: "jul/2026 – atual",
+        tags: ["sob NDA"],
+        context:
+          "Empresa B2B de tecnologia para agências de corrida e entrega. Os detalhes deste trabalho são confidenciais.",
+        highlights: [
+          "Automação de processos internos com n8n, agentes de IA e LLMs. [CONFIRMAR]",
+          "Desenvolvimento de produtos internos, do back-end à interface. [CONFIRMAR]",
+        ],
+      },
+      {
+        company: "Hunt Sales",
+        role: "Estagiário de Desenvolvimento e Automação",
+        period: "ago/2025 – [CONFIRMAR]",
+        tags: [],
+        context: "Desenvolvimento e automação para clientes. [CONFIRMAR]",
+        highlights: [
+          "Desenvolvi de ponta a ponta o sistema de uma loja de baterias automotivas: o agente de IA de atendimento e o sistema de gestão integrado a ele.",
+          "Painel de cadastro de veículos, baterias e preços, com autenticação, RLS no Supabase, deploy e domínio.",
+          "Pré-cadastro automático de veículos desconhecidos, confirmado pelo vendedor no painel.",
+          "Projeto proposto por mim; ajudou a reter um cliente em risco de cancelamento.",
+        ],
+        caseStudy: "agente-baterias",
+      },
+    ],
+  },
+  education: {
+    degree: "Tecnólogo em Análise e Desenvolvimento de Sistemas",
+    school: "IFSP · Câmpus Jacareí",
+    period: "conclusão em dez/2026",
+    note: "Instituto Federal de São Paulo.",
+    capstone: {
+      label: "TCC",
+      title: "LibrasFlow",
+      text: "Reconhecimento do alfabeto manual de Libras com visão computacional.",
+      slug: "librasflow",
+      link: "Ver estudo de caso",
+    },
+  },
+  contact: {
+    intro: "Estou aberto a estágio em GenAI. O caminho mais rápido é o e-mail.",
+    emailLabel: "E-mail",
+    copyEmail: "Copiar e-mail",
+    copied: "E-mail copiado",
+  },
+  caseStudy: {
+    back: "Voltar aos projetos",
+    summaryTitle: "Resumo em 30 segundos",
+    meta: { role: "Minha função", period: "Período", status: "Status", stack: "Stack" },
+    next: "Próximo estudo de caso",
+    fallbackNotice: "",
+    illustrativeNotice:
+      "Texto provisório. Trechos marcados com [CONFIRMAR] ainda serão revisados; dados de exemplo são ilustrativos.",
   },
   nav: ["projects", "build", "experience", "contact"],
   ui: {
@@ -112,8 +228,6 @@ export const site: SiteContent = {
     themeToLight: "Ativar tema claro",
     themeToDark: "Ativar tema escuro",
     opensInNewTab: "(abre em nova aba)",
-    sectionPlaceholder: "Conteúdo desta seção entra na Fase 3.",
-    inProgress: "em construção",
     footerNote: "Feito com Next.js e publicado na Vercel.",
   },
 }

@@ -30,7 +30,18 @@ export function Hero({ locale }: { locale: Locale }) {
 
         <div className="grid gap-10 lg:grid-cols-[minmax(0,0.85fr)_minmax(0,1.15fr)] lg:items-start lg:gap-14">
           <div className="grid content-start gap-6">
-            <p className="max-w-[22ch] text-role">{hero.role}</p>
+            <p className="max-w-[30ch] text-role">
+              {/* "função · foco": a linha só quebra depois do "·" */}
+              {hero.role.split(" · ").map((part, i, all) => (
+                <span key={part}>
+                  {i ? " " : null}
+                  <span className={i ? "whitespace-nowrap text-muted-foreground" : "whitespace-nowrap"}>
+                    {part}
+                    {i < all.length - 1 ? " ·" : null}
+                  </span>
+                </span>
+              ))}
+            </p>
             <p className="max-w-[46ch] text-muted-foreground">{hero.lede}</p>
             <div className="flex flex-wrap gap-3">
               <Button asChild>

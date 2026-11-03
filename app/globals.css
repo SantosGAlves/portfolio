@@ -131,7 +131,7 @@
   --font-mono: var(--font-geist-mono), ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
 
   /* Escala tipográfica */
-  --text-name: clamp(3.5rem, 0.5rem + 10.5vw, 9.5rem);
+  --text-name: clamp(3rem, 0.5rem + 10.5vw, 9.5rem);
   --text-name--line-height: 0.86;
   --text-name--letter-spacing: -0.055em;
   --text-name--font-weight: 700;
@@ -139,6 +139,10 @@
   --text-role--line-height: 1.2;
   --text-role--letter-spacing: -0.02em;
   --text-role--font-weight: 500;
+  --text-title: clamp(2.25rem, 1.35rem + 3.6vw, 4.25rem);
+  --text-title--line-height: 1.02;
+  --text-title--letter-spacing: -0.04em;
+  --text-title--font-weight: 700;
   --text-h2: clamp(1.625rem, 1.3rem + 1.2vw, 2.125rem);
   --text-h2--line-height: 1.15;
   --text-h2--letter-spacing: -0.025em;

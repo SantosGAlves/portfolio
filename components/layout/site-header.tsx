@@ -23,10 +23,10 @@ export function SiteHeader({ locale }: { locale: Locale }) {
               {nav.map((key) => (
                 <li key={key}>
                   <a
-                    href={`#${sections[key].id}`}
-                    className="rounded-sm transition-colors duration-200 hover:text-foreground"
+                    href={`${home}#${sections[key].id}`}
+                    className="rounded-sm whitespace-nowrap transition-colors duration-200 hover:text-foreground"
                   >
-                    {sections[key].eyebrow}
+                    {sections[key].nav}
                   </a>
                 </li>
               ))}
