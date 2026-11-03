@@ -1,0 +1,98 @@
+export const meta = {
+  order: 1,
+  featured: true,
+  status: "shipped",
+  art: "battery",
+  title: "Agente de vendas e sistema de gestão para uma loja de baterias",
+  kind: "Agente de IA + sistema de gestão",
+  summary:
+    "O agente encontra a bateria certa pelo modelo, ano, motor e câmbio do carro. Por trás dele, o painel onde a loja mantém veículos, baterias e preços.",
+  role: "Proposta, desenvolvimento e entrega de ponta a ponta",
+  period: "2025 · [CONFIRMAR]",
+  stack: ["Supabase", "PostgreSQL", "RLS", "API", "LLM [CONFIRMAR]", "Front-end [CONFIRMAR]"],
+  tldr: [
+    {
+      label: "Problema",
+      text: "Uma loja de baterias automotivas precisava responder rápido qual bateria serve para cada carro, e o cliente estava em risco de cancelar o serviço. [CONFIRMAR]",
+    },
+    {
+      label: "Solução",
+      text: "Um agente de IA que consulta um banco de veículos e baterias e um sistema de gestão onde a loja mantém esses dados, com autenticação e RLS.",
+    },
+    { label: "Resultado", text: "O projeto, proposto por mim, ajudou a reter o cliente." },
+  ],
+}
+
+## Contexto e problema
+
+Uma loja de baterias automotivas recebia, todos os dias, a mesma pergunta: "tem bateria para o meu carro?". A resposta depende de quatro dados (modelo, ano, motor e câmbio) e de uma tabela que relaciona cada veículo à bateria certa e ao preço. [CONFIRMAR] como a loja fazia isso antes (planilha, memória do vendedor, catálogo).
+
+O cliente estava em risco de cancelar o serviço. [CONFIRMAR] o que motivava o risco.
+
+## Minha função
+
+Propus o projeto e desenvolvi o sistema inteiro: o agente de IA de atendimento e o sistema de gestão integrado a ele, incluindo banco de dados, autenticação, regras de acesso, deploy e domínio. [CONFIRMAR] se houve outras pessoas envolvidas e em quê.
+
+## Solução e arquitetura
+
+São duas partes que dependem uma da outra.
+
+**O agente** lê a mensagem do cliente, extrai modelo, ano, motor e câmbio e consulta, via API, o banco que relaciona veículo, bateria e preço. A resposta sempre vem do banco, nunca da memória do modelo.
+
+**O sistema de gestão** é o painel em que a loja cadastra veículos, baterias e preços. Quando o agente recebe um veículo que não existe no cadastro, ele cria um pré-cadastro e avisa o vendedor, que confirma os dados no painel. A partir daí, o agente passa a responder por aquele veículo.
+
+<Flow
+  altLabel="ou"
+  caption="Fluxo de uma pergunta (exemplo ilustrativo)."
+  steps={[
+    { title: "Mensagem do cliente", detail: "\"tem bateria pro onix 2019 1.0 manual?\"" },
+    { title: "Agente de IA", detail: "Extrai modelo, ano, motor e câmbio" },
+    { title: "API + Supabase", detail: "veiculos → baterias, com RLS" },
+    { title: "Resposta", detail: "Bateria indicada e preço" },
+    { title: "Sem cadastro", detail: "Pré-cadastro e confirmação do vendedor no painel", alt: true },
+  ]}
+/>
+
+## Stack
+
+- **Banco e back-end:** Supabase (PostgreSQL), com autenticação e Row Level Security.
+- **Agente:** [CONFIRMAR] modelo de linguagem e canal de atendimento.
+- **Painel:** [CONFIRMAR] framework e hospedagem; deploy com domínio próprio.
+
+## Decisões e trade-offs
+
+<Decision
+  title="Os dados ficam no banco, não no prompt"
+  tradeoff="Exige manter o cadastro em dia; por isso o painel de gestão faz parte do projeto, e não é um extra."
+>
+  Preço e compatibilidade mudam. Com a tabela no banco, o agente nunca inventa uma bateria: ele só responde o que está cadastrado, e a loja atualiza tudo sem mexer no agente.
+</Decision>
+
+<Decision
+  title="Veículo desconhecido vira pré-cadastro, não palpite"
+  tradeoff="O cliente espera a confirmação do vendedor em vez de receber uma resposta na hora."
+>
+  Errar a bateria custa uma venda e a confiança do cliente. O agente prefere dizer que vai confirmar, e cada confirmação deixa o cadastro mais completo.
+</Decision>
+
+<Decision
+  title="Regras de acesso no banco (RLS)"
+  tradeoff="Mais configuração no início do projeto."
+>
+  As permissões valem para qualquer caminho de acesso, seja o painel, a API ou o agente, em vez de depender de cada tela fazer a checagem certa.
+</Decision>
+
+## Resultado
+
+O projeto ajudou a reter um cliente que estava em risco de cancelar.
+
+<Metrics>
+  <Metric value="[CONFIRMAR]" label="Veículos cadastrados" />
+  <Metric value="[CONFIRMAR]" label="Perguntas respondidas pelo agente" />
+  <Metric value="[CONFIRMAR]" label="Tempo de resposta" />
+</Metrics>
+
+## Aprendizados
+
+- [CONFIRMAR] O que você faria diferente hoje.
+- [CONFIRMAR] O que aprendeu sobre colocar um agente em contato com clientes reais.

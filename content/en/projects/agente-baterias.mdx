@@ -1,0 +1,95 @@
+export const meta = {
+  order: 1,
+  featured: true,
+  status: "shipped",
+  art: "battery",
+  title: "Sales agent and management system for a car battery store",
+  kind: "AI agent + management system",
+  summary:
+    "The agent finds the right battery from the car's model, year, engine and transmission. Behind it, the dashboard where the store keeps vehicles, batteries and prices.",
+  role: "Proposal, development and delivery, end to end",
+  period: "2025 · [CONFIRMAR]",
+  stack: ["Supabase", "PostgreSQL", "RLS", "API", "LLM [CONFIRMAR]", "Front-end [CONFIRMAR]"],
+  tldr: [
+    {
+      label: "Problem",
+      text: "A car battery store needed to answer quickly which battery fits each car, and the client was about to cancel the service. [CONFIRMAR]",
+    },
+    {
+      label: "Solution",
+      text: "An AI agent that queries a database of vehicles and batteries, plus a management system where the store keeps that data, with authentication and RLS.",
+    },
+    { label: "Outcome", text: "The project, which I proposed, helped retain the client." },
+  ],
+}
+
+## Context and problem
+
+Every day, a car battery store got the same question: "do you have a battery for my car?". The answer depends on four details (model, year, engine and transmission) and on a table that maps each vehicle to the right battery and price. [CONFIRMAR] how the store handled this before (spreadsheet, the seller's memory, a catalog).
+
+The client was about to cancel the service. [CONFIRMAR] what was behind that.
+
+## My role
+
+I proposed the project and built the whole system: the customer service AI agent and the management system integrated with it, including the database, authentication, access rules, deployment and domain. [CONFIRMAR] whether other people were involved and in what.
+
+## Solution and architecture
+
+Two parts that depend on each other.
+
+**The agent** reads the customer's message, extracts model, year, engine and transmission, and queries, through an API, the database that maps vehicle, battery and price. The answer always comes from the database, never from the model's memory.
+
+**The management system** is the dashboard where the store registers vehicles, batteries and prices. When the agent gets a vehicle that is not on file, it creates a draft entry and notifies the seller, who confirms the data in the dashboard. From then on, the agent can answer for that vehicle.
+
+<Flow
+  altLabel="or"
+  caption="How one question flows (illustrative example)."
+  steps={[
+    { title: "Customer message", detail: "\"do you have a battery for an onix 2019 1.0 manual?\"" },
+    { title: "AI agent", detail: "Extracts model, year, engine and transmission" },
+    { title: "API + Supabase", detail: "veiculos → baterias, with RLS" },
+    { title: "Answer", detail: "Recommended battery and price" },
+    { title: "Not on file", detail: "Draft entry and seller confirmation in the dashboard", alt: true },
+  ]}
+/>
+
+## Stack
+
+- **Database and back-end:** Supabase (PostgreSQL), with authentication and Row Level Security.
+- **Agent:** [CONFIRMAR] language model and messaging channel.
+- **Dashboard:** [CONFIRMAR] framework and hosting; deployed on its own domain.
+
+## Decisions and trade-offs
+
+<Decision
+  title="Data lives in the database, not in the prompt"
+  tradeoff="The catalog has to be kept up to date, which is why the management dashboard is part of the project rather than an extra."
+>
+  Prices and compatibility change. With the table in the database, the agent never makes up a battery: it only answers what is on file, and the store updates everything without touching the agent.
+</Decision>
+
+<Decision
+  title="An unknown vehicle becomes a draft entry, not a guess"
+  tradeoff="The customer waits for the seller's confirmation instead of getting an instant answer."
+>
+  Getting the battery wrong costs a sale and the customer's trust. The agent would rather say it will confirm, and each confirmation makes the catalog more complete.
+</Decision>
+
+<Decision title="Access rules in the database (RLS)" tradeoff="More setup at the start of the project.">
+  Permissions apply to every access path (the dashboard, the API or the agent) instead of relying on each screen to run the right check.
+</Decision>
+
+## Outcome
+
+The project helped retain a client who was about to cancel.
+
+<Metrics>
+  <Metric value="[CONFIRMAR]" label="Vehicles on file" />
+  <Metric value="[CONFIRMAR]" label="Questions answered by the agent" />
+  <Metric value="[CONFIRMAR]" label="Response time" />
+</Metrics>
+
+## What I learned
+
+- [CONFIRMAR] What you would do differently today.
+- [CONFIRMAR] What you learned about putting an agent in front of real customers.
