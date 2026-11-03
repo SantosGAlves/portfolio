@@ -14,7 +14,33 @@ as decisões já tomadas; mudar qualquer uma delas exige pedido explícito do Gu
 - Gaudium está sob NDA: só descrições genéricas do trabalho.
 - Todos os dados da assinatura do hero (veículos, preços, Ah) são ilustrativos e assim rotulados.
 - Sem clichês de IA: nada de gradiente roxo/azul, glassmorphism, Inter como fonte principal, emoji.
-- Textos ficam só em `content/<idioma>/site.ts`; componentes não têm texto solto.
+- Textos ficam só em `content/` (`site.ts` por idioma e um `.mdx` por projeto); componentes não têm texto solto.
+
+## Posicionamento
+
+Gustavo é **desenvolvedor de software, principalmente back-end, com foco em IA aplicada e automação**.
+Não é "só IA": desenvolvimento de produto e back-end tem o mesmo peso.
+
+- Linha de função do hero: opção A, "Desenvolvedor de software · IA aplicada e automação"
+  / "Software developer · applied AI and automation". Opção B guardada no comentário de `site.ts`:
+  "Desenvolvedor back-end com foco em IA aplicada". A linha só quebra depois do "·".
+- "O que eu construo": três áreas de peso igual: Agentes de IA, Automação de processos e
+  Produtos e back-end (APIs, bancos de dados, painéis, autenticação, deploy).
+- Linguagens sem barras de nível, porcentagens ou parede de badges: Python como principal,
+  Java e Go como "já trabalhei com".
+- Frase honesta em "Como eu trabalho": desenvolve com apoio de agentes de código (Claude Code),
+  revisando e testando o que vai para produção.
+- Gaudium: automações com n8n, agentes e LLMs **e** produtos internos; texto genérico (NDA), com `[CONFIRMAR]`.
+- Hunt Sales: Gustavo desenvolveu o sistema completo da loja de baterias: agente de IA + sistema de
+  gestão integrado (painel de veículos, baterias e preços, autenticação, RLS, deploy e domínio).
+- O projeto principal é apresentado como "Agente de IA + sistema de gestão", nunca como "um chatbot".
+
+### Traduções decididas
+
+- Tecnólogo → "Technology Degree (Tecnólogo) in Systems Analysis and Development".
+- TCC → "Capstone project".
+- Título da assinatura em EN → "agent · in-store sales assistant".
+- A mensagem do cliente na assinatura fica traduzida no EN.
 
 ## Stack e restrições técnicas
 
@@ -84,6 +110,26 @@ Destaque chapado e usado com parcimônia (rótulos, links, foco, detalhes). Sem 
 - Celular ou toque: metade das trilhas, 20 fps, DPR 1, sem reação ao cursor. Reduced motion: um quadro parado.
 - `components/layout/scroll-rail.tsx`: régua fixa à direita, só ≥ 1280px; cada `[data-rail]` vira uma marca.
 
+## Estudos de caso (Fase 3)
+
+- Um `.mdx` por projeto em `content/<idioma>/projects/<slug>.mdx`, com `export const meta`
+  validado por zod (`content/project-schema.ts`). Passo a passo em `content/README.md`.
+- `lib/projects.ts` carrega tudo com `import.meta.glob` (Turbopack), sem `fs`: o build falha com
+  meta inválido, projeto sem versão PT ou campos compartilhados (`order`, `featured`, `status`,
+  `art`, `stack`) diferentes entre idiomas. Por isso `stack` usa só nomes de ferramenta.
+- Rotas: `app/(pt)/projetos/[slug]` e `app/(en)/en/projects/[slug]`, mesmo slug nos dois idiomas,
+  geradas no build. `status: "planned"` vira faixa "em construção" sem página.
+- Sem versão EN: a página EN mostra o texto em português (`lang="pt-BR"`), com aviso,
+  canonical para a versão PT e fora do sitemap.
+- Template: cabeçalho com metadados em mono → arte → "Resumo em 30 segundos" (`tldr`) →
+  corpo MDX na ordem contexto e problema → minha função → solução e arquitetura → stack →
+  decisões e trade-offs → resultado → aprendizados → próximo caso.
+- Blocos no MDX sem import (`mdx-components.tsx`): `<Flow>` (diagrama; `alt` = caminho
+  alternativo, `altLabel` = "ou"/"or"), `<Decision>`, `<Metrics>`/`<Metric>`.
+- Imagens provisórias: `components/art/project-art.tsx`, composições HTML/SVG do servidor nas
+  cores do tema (painel de gestão + agente, pontos da mão, fluxo de nós), decorativas.
+- JSON-LD `Person` na página inicial; links com `[CONFIRMAR]` ficam fora do `sameAs`.
+
 ## Idiomas
 
 - PT-BR é o padrão, na raiz (`/`); inglês em `/en`. Rotas estáticas, sem middleware nem redirecionamento.
@@ -104,15 +150,21 @@ Destaque chapado e usado com parcimônia (rótulos, links, foco, detalhes). Sem 
 ## Desempenho
 
 - JS inicial ~138 KB gzip, dos quais ~125 KB são React e Next; o código do site soma ~10 KB.
+- No `next.config.ts`, o loader do Tailwind ignora `*.module.css` (senão os CSS Modules perdem o escopo).
 - Componentes cliente não importam `Button`/`cn`: o servidor calcula `buttonVariants(...)` e passa a classe como string,
   para `tailwind-merge` e o Slot do Radix não irem ao bundle do cliente.
 - Fontes pré-carregadas: três arquivos, ~95 KB no total.
 
+## Verificação visual
+
+Headless Chrome não abre janela menor que 500px. Para 360px e para o tema claro, usar o
+Chrome DevTools Protocol (`Emulation.setDeviceMetricsOverride` + `localStorage.theme`).
+
 ## Pendências conhecidas
 
-- Repositório no GitHub ainda não criado (o Gustavo roda o `gh repo create`).
+- Repositório: github.com/SantosGAlves/portfolio (público).
 - CV em PDF (PT e EN), e-mail, LinkedIn e GitHub: `[CONFIRMAR]`.
 - 404 personalizada: com vários layouts raiz, o 404 padrão sai sem `lang`; resolver na Fase 3/4
   (`app/global-not-found.tsx`, ainda experimental no Next 16).
-- Imagem Open Graph, JSON-LD Person: Fase 3/4.
-- Estudos de caso em EN quando só existir o arquivo em PT: decidir na Fase 3.
+- Imagem Open Graph: Fase 4.
+- Textos reais dos estudos de caso: o Gustavo preenche os `[CONFIRMAR]` dos `.mdx`.
