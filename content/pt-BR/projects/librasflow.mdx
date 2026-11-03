@@ -1,59 +1,160 @@
 export const meta = {
   order: 2,
-  featured: false,
+  tier: "featured",
   status: "in-progress",
   art: "librasflow",
+  repo: "https://github.com/SantosGAlves/LibrasFlow",
   title: "LibrasFlow",
   kind: "TCC · visão computacional",
-  summary: "Reconhecimento do alfabeto manual de Libras pela câmera, letra por letra, com visão computacional.",
-  role: "Desenvolvimento do TCC [CONFIRMAR] individual ou em grupo",
-  period: "2026 · conclusão em dez/2026",
-  stack: ["Python [CONFIRMAR]", "Visão computacional [CONFIRMAR]"],
+  summary:
+    "Reconhece o alfabeto manual de Libras pela webcam. O trabalho principal foi descobrir que 34 mil amostras eram ~6,3 mil poses distintas, corrigir o vazamento e medir com imagens reais.",
+  role: "Dados, modelo, avaliação e aplicação",
+  period: "2026 · TCC, conclusão em dez/2026",
+  stack: ["Python", "MediaPipe", "OpenCV", "scikit-learn", "pandas", "Flask"],
+  draft: false,
   tldr: [
-    { label: "Problema", text: "[CONFIRMAR] Que barreira de comunicação o projeto ataca e para quem." },
-    { label: "Solução", text: "Um sistema que reconhece, pela câmera, as letras do alfabeto manual de Libras. [CONFIRMAR]" },
-    { label: "Resultado", text: "[CONFIRMAR] Estado atual do TCC e como ele é avaliado." },
+    {
+      label: "Problema",
+      text: "O primeiro modelo acertava praticamente tudo no teste. Bom demais: as 34.374 amostras eram rajadas de quadros quase idênticos, e o mesmo gesto caía no treino e no teste.",
+    },
+    {
+      label: "Solução",
+      text: "Agrupei as amostras quase iguais com DBSCAN (~6.270 poses distintas), refiz a divisão treino/teste por grupo e validei o modelo em imagens reais que ele nunca tinha visto.",
+    },
+    {
+      label: "Resultado",
+      text: "Uma medida honesta: 69% de acerto em 3.812 imagens reais. Letras como B, W e I quase sempre acertam; E, M, N, S e U ainda erram. É o ponto de partida do resto do TCC.",
+    },
   ],
+  media: {
+    cover: {
+      src: "/librasflow/librasflow-card.webp",
+      alt: "Imagem da webcam com os 21 pontos da mão desenhados sobre o sinal da letra A; no topo, a frase formada até aqui: LIBR.",
+      width: 588,
+      height: 384,
+      fit: "fill",
+    },
+    video: {
+      src: "/librasflow/demo-librasflow.mp4",
+      poster: "/librasflow/demo-librasflow-poster.webp",
+      width: 588,
+      height: 436,
+      label:
+        "Demonstração pela webcam: a mão aparece com os 21 pontos desenhados, cada letra é confirmada por uma barra de progresso e a palavra LIBRA vai se formando no topo da tela.",
+      caption: "Demonstração gravada pela webcam, em 28 s, sem som: cada letra é confirmada depois de 30 quadros estáveis.",
+    },
+  },
 }
 
 ## Contexto e problema
 
-[CONFIRMAR] Quem usa o alfabeto manual de Libras, em que situação, e o que falta hoje.
+O alfabeto manual de Libras é usado para soletrar nomes e palavras que não têm sinal próprio. O LibrasFlow, meu TCC, reconhece essas letras pela webcam, em tempo real, num computador comum, e forma palavras na tela.
+
+O primeiro modelo parecia pronto: no teste, acertava praticamente todas as letras. Esse resultado perfeito demais foi o problema. Um classificador que nunca erra num problema visual difícil costuma estar sendo testado com dados que já viu.
 
 ## Minha função
 
-[CONFIRMAR] O que você fez: coleta de dados, modelo, interface, avaliação.
+Construí o pipeline inteiro: a extração dos pontos da mão a partir das imagens, o treino do classificador, a auditoria e a correção da avaliação, a validação com imagens reais e a aplicação que forma palavras pela câmera.
 
-## Solução e arquitetura
+## Como funciona
+
+O modelo não olha a imagem bruta. O MediaPipe encontra 21 pontos da mão, e o classificador trabalha só com a geometria deles. Isso deixa o sistema leve e menos sensível a fundo e iluminação.
 
 <Flow
-  caption="Etapas previstas (provisório)."
+  caption="Do quadro da webcam à letra na tela."
   steps={[
-    { title: "Câmera", detail: "Quadros de vídeo" },
-    { title: "Detecção da mão", detail: "[CONFIRMAR] pontos de referência" },
-    { title: "Classificação", detail: "Letra do alfabeto manual" },
-    { title: "Saída", detail: "[CONFIRMAR] texto na tela" },
+    { title: "Webcam", detail: "Um quadro por vez" },
+    { title: "MediaPipe Hands", detail: "21 pontos da mão, com x, y e z" },
+    { title: "Normalização", detail: "Coordenadas relativas ao pulso e na mesma escala: 63 valores" },
+    { title: "Random Forest", detail: "Uma das 21 letras estáticas" },
+    { title: "Filtro de estabilidade", detail: "A letra só entra depois de 30 quadros seguidos" },
   ]}
 />
 
+A extração de features fica num único módulo, usado pela coleta, pelo treino, pela validação e pela aplicação. Assim a normalização nunca fica diferente entre o que o modelo viu no treino e o que ele recebe ao vivo. A interface roda no navegador (Flask com o vídeo da câmera) e tem um botão virtual "Limpar", acionado mantendo a mão sobre ele.
+
+## O vazamento de dados
+
+As imagens de treino vinham de rajadas: dezenas de quadros quase idênticos do mesmo gesto. Com uma divisão aleatória, um quadro ia para o treino e o vizinho, praticamente igual, ia para o teste. O modelo não estava generalizando; estava reconhecendo de novo.
+
+Para confirmar, medi a distância de cada amostra de teste até a mais próxima no treino, dentro da mesma letra. Muitas tinham um quase-clone do outro lado.
+
+<Flow
+  caption="A correção: dividir por pose, não por linha."
+  steps={[
+    { title: "34.374 linhas", detail: "O conjunto original, em pontos normalizados" },
+    { title: "DBSCAN por letra", detail: "Junta amostras a menos de 0,05 de distância" },
+    { title: "~6.270 grupos", detail: "As poses realmente distintas" },
+    { title: "Split 80/20 por grupo", detail: "Cada pose fica inteira de um lado só" },
+  ]}
+/>
+
+<Metrics>
+  <Metric value="34.374" label="amostras no conjunto original" />
+  <Metric value="~6.270" label="poses realmente distintas" />
+  <Metric value="69%" label="de acerto em 3.812 imagens reais" />
+</Metrics>
+
+O script verifica que nenhum grupo aparece nos dois lados antes de treinar. A primeira versão do split escolhia 20% dos grupos de cada letra, o que quebrava quando os grupos tinham tamanhos muito diferentes: com um raio maior (0,10), um único grupo da letra G concentrava 900 das 1.650 amostras. A versão atual escolhe os grupos de teste para chegar perto de 20% das amostras, não dos grupos.
+
+Mesmo assim, o acerto no novo teste continuou muito alto. Sem vazamento entre treino e teste, as duas partes ainda vêm do mesmo conjunto de imagens. Para saber como o modelo se comporta fora dele, faltava um teste com imagens que ele nunca viu.
+
+## Validação com imagens reais
+
+Rodei o modelo final em uma pasta separada de imagens reais. A mão foi detectada em 3.812 delas, cobrindo 15 das 21 letras, e o acerto geral foi de **69%**.
+
+- **Acertam quase sempre:** B, V, A, I, W e D, com recall acima de 95%. C e O ficam perto de 90%.
+- **Erram quase sempre:** E, M e N não foram reconhecidas; S e U acertaram cerca de 5%, e R, 10%. L ficou em 44%.
+- **Para onde vão os erros:** muitos caem no V, que tem recall de 100% mas precisão de 40%.
+
+As letras que mais erram são as que dependem de dedos dobrados ou cruzados, em que a diferença está em qual dedo fica na frente. Foi por isso que a coordenada z entrou nas features, e é onde o TCC continua. Um script de diagnóstico salva as imagens erradas com os pontos desenhados, para ver se o problema é a detecção da mão ou a classificação.
+
 ## Stack
 
-- [CONFIRMAR] Linguagem, bibliotecas de visão computacional e de aprendizado de máquina.
+- **Visão computacional:** MediaPipe Hands e OpenCV.
+- **Modelo e dados:** scikit-learn (Random Forest e DBSCAN), pandas e NumPy.
+- **Aplicação:** Flask, com o vídeo da webcam processado no servidor.
 
 ## Decisões e trade-offs
 
-<Decision title="[CONFIRMAR] Uma decisão importante do projeto" tradeoff="[CONFIRMAR] O que ela custou.">
-  [CONFIRMAR] Por que essa escolha.
+<Decision
+  title="Pontos da mão em vez da imagem"
+  tradeoff="Se o MediaPipe não detecta a mão, não existe predição. Parte dos erros reais pode vir daí, não do classificador."
+>
+  Com 63 números por quadro, o modelo é pequeno, roda em tempo real num computador comum e não depende do fundo da imagem.
+</Decision>
+
+<Decision
+  title="Agrupar antes de dividir"
+  tradeoff="O resultado depende do raio do agrupamento. Com 0,05, todas as letras têm grupos suficientes; raios maiores deixam algumas letras com poucos grupos e o teste instável."
+>
+  Dividir por linha mede memória. Dividir por pose mede se o modelo reconhece um gesto que nunca viu.
+</Decision>
+
+<Decision
+  title="Medir e treinar em scripts separados"
+  tradeoff="O modelo da aplicação não tem um número de teste próprio; a referência dele é o split por grupo e a validação com imagens reais."
+>
+  Um script separa os dados para medir o acerto. Depois disso, o modelo que vai para a aplicação treina com 100% dos dados.
+</Decision>
+
+<Decision
+  title="Confirmar a letra só depois de 30 quadros"
+  tradeoff="Soletrar fica mais lento: cada letra exige segurar o sinal por um instante."
+>
+  Evita que a frase se encha de letras erradas durante a transição de um sinal para outro.
 </Decision>
 
 ## Resultado
 
-<Metrics>
-  <Metric value="[CONFIRMAR]" label="Letras reconhecidas" />
-  <Metric value="[CONFIRMAR]" label="Acurácia no conjunto de teste" />
-  <Metric value="[CONFIRMAR]" label="Quadros por segundo" />
-</Metrics>
+- A aplicação funciona em tempo real e forma palavras pela webcam.
+- A avaliação deixou de depender de quadros repetidos: agora divide os dados por pose e passa por imagens reais.
+- Ficou claro onde o modelo falha (E, M, N, R, S e U) e por quê. É isso que orienta a próxima etapa do TCC.
+
+Próximos passos: imagens mais variadas para as letras que erram, as letras com movimento (como J, K, X e Z) e o reconhecimento com as duas mãos.
 
 ## Aprendizados
 
-- [CONFIRMAR]
+- Acurácia perfeita é sinal de alerta, não de sucesso.
+- Como os dados são divididos importa tanto quanto o modelo.
+- O teste que conta é o feito com dados que se parecem com o uso real.

@@ -1,60 +1,160 @@
 export const meta = {
   order: 2,
-  featured: false,
+  tier: "featured",
   status: "in-progress",
   art: "librasflow",
+  repo: "https://github.com/SantosGAlves/LibrasFlow",
   title: "LibrasFlow",
-  kind: "Capstone · computer vision",
+  kind: "Capstone project · computer vision",
   summary:
-    "Recognizing the Brazilian Sign Language (Libras) manual alphabet through the camera, letter by letter, with computer vision.",
-  role: "Capstone project development [CONFIRMAR] solo or in a team",
-  period: "2026 · graduating Dec 2026",
-  stack: ["Python [CONFIRMAR]", "Visão computacional [CONFIRMAR]"],
+    "Recognizes the Brazilian Sign Language (Libras) manual alphabet through a webcam. The core work was finding that 34k samples were ~6.3k distinct poses, fixing the leak and testing on real images.",
+  role: "Data, model, evaluation and app",
+  period: "2026 · capstone, due Dec 2026",
+  stack: ["Python", "MediaPipe", "OpenCV", "scikit-learn", "pandas", "Flask"],
+  draft: false,
   tldr: [
-    { label: "Problem", text: "[CONFIRMAR] Which communication barrier the project tackles, and for whom." },
-    { label: "Solution", text: "A system that recognizes the letters of the Libras manual alphabet through the camera. [CONFIRMAR]" },
-    { label: "Outcome", text: "[CONFIRMAR] Current state of the capstone and how it is assessed." },
+    {
+      label: "Problem",
+      text: "The first model got practically everything right on the test set. Too good: the 34,374 samples were bursts of near-identical frames, and the same gesture ended up in both training and test.",
+    },
+    {
+      label: "Solution",
+      text: "I grouped near-identical samples with DBSCAN (~6,270 distinct poses), redid the train/test split by group and validated the model on real images it had never seen.",
+    },
+    {
+      label: "Outcome",
+      text: "An honest measure: 69% accuracy on 3,812 real images. Letters like B, W and I are almost always right; E, M, N, S and U still fail. That is where the rest of the capstone starts.",
+    },
   ],
+  media: {
+    cover: {
+      src: "/librasflow/librasflow-card.webp",
+      alt: "Webcam frame with the hand's 21 landmarks drawn over the sign for the letter A; at the top, the phrase spelled so far: LIBR.",
+      width: 588,
+      height: 384,
+      fit: "fill",
+    },
+    video: {
+      src: "/librasflow/demo-librasflow.mp4",
+      poster: "/librasflow/demo-librasflow-poster.webp",
+      width: 588,
+      height: 436,
+      label:
+        "Webcam demo: the hand appears with its 21 landmarks drawn, each letter is confirmed by a progress bar and the word LIBRA builds up at the top of the screen.",
+      caption: "Webcam demo, 28 s, no sound: each letter is confirmed after 30 stable frames. On-screen text in Portuguese.",
+    },
+  },
 }
 
 ## Context and problem
 
-[CONFIRMAR] Who uses the Libras manual alphabet, in which situations, and what is missing today.
+The Libras manual alphabet is used to spell names and words that have no sign of their own. LibrasFlow, my capstone project, recognizes those letters through a webcam, in real time, on an ordinary computer, and spells words on screen.
+
+The first model looked done: on the test set, it got practically every letter right. That too-perfect result was the problem. A classifier that never fails at a hard visual task is usually being tested on data it has already seen.
 
 ## My role
 
-[CONFIRMAR] What you did: data collection, model, interface, evaluation.
+I built the whole pipeline: extracting hand landmarks from the images, training the classifier, auditing and fixing the evaluation, validating on real images and the app that spells words through the camera.
 
-## Solution and architecture
+## How it works
+
+The model doesn't look at the raw image. MediaPipe finds 21 hand landmarks, and the classifier works only with their geometry. That keeps the system light and less sensitive to background and lighting.
 
 <Flow
-  caption="Planned stages (draft)."
+  caption="From webcam frame to letter on screen."
   steps={[
-    { title: "Camera", detail: "Video frames" },
-    { title: "Hand detection", detail: "[CONFIRMAR] landmarks" },
-    { title: "Classification", detail: "Manual alphabet letter" },
-    { title: "Output", detail: "[CONFIRMAR] text on screen" },
+    { title: "Webcam", detail: "One frame at a time" },
+    { title: "MediaPipe Hands", detail: "21 hand landmarks, with x, y and z" },
+    { title: "Normalization", detail: "Coordinates relative to the wrist, same scale: 63 values" },
+    { title: "Random Forest", detail: "One of the 21 static letters" },
+    { title: "Stability filter", detail: "A letter only counts after 30 frames in a row" },
   ]}
 />
 
+Feature extraction lives in a single module used by data collection, training, validation and the app. That way the normalization never differs between what the model saw in training and what it gets live. The interface runs in the browser (Flask streaming the camera feed) and has a virtual "Clear" button, triggered by holding a hand over it.
+
+## The data leak
+
+The training images came from bursts: dozens of near-identical frames of the same gesture. With a random split, one frame went to training and its almost identical neighbor went to test. The model wasn't generalizing; it was recognizing again.
+
+To confirm it, I measured the distance from each test sample to the closest one in training, within the same letter. Many had a near-clone on the other side.
+
+<Flow
+  caption="The fix: split by pose, not by row."
+  steps={[
+    { title: "34,374 rows", detail: "The original set, as normalized landmarks" },
+    { title: "DBSCAN per letter", detail: "Joins samples less than 0.05 apart" },
+    { title: "~6,270 groups", detail: "The truly distinct poses" },
+    { title: "80/20 split by group", detail: "Each pose stays whole on one side" },
+  ]}
+/>
+
+<Metrics>
+  <Metric value="34,374" label="samples in the original set" />
+  <Metric value="~6,270" label="truly distinct poses" />
+  <Metric value="69%" label="accuracy on 3,812 real images" />
+</Metrics>
+
+The script checks that no group appears on both sides before training. The first version of the split picked 20% of each letter's groups, which broke when groups had very different sizes: with a larger radius (0.10), a single group of the letter G held 900 of its 1,650 samples. The current version picks test groups to get close to 20% of the samples, not of the groups.
+
+Even so, accuracy on the new test stayed very high. With no leak between training and test, both parts still come from the same set of images. To know how the model behaves outside it, I needed a test on images it had never seen.
+
+## Validation on real images
+
+I ran the final model on a separate folder of real images. The hand was detected in 3,812 of them, covering 15 of the 21 letters, and overall accuracy was **69%**.
+
+- **Almost always right:** B, V, A, I, W and D, with recall above 95%. C and O are close to 90%.
+- **Almost always wrong:** E, M and N were never recognized; S and U got about 5% right, and R, 10%. L reached 44%.
+- **Where the errors go:** many land on V, which has 100% recall but 40% precision.
+
+The letters that fail most depend on bent or crossed fingers, where the difference is which finger is in front. That is why the z coordinate went into the features, and it is where the capstone continues. A diagnostic script saves the misclassified images with the landmarks drawn, to tell whether the problem is hand detection or classification.
+
 ## Stack
 
-- [CONFIRMAR] Language, computer vision and machine learning libraries.
+- **Computer vision:** MediaPipe Hands and OpenCV.
+- **Model and data:** scikit-learn (Random Forest and DBSCAN), pandas and NumPy.
+- **App:** Flask, with the webcam feed processed on the server.
 
 ## Decisions and trade-offs
 
-<Decision title="[CONFIRMAR] A key decision in the project" tradeoff="[CONFIRMAR] What it cost.">
-  [CONFIRMAR] Why you made that choice.
+<Decision
+  title="Hand landmarks instead of the image"
+  tradeoff="If MediaPipe doesn't detect the hand, there is no prediction. Some real-world errors may come from there, not from the classifier."
+>
+  With 63 numbers per frame, the model is small, runs in real time on an ordinary computer and doesn't depend on the image background.
+</Decision>
+
+<Decision
+  title="Group before splitting"
+  tradeoff="The result depends on the grouping radius. At 0.05, every letter has enough groups; larger radii leave some letters with few groups and an unstable test."
+>
+  Splitting by row measures memory. Splitting by pose measures whether the model recognizes a gesture it has never seen.
+</Decision>
+
+<Decision
+  title="Measure and train in separate scripts"
+  tradeoff="The app's model has no test number of its own; its reference is the group split and the real-image validation."
+>
+  One script holds data out to measure accuracy. After that, the model that goes into the app trains on 100% of the data.
+</Decision>
+
+<Decision
+  title="Confirm a letter only after 30 frames"
+  tradeoff="Spelling is slower: each letter requires holding the sign for a moment."
+>
+  It keeps the phrase from filling up with wrong letters while the hand moves from one sign to the next.
 </Decision>
 
 ## Outcome
 
-<Metrics>
-  <Metric value="[CONFIRMAR]" label="Letters recognized" />
-  <Metric value="[CONFIRMAR]" label="Test set accuracy" />
-  <Metric value="[CONFIRMAR]" label="Frames per second" />
-</Metrics>
+- The app works in real time and spells words through the webcam.
+- The evaluation no longer relies on repeated frames: it now splits data by pose and goes through real images.
+- It is clear where the model fails (E, M, N, R, S and U) and why. That guides the next stage of the capstone.
+
+Next steps: more varied images for the letters that fail, the letters that involve movement (such as J, K, X and Z) and recognition with both hands.
 
 ## What I learned
 
-- [CONFIRMAR]
+- Perfect accuracy is a warning sign, not a success.
+- How the data is split matters as much as the model.
+- The test that counts is the one with data that looks like real use.
