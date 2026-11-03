@@ -1,9 +1,9 @@
-import { site } from "@/content/pt-BR/site"
+import { getContent, type Locale } from "@/lib/i18n"
 
 const YEAR = 2026
 
-export function SiteFooter() {
-  const { profile, ui } = site
+export function SiteFooter({ locale }: { locale: Locale }) {
+  const { profile, ui } = getContent(locale)
   const links = [
     { label: "GitHub", href: profile.links.github },
     { label: "LinkedIn", href: profile.links.linkedin },
@@ -25,7 +25,7 @@ export function SiteFooter() {
               rel="noopener noreferrer"
             >
               {link.label}
-              <span className="sr-only"> (abre em nova aba)</span>
+              <span className="sr-only"> {ui.opensInNewTab}</span>
             </a>
           ))}
           <span className="text-subtle">{ui.footerNote}</span>

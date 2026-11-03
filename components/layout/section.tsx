@@ -10,12 +10,13 @@ type SectionProps = {
   className?: string
 }
 
-// Seção padrão da página: rótulo mono em lilás, título e conteúdo.
+// Seção padrão da página: rótulo mono na cor de destaque, título e conteúdo.
+// data-rail marca a seção na régua de progresso.
 export function Section({ id, eyebrow, title, intro, children, className }: SectionProps) {
-  const titleId = `${id}-titulo`
+  const titleId = `${id}-heading`
 
   return (
-    <section id={id} aria-labelledby={titleId} className={cn("border-t", className)}>
+    <section id={id} data-rail aria-labelledby={titleId} className={cn("border-t", className)}>
       <div className="container-site grid gap-10 py-18 md:py-24">
         <header className="grid max-w-prose gap-3">
           <p className="eyebrow">{eyebrow}</p>

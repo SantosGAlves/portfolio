@@ -1,42 +1,48 @@
-import { Button } from "@/components/ui/button"
-import { site } from "@/content/pt-BR/site"
+import { LanguageSwitch } from "@/components/layout/language-switch"
+import { ThemeToggle } from "@/components/layout/theme-toggle"
+import { Button, buttonVariants } from "@/components/ui/button"
+import { getContent, homePath, type Locale } from "@/lib/i18n"
 
-// Header fixo e discreto. A borda inferior aparece ao rolar via
-// animação ligada à rolagem (CSS puro, sem JS). Navegadores sem suporte
-// mostram a borda o tempo todo.
-export function SiteHeader() {
-  const { profile, nav, ui } = site
+// Header fixo e discreto. A borda inferior aparece ao rolar via animação
+// ligada à rolagem (CSS puro). Sem suporte, a borda fica sempre visível.
+export function SiteHeader({ locale }: { locale: Locale }) {
+  const { profile, nav, sections, ui } = getContent(locale)
+  const home = homePath(locale)
 
   return (
     <header className="site-header sticky top-[env(safe-area-inset-top,0px)] z-50 border-b bg-background/90 backdrop-blur-sm">
-      <div className="container-site flex h-(--header-h) items-center justify-between gap-6">
-        <a
-          href="#topo"
-          className="rounded-sm text-[0.9375rem] font-bold tracking-[-0.01em] text-foreground"
-        >
+      <div className="container-site flex h-(--header-h) items-center justify-between gap-4">
+        <a href={home} className="shrink-0 rounded-sm text-[0.9375rem] font-bold tracking-[-0.01em] text-foreground">
           <span className="sm:hidden">{profile.shortName}</span>
           <span className="hidden sm:inline">{profile.name}</span>
         </a>
 
-        <nav aria-label={ui.navLabel} className="flex items-center gap-7">
-          <ul className="hidden items-center gap-7 text-small text-muted-foreground md:flex">
-            {nav.map((item) => (
-              <li key={item.href}>
-                <a
-                  href={item.href}
-                  className="rounded-sm transition-colors duration-200 hover:text-foreground"
-                >
-                  {item.label}
-                </a>
-              </li>
-            ))}
-          </ul>
-          <Button asChild variant="outline" size="sm">
+        <div className="flex items-center gap-3">
+          <nav aria-label={ui.navLabel} className="mr-3 hidden lg:block">
+            <ul className="flex items-center gap-7 text-small text-muted-foreground">
+              {nav.map((key) => (
+                <li key={key}>
+                  <a
+                    href={`#${sections[key].id}`}
+                    className="rounded-sm transition-colors duration-200 hover:text-foreground"
+                  >
+                    {sections[key].eyebrow}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </nav>
+          <LanguageSwitch current={locale} label={ui.languageLabel} />
+          <ThemeToggle
+            labels={{ toLight: ui.themeToLight, toDark: ui.themeToDark }}
+            className={buttonVariants({ variant: "outline", size: "icon-sm" })}
+          />
+          <Button asChild variant="outline" size="sm" className="hidden min-[420px]:inline-flex">
             <a href={profile.links.cv} download>
               {ui.downloadCv}
             </a>
           </Button>
-        </nav>
+        </div>
       </div>
     </header>
   )
