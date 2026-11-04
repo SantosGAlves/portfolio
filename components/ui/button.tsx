@@ -5,7 +5,7 @@ import { Slot } from "radix-ui"
 
 // Base: shadcn/ui (radix-nova), adaptado aos tokens da Direção A.
 // Alturas mínimas de 44px (padrão) e 36px (sm) para alvos de toque.
-const buttonVariants = cva(
+const buttonVariantsBase = cva(
   "group/button inline-flex shrink-0 items-center justify-center rounded-control border border-transparent bg-clip-padding font-sans font-semibold whitespace-nowrap transition-[background-color,border-color,color] duration-200 ease-out-soft outline-none select-none focus-visible:outline-2 focus-visible:outline-offset-3 focus-visible:outline-brand active:not-aria-[haspopup]:translate-y-px disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
   {
     variants: {
@@ -30,6 +30,14 @@ const buttonVariants = cva(
   }
 )
 
+/**
+ * Classes do botão já mescladas (tailwind-merge): sem isso, `border-transparent`
+ * da base e a borda do `outline` disputam pela ordem do CSS e a borda some.
+ */
+function buttonVariants(options?: Parameters<typeof buttonVariantsBase>[0]): string {
+  return cn(buttonVariantsBase(options))
+}
+
 function Button({
   className,
   variant = "default",
@@ -37,7 +45,7 @@ function Button({
   asChild = false,
   ...props
 }: React.ComponentProps<"button"> &
-  VariantProps<typeof buttonVariants> & {
+  VariantProps<typeof buttonVariantsBase> & {
     asChild?: boolean
   }) {
   const Comp = asChild ? Slot.Root : "button"
@@ -47,7 +55,7 @@ function Button({
       data-slot="button"
       data-variant={variant}
       data-size={size}
-      className={cn(buttonVariants({ variant, size, className }))}
+      className={cn(buttonVariantsBase({ variant, size, className }))}
       {...props}
     />
   )
