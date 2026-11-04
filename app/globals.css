@@ -298,6 +298,14 @@
   p {
     text-wrap: pretty;
   }
+  /* Toque: sem a espera do zoom por toque duplo nos controles (o zoom por pinça continua). */
+  a,
+  button,
+  label,
+  summary,
+  [role="button"] {
+    touch-action: manipulation;
+  }
   ::selection {
     background: var(--brand-soft);
     color: var(--text);

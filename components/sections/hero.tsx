@@ -42,8 +42,8 @@ export function Hero({ locale }: { locale: Locale }) {
 
         <div className="grid gap-10 lg:gap-12">
           <div className="grid max-w-[46rem] content-start gap-6">
-            <p className="text-role">
-              {/* Frase de efeito: uma linha por item (no celular, a segunda pode quebrar). */}
+            <p className="text-role text-balance">
+              {/* Frase de efeito: uma linha por item (no celular, a segunda quebra equilibrada, sem palavra sozinha). */}
               {hero.tagline.map((line, i) => (
                 <span key={line} className={i ? "block text-muted-foreground" : "block"}>
                   {line}

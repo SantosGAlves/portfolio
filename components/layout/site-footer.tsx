@@ -20,7 +20,7 @@ export function SiteFooter({ locale }: { locale: Locale }) {
             <a
               key={link.label}
               href={link.href}
-              className="rounded-sm transition-colors duration-200 hover:text-foreground"
+              className="rounded-sm py-0.5 transition-colors duration-200 hover:text-foreground"
               target="_blank"
               rel="noopener noreferrer"
             >

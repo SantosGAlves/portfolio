@@ -92,7 +92,7 @@ export function OtherProjects({ locale }: { locale: Locale }) {
           href={profile.links.github}
           target="_blank"
           rel="noopener noreferrer"
-          className="justify-self-start rounded-sm text-small font-semibold text-brand hover:underline hover:underline-offset-4"
+          className="justify-self-start rounded-sm py-0.5 text-small font-semibold text-brand hover:underline hover:underline-offset-4"
         >
           {copy.more.allLink}
           <span aria-hidden="true" className="ml-1.5 inline-block">

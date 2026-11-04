@@ -13,7 +13,7 @@ export function Education({ locale }: { locale: Locale }) {
     if (!meta) throw new Error(`Formação: estudo de caso desconhecido "${slug}"`)
     return meta.shortTitle ?? meta.title
   }
-  const link = "group/link rounded-sm text-small font-semibold text-brand hover:underline hover:underline-offset-4"
+  const link = "group/link rounded-sm py-0.5 text-small font-semibold text-brand hover:underline hover:underline-offset-4"
 
   return (
     <Section id={sections.education.id} eyebrow={sections.education.eyebrow} title={sections.education.title}>
