@@ -131,13 +131,16 @@ Destaque chapado e usado com parcimônia (rótulos, links, foco, detalhes). Sem 
 - Rotas: `app/(pt)/projetos/[slug]` e `app/(en)/en/projects/[slug]`, mesmo slug nos dois idiomas,
   geradas no build. `status: "planned"` vira faixa "em construção" sem página; `page: false` também
   não gera página (o card leva ao `repo`).
-- Seção de projetos (`components/sections/projects.tsx`), nesta hierarquia:
-  1. Destaques (`tier: "featured"`), por `order`: o primeiro em largura total, os demais em duas colunas.
-     Ordem atual: agente de baterias, LibrasFlow, plataforma de gestão de demandas.
-  2. "Outros projetos" (`tier: "secondary"`): cards menores, sem imagem. Ajuda Animal (com página, vídeo e demo),
-     Barbú, app de barbearia (com página e demo) e VoiceSnap (sem página, link para o GitHub).
-  3. "Mais no GitHub": lista compacta em `site.ts` → `projects.more` (API .NET 10, Streamlit + Azure,
-     concorrência em Java) + link para todos os repositórios.
+- Seção de projetos (`components/sections/projects.tsx`), inspirada em victrhugo.site:
+  1. Destaques (`tier: "featured"`), por `order`: seis cards com o mesmo peso, grade de 2 colunas (1 no celular),
+     sem card gigante. Ordem: Agente de IA + sistema de gestão, LibrasFlow, Plataforma de demandas, Ajuda Animal,
+     Barbú, Painel para carregadores de veículos elétricos. Cada card: arte, ano (trecho do `period` antes do " · "),
+     título (`shortTitle` ou `title`), uma frase (`tagline` ou `summary`), até 4 tecnologias (as 4 primeiras de
+     `stack`) e o selo "demo interativa". Fotos, prints e vídeos reais ficam só dentro dos estudos de caso
+     (`media.cover` não existe mais).
+  2. "Outros projetos": lista compacta com ano, título, uma linha e seta: projetos `tier: "secondary"` (VoiceSnap,
+     sem página, link para o GitHub) + `site.ts` → `projects.more` (API .NET 10, Streamlit + Azure, concorrência
+     em Java), e o link "Todos os repositórios".
 - Sem versão EN: a página EN mostra o texto em português (`lang="pt-BR"`), com aviso,
   canonical para a versão PT e fora do sitemap.
 - Template: cabeçalho com metadados em mono → vídeo ou arte → "Resumo em 30 segundos" (`tldr`) →
@@ -155,17 +158,19 @@ Destaque chapado e usado com parcimônia (rótulos, links, foco, detalhes). Sem 
   Com `meta.liveEmbed`, a versão pública vai para a seção "Experimente" (`<Demo />` no MDX) e o topo do caso ganha
   só um link para ela ("Testar ao vivo ↓" / "Try it live ↓"). `components/case-study/live-frame.tsx`: moldura de
   navegador (barra com o endereço de `meta.live`); antes do clique, só a prévia (o vídeo do topo do caso em loop),
-  o botão "Testar com a câmera" e o aviso "Roda no seu navegador: nenhuma imagem sai do seu computador", sem
+  o botão "Abrir demo ao vivo" / "Open live demo", a dica "Depois, clique em Ativar câmera" e o aviso "Roda no seu navegador: nenhuma imagem sai do seu computador", sem
   nenhuma requisição ao site. O clique cria o iframe (`allow="camera; fullscreen"`, foco nele); "Encerrar",
   sair da página (`pagehide`) ou desmontar removem o iframe e desligam a câmera. "Abrir em nova aba" sempre
-  visível. `meta.liveIntro` = intro da seção; `meta.demoNote` = nota sob a moldura. No celular a moldura ocupa a
+  visível. `meta.liveIntro` = intro da seção; `meta.demoNote` = nota sob a moldura. O cabeçalho fixo do site do IFSP fica
+  escondido: o iframe sobe dentro da caixa (`overflow-hidden`) e cresce na mesma medida, 60 px até 880 px de
+  largura do iframe e 75 px acima (container query `@min-[881px]`; medidas de 04/11/2026, `cropClassName` em
+  `try-it.tsx`). Se o IFSP mudar o cabeçalho, remedir. No celular a moldura ocupa a
   largura da tela e a altura sob o header, menos `--demo-reserve` (cabem a câmera e a letra reconhecida).
   `meta.demo` = slug de uma demo do site, mostrada na seção "Experimente" do caso (ver "Demos dentro dos estudos
   de caso"); não há botão "Abrir demo".
 - Blocos que dependem do idioma (`<Video>`, `<Signature>`) são passados por `case-study-page.tsx`
   em `<Body components={...}>`, com os rótulos do `site.ts` do idioma do texto.
-- `meta.media.cover` = imagem real do card (`fit: "frame"`: captura em moldura `surface-2`, cortada embaixo;
-  `fit: "fill"`: foto ocupando a área); `meta.media.video` = vídeo no topo do caso no lugar da arte
+- `meta.media.video` = vídeo no topo do caso no lugar da arte
   (vídeo com menos de 1000 px de largura fica na largura da coluna de texto, sem esticar). `video.controls: true` =
   vídeo longo com controles nativos, sem tocar sozinho e com `preload="none"` (só baixa no play).
   `meta.privateCode` = nota de código privado no lugar do link do repositório, no topo do caso. `meta.draft` (padrão `true`) mostra o aviso de texto provisório.
@@ -179,9 +184,12 @@ Destaque chapado e usado com parcimônia (rótulos, links, foco, detalhes). Sem 
   (estética de "IA brilhante", contra as regras visuais). Figuras do artigo em `public/librasflow/midia-librasflow/`
   (matriz de confusão e interface), com rótulos em português; a legenda avisa isso. O pipeline é um `<Flow>` de
   6 etapas traduzido (a figura do pipeline foi apagada).
-- Artes abstratas (`components/art/project-art.tsx`), composições HTML/SVG do servidor nas cores do tema,
-  decorativas: painel + agente, pontos da mão, fluxo de nós, Kanban com SLA (plataforma de demandas) e celular
-  com a grade de horários (`booking`, Barbú).
+- Artes dos cards (`components/art/project-art.tsx`), SVG do servidor, decorativas, todas no mesmo sistema:
+  `viewBox` 320×200 (card em 16:10), traço de 1,5, painéis arredondados, um único acento verde, grade de pontos e
+  brilho embaixo. Paleta sempre escura (#0a0b0d, #15171b, verde #7ee08f), também no tema claro: a arte é uma
+  "tela" dentro do card. `agent` (chat + banco), `hand` (21 pontos da mão fazendo o L), `kanban`, `phone`
+  (celular com horários, Barbú), `map` (mapa com pino, Ajuda Animal), `charger` (carregador + bateria) e `planned`.
+  A arte também aparece no topo do caso que não tem vídeo.
   As telas do repositório da plataforma não são usadas: têm o logo da Gaudium e dados de teste.
 - JSON-LD `Person` na página inicial; links com `[CONFIRMAR]` ficam fora do `sameAs`.
 
@@ -214,6 +222,11 @@ Destaque chapado e usado com parcimônia (rótulos, links, foco, detalhes). Sem 
   `public/ajuda-animal/midia-ajuda-animal/` (endereços desfocados, em português). O slide de arquitetura do vídeo virou
   `<Architecture>` e o arquivo ficou em `docs/referencias/ajuda-animal`. Nunca usar o `n8n_ajudaanimal.json`
   exportado (tem o número pessoal e a chave da Evolution API); só o fluxo da branch, com marcadores.
+- Carregadores de veículos elétricos (`carregadores-ev`; fonte: `docs/conteudo/conteudo-agente-baterias.md`,
+  seção "Mesmo padrão, outro nicho"): projeto na Hunt Sales, cliente nunca identificado. Período "2025–2026 · Hunt
+  Sales" (o do estágio; ano exato `[CONFIRMAR]`, comentário no meta). O conteúdo saiu do caso das baterias, que
+  ficou com uma linha e o link. Só fatos da fonte: veículos (kWh, limite AC), produtos com várias saídas,
+  simulador, multiempresa, Realtime, gravações pelo webhook do n8n; stack Node.js/Express, HTML/CSS/JS, Supabase, n8n.
 - Plataforma de demandas: o README fala em RLS, mas o código usa a chave de serviço e checa permissões
   no Flask. O caso descreve o que o código faz. Foi o "case técnico do processo seletivo em que fui aprovado"
   ("technical case from the hiring process I passed"), sem citar a empresa.
@@ -237,7 +250,9 @@ de terceiros.
   do conteúdo (o `<article>` do caso é `@container`; margem `calc(50% - 50cqi)`) e, no celular, a da tela
   (`-mx-4`), sem rolagem lateral.
 - Carregamento: `lazy-demo.tsx` (cliente) espera a seção chegar a 300 px da tela (IntersectionObserver) e só então
-  faz o `import()` da demo, que é um chunk próprio. Até lá fica o esqueleto vindo do servidor
+  faz o `import()` da demo, que é um chunk próprio. Nada depende de hover. Plano B, para o celular: a mesma
+  conferência de posição em `scroll`, `touchend` e `resize` (passivos), carga imediata sem IntersectionObserver,
+  botão "Carregar a demo" sobre o esqueleto e "Tentar de novo" se o `import()` falhar. Até lá fica o esqueleto vindo do servidor
   (`components/demos/<slug>/skeleton.tsx`, mesma altura). O caso continua estático e o texto aparece primeiro.
   A demo nunca é renderizada no servidor (usa o relógio e a memória do navegador).
 - `--demo-reserve` (3rem no celular, 0 a partir de 640px): altura que fica livre fora das demos em moldura de
@@ -267,6 +282,11 @@ de terceiros.
   o aviso em `notifications/{uid}/items`, o lembrete 1 h antes, o JSON do webhook e a prévia do e-mail: em folha
   dentro do celular e, a partir de 1024px, num painel ao lado. Diferenças assumidas (nas notas da seção): ocupados
   aparecem riscados em vez de sumir e horários de hoje que já passaram ficam desativados.
+- Simulador de recarga (`components/demos/carregadores/`, caso `carregadores-ev`): o visitante escolhe um de 5 carros
+  fictícios (kWh e limite AC em `content/demos/carregadores-types.ts`) e vê o tempo de 0 a 100% em cada saída de
+  4 carregadores fictícios (1 ou 2 saídas), por `tempo (h) = bateria ÷ min(limite AC, potência da saída)`, com a
+  conta e "limitado pelo carro/carregador". As saídas mais rápidas (pode haver empate) ficam em verde. Começa no
+  sedã (AC de 11 kW), que mostra o gargalo: a saída de 22 kW não ajuda. Selo "Simulação com dados fictícios".
 - Demo do Ajuda Animal (`components/demos/ajuda-animal/`): simulador da conversa com o bot, numa tela de chat escura
   e neutra (sem a identidade do WhatsApp), com o selo "Simulação com dados fictícios · sem WhatsApp, sem banco".
   `logic.ts` replica o fluxo do n8n: mesmos textos (sem emojis), roteador de etapas (as etapas da denúncia não
@@ -307,7 +327,18 @@ de terceiros.
   `border-transparent` da base.
 - Fontes pré-carregadas: três arquivos, ~95 KB no total.
 
-## Verificação visual
+## Desenvolvimento e verificação
+
+- Celular na rede local: `npm run dev -- -H 0.0.0.0` e `http://<IP>:3000`. O `next dev` bloqueia o JavaScript de
+  desenvolvimento pedido por outra origem; sem `allowedDevOrigins` (IP da máquina e `192.168.*.*` no
+  `next.config.ts`) a página abre sem hidratar: links funcionam, demos e botões não. Só afeta o dev; o build de
+  produção (`next start -H 0.0.0.0`) não tem essa trava.
+- As páginas `[slug]` exportam `instant = false`: tira a validação de navegação instantânea do dev, que acusava
+  `params` fora de `<Suspense>` (as páginas são todas geradas no build).
+- Teste de toque no Chrome headless: `Input.dispatchTouchEvent` (arrasto de dedo) com
+  `Emulation.setTouchEmulationEnabled`; `Input.synthesizeScrollGesture` com toque não rola no headless.
+
+### Verificação visual
 
 Headless Chrome não abre janela menor que 500px. Para 360px e para o tema claro, usar o
 Chrome DevTools Protocol (`Emulation.setDeviceMetricsOverride` + `localStorage.theme`).
