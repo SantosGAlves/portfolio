@@ -70,6 +70,8 @@ A cor de status "ok" (ciano) é separada do destaque, para o verde não signific
 | `--text-subtle` | `#82868f` (5,3:1) | `#5f646d` (5,5:1) |
 | `--brand` (destaque) | `#7ee08f` (11,8:1) | `#17773a` (5,2:1) |
 | `--ok` (status) | `#6cc7e0` (9,9:1) | `#0e6f87` (5,3:1) |
+| `--warn` (alerta) | `#e8b04b` (9,8:1) | `#8a5300` (5,8:1) |
+| `--danger` (atraso, erro) | `#f2857c` (7,7:1) | `#b3261e` (6,0:1) |
 
 Contraste medido contra `--bg`; todos os textos passam AA (≥ 4,5:1) também sobre `surface` e `surface-2`.
 Destaque chapado e usado com parcimônia (rótulos, links, foco, detalhes). Sem gradientes nem neon.
@@ -139,12 +141,14 @@ Destaque chapado e usado com parcimônia (rótulos, links, foco, detalhes). Sem 
   corpo MDX na ordem contexto e problema → minha função → (como funciona) → solução e arquitetura → stack →
   decisões e trade-offs → resultado → (o mesmo padrão em outro nicho) → aprendizados → próximo caso.
 - Blocos no MDX sem import (`mdx-components.tsx`): `<Flow>` (diagrama; `alt` = caminho
-  alternativo, `altLabel` = "ou"/"or"), `<Decision>`, `<Metrics>`/`<Metric>`, `<Chat>` com
+  alternativo, `altLabel` = "ou"/"or"; `accent: true` destaca a etapa final), `<Decision>`, `<Metrics>`/`<Metric>`, `<Chat>` com
   `<Message from="customer|agent">` e `<ChatNote>` (conversa com selo "exemplo ilustrativo"),
-  `<Gallery>`/`<Shot>` (capturas com `next/image`; `<Shot layout="column|wide">` sozinha, `minWidth` faz figuras
-  com texto miúdo rolarem na horizontal no celular) e `<DataTable>` (o MDX não tem tabelas em Markdown).
-- `meta.live` = demonstração pública: botão "Testar ao vivo (usa a câmera)" no topo do caso, em nova aba;
-  `meta.liveNote` = nota curta sob o botão.
+  `<Gallery>`/`<Shot>` (capturas com `next/image`; `<Shot layout="column|wide">` sozinha), `<PaperFigure>`
+  (figura de artigo em cartão claro, legenda em mono, nota e link para o tamanho real em nova aba) e `<DataTable>`
+  (o MDX não tem tabelas em Markdown). Nada de rolagem horizontal: diagrama com texto vira `<Flow>`.
+- `meta.live` = demonstração pública externa: botão "Testar ao vivo (usa a câmera)" no topo do caso, em nova aba;
+  `meta.demo` = slug de uma demo dentro do site (`/demos/<slug>`): botão "Abrir demo"; `meta.demoNote` = nota
+  curta sob os botões.
 - Blocos que dependem do idioma (`<Video>`, `<Signature>`) são passados por `case-study-page.tsx`
   em `<Body components={...}>`, com os rótulos do `site.ts` do idioma do texto.
 - `meta.media.cover` = imagem real do card (`fit: "frame"`: captura em moldura `surface-2`, cortada embaixo;
@@ -158,7 +162,8 @@ Destaque chapado e usado com parcimônia (rótulos, links, foco, detalhes). Sem 
 - Mídia do LibrasFlow: `public/librasflow/` (vídeo e poster convertidos do GIF de demonstração do repositório,
   sem a faixa do editor; `librasflow-card.webp` sem a barra de texto do topo). O banner do repositório não é usado
   (estética de "IA brilhante", contra as regras visuais). Figuras do artigo em `public/librasflow/midia-librasflow/`
-  (pipeline, matriz de confusão, interface), com rótulos em português; a versão EN avisa isso na legenda.
+  (matriz de confusão e interface), com rótulos em português; a legenda avisa isso. O pipeline é um `<Flow>` de
+  6 etapas traduzido; `fig-pipeline.webp` ficou sem uso.
 - Artes abstratas (`components/art/project-art.tsx`), composições HTML/SVG do servidor nas cores do tema,
   decorativas: painel + agente, pontos da mão, fluxo de nós e Kanban com SLA (plataforma de demandas).
   As telas do repositório da plataforma não são usadas: têm o logo da Gaudium e dados de teste.
@@ -174,7 +179,27 @@ Destaque chapado e usado com parcimônia (rótulos, links, foco, detalhes). Sem 
   variante de 63 atributos, descartada). São 34.374 amostras, não "imagens". Demo pública: librasflow.ifsp.dev
   (MLP no navegador; os números do estudo são do Random Forest). Nunca escrever "100% de acurácia".
 - Plataforma de demandas: o README fala em RLS, mas o código usa a chave de serviço e checa permissões
-  no Flask. O caso descreve o que o código faz. Citar que foi o case do processo seletivo: `[CONFIRMAR]`.
+  no Flask. O caso descreve o que o código faz. Foi o "case técnico do processo seletivo em que fui aprovado"
+  ("technical case from the hiring process I passed"), sem citar a empresa.
+
+## Demos dentro do site
+
+Regras (`docs/conteudo/conteudo-librasflow-e-demos.md`, Parte 2): faixa fixa "Demonstração com dados fictícios ·
+sem banco de dados", botão "Ver código no GitHub", rota própria em PT e EN que carrega só o próprio JS,
+botão "Abrir demo" no estudo de caso (`meta.demo`) e nenhuma marca de terceiros.
+
+- `lib/demos.ts`: mapa demo → projeto, `demoPath`, conteúdo e metadata. Rotas `app/(pt)/demos/<slug>` e
+  `app/(en)/en/demos/<slug>` (o segmento `demos` é igual nos dois idiomas); entram no sitemap pelo mapa.
+- Textos em `content/<idioma>/demos/<slug>.ts`, tipados em `content/demos/<slug>-types.ts`.
+- Demo de demandas (`components/demos/demandas/`): "Painel de Demandas" / "Request Board", recriação do
+  repositório desafio-Gaudium sem a marca. `loader.tsx` usa `next/dynamic` com `ssr: false` (o estado vem do
+  `localStorage` e do relógio). `logic.ts` é puro: regras de permissão do Flask (admin vê e altera tudo;
+  colaborador vê só o próprio setor de destino e altera só esses), SLA do `script.js` (75/90%, atrasado,
+  cumprido), tempo apontado e payloads do n8n (`novo_ticket`, `ticket_assumido`, `ticket_concluido`, mais o alerta
+  de 48 h sem atividade como verificação agendada). Usuários fictícios Ana (RH), Carlos (Comercial) e Marina (TI,
+  admin), e-mails `@example.com`. Diferença assumida: `ticket_assumido` também dispara ao retomar um pausado.
+- Teste da demo: pelo Chrome DevTools Protocol, clicando nos botões, preenchendo o formulário e simulando o
+  arrastar com `DragEvent` + `DataTransfer` (ver "Verificação visual").
 
 ## Idiomas
 
@@ -198,7 +223,10 @@ Destaque chapado e usado com parcimônia (rótulos, links, foco, detalhes). Sem 
 - JS inicial ~138 KB gzip, dos quais ~125 KB são React e Next; o código do site soma ~10 KB.
 - No `next.config.ts`, o loader do Tailwind ignora `*.module.css` (senão os CSS Modules perdem o escopo).
 - Componentes cliente não importam `Button`/`cn`: o servidor calcula `buttonVariants(...)` e passa a classe como string,
-  para `tailwind-merge` e o Slot do Radix não irem ao bundle do cliente.
+  para `tailwind-merge` e o Slot do Radix não irem ao bundle do cliente. Exceção: as demos, que ficam num chunk
+  próprio carregado só na rota delas.
+- `buttonVariants` devolve as classes já mescladas (`cn`); sem isso a borda do `outline` perdia para o
+  `border-transparent` da base.
 - Fontes pré-carregadas: três arquivos, ~95 KB no total.
 
 ## Verificação visual
