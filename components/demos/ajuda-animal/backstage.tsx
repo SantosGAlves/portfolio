@@ -33,6 +33,7 @@ export function Backstage({
       <label className="flex items-start gap-3 rounded-xl border border-line bg-surface p-4">
         <input
           type="checkbox"
+          name="simular-falha"
           checked={fail}
           onChange={(e) => onFail(e.target.checked)}
           className="mt-0.5 size-4 shrink-0 accent-[var(--brand)]"

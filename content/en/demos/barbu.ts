@@ -18,7 +18,7 @@ export const barbu: BarbuDemoContent = {
     ],
   },
   frameLabel: "Barbú app prototype",
-  splash: { brand: "BARBÚ", loading: "Loading the app" },
+  splash: { brand: "BARBÚ", loading: "Loading the app…" },
   login: {
     tagline: "PREMIUM EXPERIENCE",
     email: "Email",
@@ -175,9 +175,9 @@ export const barbu: BarbuDemoContent = {
   wip: {
     badge: "In progress",
     loyaltyTitle: "Barbú Club",
-    loyaltyText: "Your loyalty card is coming soon...",
+    loyaltyText: "Your loyalty card is coming soon…",
     productsTitle: "Shop",
-    productsText: "Our products are coming soon...",
+    productsText: "Our products are coming soon…",
     back: "Back",
   },
   nav: { home: "Home", history: "History", notifications: "Notices", profile: "Profile", label: "App navigation" },

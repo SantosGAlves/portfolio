@@ -216,6 +216,8 @@ export default function DemandasDemo({ content }: { content: DemandasDemoContent
             <span className="sr-only">{c.toolbar.search}</span>
             <input
               type="search"
+              name="busca"
+              autoComplete="off"
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               placeholder={`${c.toolbar.search}…`}
@@ -320,7 +322,7 @@ export default function DemandasDemo({ content }: { content: DemandasDemoContent
             setQuery("")
             notify(c.toasts.reset)
           }}
-          className="rounded-sm text-small text-muted-foreground underline decoration-line-strong underline-offset-4 hover:text-foreground"
+          className="rounded-sm py-0.5 text-small text-muted-foreground underline decoration-line-strong underline-offset-4 hover:text-foreground"
         >
           {c.toolbar.reset}
         </button>

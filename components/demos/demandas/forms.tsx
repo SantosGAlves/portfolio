@@ -65,7 +65,7 @@ export function NewTicketDialog({
           <div className="grid content-start gap-4">
             <label className={labelClass}>
               {f.origin}
-              <input value={content.sectors[user.sector]} readOnly className={`${inputClass} text-muted-foreground`} />
+              <input name="origem" value={content.sectors[user.sector]} readOnly className={`${inputClass} text-muted-foreground`} />
             </label>
             <label className={labelClass}>
               {f.destination}

@@ -205,6 +205,7 @@ function TicketBody({
               <label className={labelClass}>
                 <span className="sr-only">{c.noteLabel}</span>
                 <textarea
+                  name="nota"
                   value={note}
                   onChange={(e) => setNote(e.target.value)}
                   rows={2}
