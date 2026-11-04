@@ -21,6 +21,8 @@ export const meta = {
   summary:
     "Reconhece 21 letras do alfabeto manual de Libras pela webcam. O centro do TCC foi a avaliação: um 99,96% que escondia vazamento de dados virou 97,0% e, com imagens de outra fonte, 71,2%.",
   role: "Desenvolvimento principal (dados, treino, avaliação e aplicação web), em dupla",
+  roleShort: "Desenvolvimento principal, em dupla",
+  outcome: "97,0% no protocolo corrigido, 71,2% no teste externo",
   period: "2026 · TCC de ADS, IFSP Jacareí",
   stack: ["Python", "MediaPipe", "OpenCV", "scikit-learn", "NumPy", "pandas", "SciPy", "Flask"],
   draft: false,
@@ -51,17 +53,15 @@ export const meta = {
   },
 }
 
-## Contexto e problema
+<Demo />
 
-A comunicação entre pessoas surdas e ouvintes ainda esbarra em barreiras quando não há intérprete, e muitas soluções de reconhecimento exigem hardware forte ou a instalação de um programa. O LibrasFlow é o nosso TCC do curso de Análise e Desenvolvimento de Sistemas do IFSP Jacareí: um reconhecedor leve do alfabeto manual da Libras, que funciona com uma webcam comum, num computador modesto, pelo navegador.
+## Resultado
 
-O escopo são as 21 letras estáticas. H, J, K, X e Z envolvem movimento e ficaram de fora. O trabalho foi escrito como artigo científico, em preparação para submissão.
+- Um reconhecedor que roda em tempo real com uma webcam comum, sem GPU dedicada: 19,5 FPS de ponta a ponta.
+- Uma avaliação em três níveis: 99,96% com vazamento, 97,0% com a divisão por grupos e 71,2% com imagens de outra fonte.
+- Uma versão pública que qualquer pessoa pode testar no navegador.
 
-## Minha função
-
-O TCC foi feito em dupla com Carlos Henrique Moreira Gonçalves, com orientação do Prof. Dr. Tardelli Ronan Coelho Stekel e da Profa. Dra. Ana Paula Abrantes de Castro e Shiguemori. Fiquei com o desenvolvimento principal: a preparação dos dados, o treinamento, o protocolo de avaliação (incluindo a investigação do vazamento) e a aplicação web.
-
-## Solução e arquitetura
+## Como funciona
 
 O modelo não olha a imagem bruta. O MediaPipe encontra 21 pontos da mão em cada quadro, e o classificador trabalha só com a geometria deles.
 
@@ -76,6 +76,22 @@ O modelo não olha a imagem bruta. O MediaPipe encontra 21 pontos da mão em cad
     { title: "Letra na tela", detail: "Texto em tempo real", accent: true },
   ]}
 />
+
+<CaseVideo />
+
+<Details>
+
+## Contexto e problema
+
+A comunicação entre pessoas surdas e ouvintes ainda esbarra em barreiras quando não há intérprete, e muitas soluções de reconhecimento exigem hardware forte ou a instalação de um programa. O LibrasFlow é o nosso TCC do curso de Análise e Desenvolvimento de Sistemas do IFSP Jacareí: um reconhecedor leve do alfabeto manual da Libras, que funciona com uma webcam comum, num computador modesto, pelo navegador.
+
+O escopo são as 21 letras estáticas. H, J, K, X e Z envolvem movimento e ficaram de fora. O trabalho foi escrito como artigo científico, em preparação para submissão.
+
+## Minha função
+
+O TCC foi feito em dupla com Carlos Henrique Moreira Gonçalves, com orientação do Prof. Dr. Tardelli Ronan Coelho Stekel e da Profa. Dra. Ana Paula Abrantes de Castro e Shiguemori. Fiquei com o desenvolvimento principal: a preparação dos dados, o treinamento, o protocolo de avaliação (incluindo a investigação do vazamento) e a aplicação web.
+
+## Solução e arquitetura
 
 - **Atributos:** as coordenadas x e y dos 21 pontos (42 valores), centradas no punho e divididas pelo maior valor absoluto. Isso reduz o efeito da posição e do tamanho da mão na imagem.
 - **Modelo:** Random Forest com 100 árvores, profundidade máxima 15 e mínimo de 2 amostras por folha.
@@ -171,8 +187,6 @@ Medido em 300 quadros, num notebook com i5-13420H, sem GPU dedicada, e webcam 72
 
 Com a exibição na tela, a taxa observada de ponta a ponta foi de 19,5 FPS.
 
-<Demo />
-
 ## Stack
 
 - **Visão computacional:** MediaPipe Hands e OpenCV.
@@ -217,12 +231,9 @@ Com a exibição na tela, a taxa observada de ponta a ponta foi de 19,5 FPS.
   Evita que a frase se encha de letras erradas durante a transição de um sinal para outro.
 </Decision>
 
-## Resultado
+## Mais sobre o resultado
 
-- Um reconhecedor que roda em tempo real com uma webcam comum, sem GPU dedicada: 19,5 FPS de ponta a ponta.
-- Uma avaliação em três níveis: 99,96% com vazamento, 97,0% com a divisão por grupos e 71,2% com imagens de outra fonte.
 - Uma explicação para a queda: letras que seguem outra língua de sinais e pares que diferem por detalhes finos.
-- Uma versão pública que qualquer pessoa pode testar no navegador.
 
 Próximos passos citados no TCC: avaliação entre usuários diferentes, imagens de Libras com sinalizantes identificados e sinais dinâmicos com modelos temporais (LSTM ou Transformers).
 
@@ -231,3 +242,5 @@ Próximos passos citados no TCC: avaliação entre usuários diferentes, imagens
 - Uma acurácia perto de 100% é sinal para investigar, não para comemorar.
 - A forma de dividir treino e teste mudou o resultado mais do que trocar de modelo: 99,96%, 97,0% ou 71,2%, conforme a amostra de teste fica mais "nova".
 - Generalizar exige dados variados: outras pessoas, iluminação, distância e ângulo. Esse é o principal trabalho futuro.
+
+</Details>

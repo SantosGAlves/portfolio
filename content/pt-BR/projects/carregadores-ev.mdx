@@ -10,6 +10,8 @@ export const meta = {
   summary:
     "Para uma empresa que vende carregadores de carro elétrico: o painel mantém a base de carros e produtos que o agente de IA consulta para dizer, na conversa, em quanto tempo o carro do cliente carrega com cada um.",
   role: "Responsável pelo sistema na Hunt Sales",
+  roleShort: "Responsável pelo sistema",
+  outcome: "o agente responde o tempo de recarga",
   period: "2026 · Hunt Sales",
   stack: ["Supabase", "n8n", "Node.js", "Express", "JavaScript"],
   draft: false,
@@ -31,6 +33,33 @@ export const meta = {
 
 {/* Projeto de cliente da Hunt Sales: o cliente não é identificado em nenhum idioma. Fonte: docs/conteudo/conteudo-agente-baterias.md. */}
 
+<Demo />
+
+## Resultado
+
+- O padrão “agente + base de dados + painel para humanos” funcionou num segundo nicho, com outro tipo de dado técnico.
+- O agente passou a responder o tempo de recarga a partir dos dados cadastrados no painel.
+
+Não houve medição formal de métricas, então não há números aqui.
+
+## Como funciona
+
+O painel grava veículos e carregadores no Supabase pelo n8n; o simulador de recarga e o agente leem a mesma base e fazem a mesma conta: bateria ÷ o menor valor entre o limite AC do carro e a potência da saída.
+
+<Flow
+  caption="O painel grava pelo n8n; o simulador e o agente leem os mesmos dados."
+  steps={[
+    { title: "Painel de gestão", detail: "Node.js + Express servindo o front-end" },
+    { title: "Webhook do n8n", detail: "Valida e aplica as regras de negócio" },
+    { title: "Supabase", detail: "Veículos, produtos e saídas, por empresa" },
+    { title: "Simulador e agente", detail: "Tempo de recarga em cada saída", accent: true },
+  ]}
+/>
+
+<CaseVideo />
+
+<Details>
+
 ## Contexto e problema
 
 Depois do [agente de vendas da loja de baterias](/projetos/agente-baterias), o modelo foi replicado para uma empresa que vende carregadores para veículos elétricos, também cliente da Hunt Sales. O catálogo tem principalmente carregadores portáteis com plugues trocáveis e uma wallbox.
@@ -43,24 +72,12 @@ Com o resultado do agente de baterias, passei a ser o responsável pelas automa�
 
 ## Solução e arquitetura
 
-<Flow
-  caption="O painel grava pelo n8n; o simulador e o agente leem os mesmos dados."
-  steps={[
-    { title: "Painel de gestão", detail: "Node.js + Express servindo o front-end" },
-    { title: "Webhook do n8n", detail: "Valida e aplica as regras de negócio" },
-    { title: "Supabase", detail: "Veículos, produtos e saídas, por empresa" },
-    { title: "Simulador e agente", detail: "Tempo de recarga em cada saída", accent: true },
-  ]}
-/>
-
 - **Veículos** com a capacidade da bateria (kWh) e o limite de recarga em corrente alternada (kW).
 - **Produtos com várias saídas:** um carregador pode ter várias saídas com potências diferentes. O exemplo é o portátil com plugues trocáveis de 10 A, 16 A, 20 A e 32 A: cada plugue é uma saída, com a sua potência (relação produto → saídas, com exclusão em cascata).
 - **Simulador de recarga:** para o veículo escolhido, calcula o tempo em cada carregador pelo gargalo técnico, `tempo (h) = bateria (kWh) ÷ min(limite AC do carro, potência do plug)`. O agente faz a mesma conta na conversa e também informava o tempo na recarga rápida em DC, para o cliente ter uma ideia antes de comprar.
 - **Multiempresa:** o painel valida se a empresa está ativa antes de carregar os dados, e cada consulta é filtrada por empresa.
 - **Tempo real:** o Supabase Realtime atualiza a tela quando os dados mudam, sem recarregar.
 - **Regras de negócio no n8n:** as gravações passam por um webhook do n8n, que centraliza a validação antes de chegar ao banco.
-
-<Demo />
 
 ## Stack
 
@@ -78,13 +95,8 @@ Com o resultado do agente de baterias, passei a ser o responsável pelas automa�
   As gravações passam pelo webhook do n8n antes de chegar ao banco, em vez de cada tela validar por conta própria.
 </Decision>
 
-## Resultado
-
-- O padrão “agente + base de dados + painel para humanos” funcionou num segundo nicho, com outro tipo de dado técnico.
-- O agente passou a responder o tempo de recarga a partir dos dados cadastrados no painel.
-
-Não houve medição formal de métricas, então não há números aqui.
-
 ## Aprendizados
 
 - O que se reaproveita de um cliente para outro é o desenho (agente, base de dados e painel), não as tabelas: aqui o dado central é a relação entre carro e saída, e não uma tabela de compatibilidade.
+
+</Details>

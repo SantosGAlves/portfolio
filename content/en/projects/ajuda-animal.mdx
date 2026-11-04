@@ -12,6 +12,8 @@ export const meta = {
   summary:
     "A WhatsApp channel for reporting animal abuse, in an IFSP extension project with the Jacareí city government. I built the n8n bot and its integration with the system's API.",
   role: "WhatsApp channel: n8n bot, API integration and conversation sessions",
+  roleShort: "WhatsApp channel (n8n bot)",
+  outcome: "prototype demoed end to end",
   period: "2026 · IFSP Jacareí extension project",
   stack: ["n8n", "Evolution API", "PostgreSQL", "Docker"],
   draft: false,
@@ -44,17 +46,19 @@ export const meta = {
   ],
 }
 
-## Context and problem
+<Demo />
 
-Ajuda Animal ("Animal Help") is an extension project of IFSP Jacareí (a federal institute) with the Jacareí city government, for its Animal Protection department. It's a team project: a system to receive and follow up reports of animal abuse and abandonment.
+## Result
 
-The department needs reports with useful data to act on: where the animal is, what is happening and a photo. Calls and loose messages arrive incomplete and can't be followed up. WhatsApp is the channel people already use, but a free-form chat doesn't produce structured data.
+A working prototype, demoed end to end on 10/19/2026 (the video is right below, in “How it works”):
 
-## My role
-
-I was responsible for the WhatsApp channel: the n8n chatbot, its connection to the system's back end (core-api) and the conversation session database. I also carried the data and photos from WhatsApp into the system, where the report is created. The dashboard and the API belong to the rest of the team.
+- a full report over WhatsApp (type, animal, location, photo and privacy);
+- a protocol generated and sent right away;
+- the report on the dashboard map, with the citizen's photo.
 
 ## How it works
+
+The citizen talks to the bot on WhatsApp; n8n runs the conversation and files the report in the team's system through the API, which returns the protocol.
 
 <Architecture
   link="HTTP + x-service-key"
@@ -81,6 +85,22 @@ I was responsible for the WhatsApp channel: the n8n chatbot, its connection to t
   ]}
 />
 
+<CaseVideo />
+
+<Details>
+
+## Context and problem
+
+Ajuda Animal ("Animal Help") is an extension project of IFSP Jacareí (a federal institute) with the Jacareí city government, for its Animal Protection department. It's a team project: a system to receive and follow up reports of animal abuse and abandonment.
+
+The department needs reports with useful data to act on: where the animal is, what is happening and a photo. Calls and loose messages arrive incomplete and can't be followed up. WhatsApp is the channel people already use, but a free-form chat doesn't produce structured data.
+
+## My role
+
+I was responsible for the WhatsApp channel: the n8n chatbot, its connection to the system's back end (core-api) and the conversation session database. I also carried the data and photos from WhatsApp into the system, where the report is created. The dashboard and the API belong to the rest of the team.
+
+## The conversation step by step
+
 **The conversation is a state machine.** Each phone number has a row in the `whatsapp_sessions` table, with the current step and the partial answers.
 
 <Flow
@@ -105,8 +125,6 @@ In the database, the steps are `INICIO`, `MENU`, `DENUNCIA_TIPO`, `DENUNCIA_ANIM
 - **Protocol.** The API generates a readable code like `DEN-2026-7K3QX9`, with no 0/O or 1/I/L so citizens don't mix them up, and the bot sends it right away.
 - **Lookup.** The citizen types the protocol (case, spaces and dashes don't matter) and gets the type, status and last update date. No address, description or contact details.
 - **Errors.** If the API fails, the bot says so, keeps the answers and lets the citizen try again.
-
-<Demo />
 
 ## Stack
 
@@ -133,14 +151,9 @@ In the database, the steps are `INICIO`, `MENU`, `DENUNCIA_TIPO`, `DENUNCIA_ANIM
   Reports are anonymous by default: contact details are only kept if the citizen picks option 2. The protocol lookup exposes no personal data, the photo is stored as a reference (never as base64 in the session), and there is a ready query to delete sessions abandoned for over 30 days, still to be scheduled.
 </Decision>
 
-## Result
+## More on the outcome
 
-A working prototype, demoed end to end on 10/19/2026 (the video at the top):
-
-- a full report over WhatsApp (type, animal, location, photo and privacy);
-- a protocol generated and sent right away;
-- the report on the dashboard map, with the citizen's photo;
-- progress updated on the dashboard shows up in the WhatsApp lookup.
+In the same demo, progress updated on the dashboard shows up in the WhatsApp lookup.
 
 The project's next steps: the official channel (Meta's WhatsApp Business), the city's server and an automatic alert to inspectors for every new report. The node for that alert is already in the workflow, but disabled.
 
@@ -149,3 +162,5 @@ The project's next steps: the official channel (Meta's WhatsApp Business), the c
 - Integrating through a contract (API + service key) instead of going straight to the database lets you swap the channel without touching the rest of the system.
 - A public service chatbot has to be predictable: a numbered menu, exit commands and error messages that don't lose what the citizen already answered.
 - Privacy is an architecture decision, not an interface detail.
+
+</Details>

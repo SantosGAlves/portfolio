@@ -12,6 +12,8 @@ export const meta = {
   summary:
     "Um portal único para pedidos entre setores: Flask com Supabase Auth e perfis, Kanban com SLA e eventos que o n8n transforma em avisos por e-mail. Publicado no Render.",
   role: "Back-end, interface, automações e deploy",
+  roleShort: "Back-end, interface, automações e deploy",
+  outcome: "publicado no Render, fluxo completo",
   period: "2026",
   stack: ["Python", "Flask", "Supabase", "n8n", "JavaScript", "Gunicorn", "Render"],
   draft: false,
@@ -31,17 +33,19 @@ export const meta = {
   ],
 }
 
-## Contexto e problema
+<Demo />
 
-Em muitas empresas, um pedido de um setor para outro começa numa mensagem solta: um e-mail, um canal do Discord. Não existe um lugar único para registrar, o prazo não fica claro e quem pediu fica sem saber se alguém já assumiu.
+## Resultado
 
-A proposta foi um portal único de demandas internas, com gestão visual e comunicação automática entre os setores. Este foi o case técnico do processo seletivo em que fui aprovado.
+- Publicado no Render, com o fluxo completo de ponta a ponta.
+- Abertura, Kanban por setor, permissões, SLA e exportação.
+- Avisos por e-mail via n8n para quem pede e para quem atende.
 
-## Minha função
+Não há métricas de uso, então não há números aqui.
 
-Desenvolvi o sistema de ponta a ponta: a API em Flask, a autenticação e os perfis no Supabase, o Kanban no front-end, os fluxos de notificação no n8n e a publicação no Render.
+## Como funciona
 
-## Solução e arquitetura
+Cada demanda é aberta com setor de destino e prazo, entra no Kanban do setor com SLA visual e, a cada mudança de status, a API avisa o n8n, que manda o e-mail certo.
 
 <Flow
   caption="Uma demanda, da abertura à conclusão."
@@ -54,14 +58,28 @@ Desenvolvi o sistema de ponta a ponta: a API em Flask, a autenticação e os per
   ]}
 />
 
+<CaseVideo />
+
+<Details>
+
+## Contexto e problema
+
+Em muitas empresas, um pedido de um setor para outro começa numa mensagem solta: um e-mail, um canal do Discord. Não existe um lugar único para registrar, o prazo não fica claro e quem pediu fica sem saber se alguém já assumiu.
+
+A proposta foi um portal único de demandas internas, com gestão visual e comunicação automática entre os setores. Este foi o case técnico do processo seletivo em que fui aprovado.
+
+## Minha função
+
+Desenvolvi o sistema de ponta a ponta: a API em Flask, a autenticação e os perfis no Supabase, o Kanban no front-end, os fluxos de notificação no n8n e a publicação no Render.
+
+## Solução e arquitetura
+
 - **Perfis e permissões.** O login, a sessão e a recuperação de senha usam o Supabase Auth; cada pessoa tem um perfil com setor e nível de acesso. Quem é gestor vê todas as demandas, cria usuários e exclui tickets. Quem é colaborador vê só as do próprio setor, e só o setor de destino pode assumir ou mudar uma demanda. Qualquer um pode registrar uma nota no histórico.
 - **Kanban com SLA.** Cada card mostra quanto do prazo já passou, do momento da abertura até o fim do dia do prazo. A partir de 75% aparece "Atenção", a partir de 90%, "Risco crítico", e depois do prazo, "Atrasado".
 - **Tempo de atendimento.** Assumir, pausar e retomar uma demanda registra o responsável e soma os minutos efetivamente gastos.
 - **Eventos para o n8n.** A API dispara três eventos (`novo_ticket`, `ticket_assumido` e `ticket_concluido`) para um webhook do n8n, que manda os e-mails para quem pediu e para quem atende. O n8n também avisa gestores sobre demandas paradas.
 - **Relatórios.** Um botão exporta em CSV as demandas da tela.
 - **Deploy.** Gunicorn no Render, com as chaves em variáveis de ambiente.
-
-<Demo />
 
 ## Stack
 
@@ -101,12 +119,10 @@ Desenvolvi o sistema de ponta a ponta: a API em Flask, a autenticação e os per
   Uma barra que muda de cor diz mais rápido o que precisa de atenção do que uma lista de datas.
 </Decision>
 
-## Resultado
-
-O sistema foi publicado no Render com o fluxo completo: abertura, Kanban por setor, permissões, SLA, exportação e os avisos por e-mail via n8n. Não há métricas de uso, então não há números aqui.
-
 ## Aprendizados
 
 - Separar o que aconteceu (o evento) de quem precisa saber (a automação) deixa as duas partes mais simples.
 - Uma chave de serviço no back-end é prática, mas transfere toda a responsabilidade de segurança para o código da API.
 - Uma integração externa nunca deve conseguir derrubar o fluxo principal.
+
+</Details>

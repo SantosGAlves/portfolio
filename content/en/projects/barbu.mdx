@@ -12,6 +12,8 @@ export const meta = {
   summary:
     "Booking app for a barbershop, built by a team of 4: Flutter, Firebase Auth and Firestore, booked slots checked in real time and an email confirmation through n8n.",
   role: "Most of the app: Firebase, first screens, login, booking and n8n",
+  roleShort: "Most of the app, in a team of 4",
+  outcome: "prototype with the full booking flow",
   period: "2026 · Mobile Devices course",
   stack: ["Flutter", "Firestore", "Firebase Auth", "n8n", "Dart"],
   draft: false,
@@ -31,17 +33,19 @@ export const meta = {
   ],
 }
 
-## Context
+<Demo />
 
-Barbú is an app prototype for a local barbershop: customers create an account, pick a service, a barber and a free slot, and follow their bookings on their phone.
+## Result
 
-It was a team project for the Mobile Devices course, built by Carlos, Gustavo Alves, Henrique and Kendy.
+- A prototype with the full booking flow, history and notifications.
+- Free slots in real time, read from Firestore.
+- Email confirmation through the n8n webhook and a phone reminder 1 hour before.
 
-## My role
-
-I built most of the app: the Firebase integration (Auth and Firestore), the first screens, login, booking and the n8n integration.
+Loyalty and Products were left in development. There are no usage metrics.
 
 ## How it works
+
+The app saves the booking in Firestore, schedules a reminder on the phone and sends the data to the n8n webhook, which emails the confirmation.
 
 <Flow
   caption="From login to the confirmation email."
@@ -54,15 +58,31 @@ I built most of the app: the Firebase integration (Auth and Firestore), the firs
   ]}
 />
 
+<CaseVideo />
+
+<Details>
+
+## Context
+
+Barbú is an app prototype for a local barbershop: customers create an account, pick a service, a barber and a free slot, and follow their bookings on their phone.
+
+It was a team project for the Mobile Devices course, built by Carlos, Gustavo Alves, Henrique and Kendy.
+
+## My role
+
+I built most of the app: the Firebase integration (Auth and Firestore), the first screens, login, booking and the n8n integration.
+
+## Account, slots and confirmation
+
 - **Account.** Sign-up creates the user in Firebase Auth and stores name and phone in `users/{uid}`. The Firestore rules let each person read and change only their own data and bookings.
 - **Real-time slots.** When a day is picked, the app queries `bookings` for that barber on that date and only shows free slots.
 - **On confirm.** The app writes the booking to `bookings`, creates a notice in `notifications/{uid}/items` (shown in the Notices tab), schedules the local reminder and sends the n8n webhook the name, email, date, time, barber and service.
 - **Afterwards.** The history lets you cancel (the status changes to "cancelado"), and past bookings show as done.
-
-<Demo />
 
 ## Limits and next steps
 
 - Loyalty, Products and the admin panel were left as "coming soon" in the app.
 - The webhook points to a local n8n (`localhost`), so the confirmation email only goes out with n8n running on the same machine.
 - The slot query doesn't filter by status, so a cancelled slot still shows as booked. And the write doesn't use a transaction: two customers confirming the same slot at the same moment would both be saved. Those are the first fixes I'd make.
+
+</Details>

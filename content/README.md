@@ -43,6 +43,8 @@ export const meta = {
   kind: "Agente de IA · n8n", // rótulo curto acima do título
   summary: "Subtítulo do caso e descrição para buscadores (até 220 caracteres).",
   role: "O que eu fiz",
+  roleShort: "Papel curto",  // opcional (≤ 60): linha de fatos do topo, "papel · ano · resultado"
+  outcome: "resultado curto", // opcional (≤ 70): o resultado principal, na mesma linha
   period: "2026",           // começa pelo ano: o card mostra o trecho antes do " · "
   stack: ["Python", "Supabase"], // nomes de ferramentas (iguais nos dois idiomas); os 4 primeiros vão para o card
   tldr: [
@@ -56,6 +58,22 @@ export const meta = {
     // controls: true = vídeo longo: controles nativos, sem tocar sozinho, só baixa no play
   },
 }
+
+<Demo />  {/* 1. "Experimente" logo no começo; sem demo, mostra o vídeo do caso */}
+
+## Resultado
+
+- No máximo três tópicos de impacto.
+
+## Como funciona
+
+Um parágrafo curto.
+
+<Flow ... />  {/* o diagrama principal */}
+
+<CaseVideo />  {/* o vídeo de meta.media.video (nos casos com demo) */}
+
+<Details>  {/* "Ver detalhes técnicos", fechado por padrão: o texto longo vai aqui dentro */}
 
 ## Contexto e problema
 ## Minha função
@@ -85,13 +103,15 @@ export const meta = {
   Por que foi a escolha certa.
 </Decision>
 
-## Resultado
+## Mais sobre o resultado
 
 <Metrics>
   <Metric value="[CONFIRMAR]" label="O que foi medido" />
 </Metrics>
 
 ## Aprendizados
+
+</Details>
 ```
 
 Outros blocos disponíveis:
@@ -113,8 +133,8 @@ Outros blocos disponíveis:
 
 <DataTable caption="Legenda" head={["Coluna", "Valor"]} rows={[["Linha", "1"]]} highlight={0} />
 
-<Signature />   {/* demonstração interativa do agente (texto em site.ts) */}
-<Demo />        {/* seção "Experimente" com a demo de meta.demo; padrão: depois da arquitetura, antes de Stack */}
+<TrySection intro="..."><Signature /></TrySection>  {/* "Experimente" com a assinatura do agente (texto em site.ts) */}
+<Demo />        {/* seção "Experimente" com a demo de meta.demo (ou liveEmbed); é o primeiro bloco do texto */}
 ```
 
 3. (Opcional) Crie `content/en/projects/<slug>.mdx` com o mesmo `order`, `tier`, `page`,

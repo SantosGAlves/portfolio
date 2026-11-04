@@ -10,6 +10,8 @@ export const meta = {
   summary:
     "For a company that sells EV chargers: the dashboard keeps the database of cars and products that the AI agent queries to tell, in the conversation, how long the customer's car takes to charge with each one.",
   role: "Owner of the system at Hunt Sales",
+  roleShort: "Owned the system",
+  outcome: "the agent answers charging time",
   period: "2026 · Hunt Sales",
   stack: ["Supabase", "n8n", "Node.js", "Express", "JavaScript"],
   draft: false,
@@ -31,6 +33,33 @@ export const meta = {
 
 {/* Hunt Sales client project: the client is not identified in any language. Source: docs/conteudo/conteudo-agente-baterias.md. */}
 
+<Demo />
+
+## Result
+
+- The “agent + database + dashboard for humans” pattern worked in a second niche, with a different kind of technical data.
+- The agent answers charging time from the data registered in the dashboard.
+
+There was no formal measurement of metrics, so there are no numbers here.
+
+## How it works
+
+The dashboard writes vehicles and chargers to Supabase through n8n; the charging simulator and the agent read the same data and do the same math: battery ÷ the lower of the car's AC limit and the output's power.
+
+<Flow
+  caption="The dashboard writes through n8n; the simulator and the agent read the same data."
+  steps={[
+    { title: "Management dashboard", detail: "Node.js + Express serving the front-end" },
+    { title: "n8n webhook", detail: "Validates and applies the business rules" },
+    { title: "Supabase", detail: "Vehicles, products and outputs, per company" },
+    { title: "Simulator and agent", detail: "Charging time on each output", accent: true },
+  ]}
+/>
+
+<CaseVideo />
+
+<Details>
+
 ## Context and problem
 
 After the [sales agent for the battery store](/en/projects/agente-baterias), the model was replicated for a company that sells electric vehicle chargers, also a Hunt Sales client. The catalog is mainly portable chargers with swappable plugs and a wallbox.
@@ -43,24 +72,12 @@ After the battery agent's results, I became responsible for automations and simi
 
 ## Solution and architecture
 
-<Flow
-  caption="The dashboard writes through n8n; the simulator and the agent read the same data."
-  steps={[
-    { title: "Management dashboard", detail: "Node.js + Express serving the front-end" },
-    { title: "n8n webhook", detail: "Validates and applies the business rules" },
-    { title: "Supabase", detail: "Vehicles, products and outputs, per company" },
-    { title: "Simulator and agent", detail: "Charging time on each output", accent: true },
-  ]}
-/>
-
 - **Vehicles** with battery capacity (kWh) and alternating current charging limit (kW).
 - **Products with several outputs:** one charger can have several outputs with different power ratings. The example is the portable charger with swappable 10 A, 16 A, 20 A and 32 A plugs: each plug is an output with its own power (a product → outputs relation, with cascading deletes).
 - **Charging simulator:** for the chosen vehicle, it calculates the time on each charger from the technical bottleneck, `time (h) = battery (kWh) ÷ min(car's AC limit, plug power)`. The agent does the same calculation in the conversation and also gave the DC fast-charging time, so the customer gets an idea before buying.
 - **Multi-tenant:** the dashboard checks that the company is active before loading data, and every query is filtered by company.
 - **Real time:** Supabase Realtime updates the screen when data changes, without reloading.
 - **Business rules in n8n:** writes go through an n8n webhook, which centralizes validation before reaching the database.
-
-<Demo />
 
 ## Stack
 
@@ -78,13 +95,8 @@ After the battery agent's results, I became responsible for automations and simi
   Writes go through the n8n webhook before reaching the database, instead of each screen validating on its own.
 </Decision>
 
-## Outcome
-
-- The “agent + database + dashboard for humans” pattern worked in a second niche, with a different kind of technical data.
-- The agent answers charging time from the data registered in the dashboard.
-
-There was no formal measurement of metrics, so there are no numbers here.
-
 ## What I learned
 
 - What carries over from one client to the next is the design (agent, database and dashboard), not the tables: here the central data is the relation between car and output, not a compatibility table.
+
+</Details>

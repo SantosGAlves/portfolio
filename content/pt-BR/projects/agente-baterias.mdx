@@ -11,6 +11,8 @@ export const meta = {
   summary:
     "Atende no WhatsApp, descobre a bateria certa pelo modelo, ano, câmbio e start-stop do carro e, quando não sabe, passa para um humano. Por trás, o painel onde a loja mantém o catálogo.",
   role: "Proposta e desenvolvimento de ponta a ponta, sozinho",
+  roleShort: "Proposta e desenvolvimento, sozinho",
+  outcome: "reverteu o churn do cliente",
   period: "2025–2026 · Hunt Sales",
   stack: ["GPT-4o mini", "WhatsApp", "Supabase", "PostgreSQL", "Supabase Auth", "JavaScript", "Tailwind CSS"],
   draft: false,
@@ -41,6 +43,40 @@ export const meta = {
   },
 }
 
+<TrySection intro="O agente transforma a conversa em uma consulta ao banco. Primeiro pergunta se o cliente já sabe a amperagem; se não sabe, coleta modelo, ano, câmbio e start-stop, que são exatamente as chaves da tabela de aplicações. Na conversa real ele pergunta um dado de cada vez; a demonstração abaixo junta tudo numa mensagem só.">
+
+<Signature />
+
+</TrySection>
+
+## Resultado
+
+- O cliente estava em risco de cancelamento, e a solução reverteu o churn.
+- O atendimento passou a responder sozinho os casos conhecidos e a transformar os desconhecidos em cadastro.
+- Abriu um novo tipo de produto na empresa: agente de IA integrado a um banco de dados com uma interface de gestão. Com isso, a IA passa a conhecer o negócio do cliente e fica muito mais útil do que um chatbot genérico.
+
+Não houve medição formal de métricas, então não há números aqui.
+
+## Como funciona
+
+O ponto central é que **o agente e o painel fecham um ciclo**. Cada carro que o agente não conhece vira uma tarefa para o vendedor, e cada tarefa resolvida ensina o agente. A base de conhecimento cresce com o próprio uso.
+
+<Flow
+  altLabel="ou"
+  caption="Atendimento: da mensagem à resposta."
+  steps={[
+    { title: "Cliente no WhatsApp", detail: "Pede uma bateria" },
+    { title: "Agente de IA", detail: "Coleta nome, cidade, modelo, ano, câmbio e start-stop" },
+    { title: "Consulta no Supabase", detail: "aplicacoes → baterias ativas" },
+    { title: "Opções e pedido", detail: "Marca, garantia, preço à vista e parcelado" },
+    { title: "Carro desconhecido", detail: "Registra em veiculos_sugeridos e transfere para a equipe", alt: true },
+  ]}
+/>
+
+<CaseVideo />
+
+<Details>
+
 ## Contexto e problema
 
 Uma loja de baterias automotivas, com entrega e instalação, atendia os clientes pelo WhatsApp. Para saber a bateria certa, é preciso cruzar **modelo, ano, câmbio e sistema start-stop** do veículo com a amperagem, o tipo (comum ou EFB) e o formato da caixa. Esse conhecimento ficava na cabeça dos vendedores, e cada pedido dependia de um deles parar para descobrir.
@@ -53,13 +89,7 @@ Propus o projeto e o conduzi sozinho. Desenvolvi o sistema de ponta a ponta: o f
 
 O painel roda embutido na plataforma de atendimento (CRM) da Hunt Sales, então o vendedor usa tudo no mesmo lugar. Foi o primeiro projeto desse tipo na empresa; com o resultado, passei a ser o responsável pelas automações e pelos sistemas parecidos para outros clientes.
 
-## Como funciona
-
-O agente transforma a conversa em uma consulta ao banco. Primeiro pergunta se o cliente já sabe a amperagem; se não sabe, coleta modelo, ano, câmbio e start-stop, que são exatamente as chaves da tabela de aplicações. Na conversa real ele pergunta um dado de cada vez; a demonstração abaixo junta tudo numa mensagem só.
-
-<Signature />
-
-### Duas conversas
+## Duas conversas
 
 Reconstituídas a partir de testes reais do agente no WhatsApp, com nomes e preços alterados.
 
@@ -98,20 +128,6 @@ A entrega é hoje, com instalação gratuita e descarte ecológico da bateria an
 </Chat>
 
 ## Solução e arquitetura
-
-O ponto central é que **o agente e o painel fecham um ciclo**. Cada carro que o agente não conhece vira uma tarefa para o vendedor, e cada tarefa resolvida ensina o agente. A base de conhecimento cresce com o próprio uso.
-
-<Flow
-  altLabel="ou"
-  caption="Atendimento: da mensagem à resposta."
-  steps={[
-    { title: "Cliente no WhatsApp", detail: "Pede uma bateria" },
-    { title: "Agente de IA", detail: "Coleta nome, cidade, modelo, ano, câmbio e start-stop" },
-    { title: "Consulta no Supabase", detail: "aplicacoes → baterias ativas" },
-    { title: "Opções e pedido", detail: "Marca, garantia, preço à vista e parcelado" },
-    { title: "Carro desconhecido", detail: "Registra em veiculos_sugeridos e transfere para a equipe", alt: true },
-  ]}
-/>
 
 <Flow
   caption="Painel: o carro desconhecido vira cadastro."
@@ -214,13 +230,7 @@ O ponto central é que **o agente e o painel fecham um ciclo**. Cada carro que o
   HTML e JavaScript sobre o Supabase, sem servidor próprio, para ser leve e fácil de publicar no domínio da empresa.
 </Decision>
 
-## Resultado
-
-- O cliente estava em risco de cancelamento, e a solução reverteu o churn.
-- O atendimento passou a responder sozinho os casos conhecidos e a transformar os desconhecidos em cadastro.
-- Abriu um novo tipo de produto na empresa: agente de IA integrado a um banco de dados com uma interface de gestão. Com isso, a IA passa a conhecer o negócio do cliente e fica muito mais útil do que um chatbot genérico.
-
-Não houve medição formal de métricas, então não há números aqui.
+## O mesmo padrão em outro nicho
 
 O mesmo padrão foi replicado para uma empresa de carregadores de veículos elétricos: veja o [painel para carregadores de veículos elétricos](/projetos/carregadores-ev).
 
@@ -229,3 +239,5 @@ O mesmo padrão foi replicado para uma empresa de carregadores de veículos elé
 - Em IA aplicada, o valor está tanto no sistema em volta do modelo (dados, painel, transbordo) quanto no prompt.
 - Projetar para o “não sei” primeiro: o caminho do veículo desconhecido foi o que deixou o sistema confiável.
 - O padrão “agente + base de dados + painel para humanos” é reaproveitável: serviu para baterias e depois para carregadores de veículos elétricos.
+
+</Details>

@@ -12,6 +12,8 @@ export const meta = {
   summary:
     "A single portal for requests between departments: Flask with Supabase Auth and roles, a Kanban board with SLA and events that n8n turns into email notifications. Deployed on Render.",
   role: "Back-end, interface, automations and deployment",
+  roleShort: "Back-end, interface, automations and deploy",
+  outcome: "deployed on Render, full flow",
   period: "2026",
   stack: ["Python", "Flask", "Supabase", "n8n", "JavaScript", "Gunicorn", "Render"],
   draft: false,
@@ -31,17 +33,19 @@ export const meta = {
   ],
 }
 
-## Context and problem
+<Demo />
 
-In many companies, a request from one department to another starts as a loose message: an email, a Discord channel. There is no single place to log it, the deadline is unclear and the requester never knows whether someone has picked it up.
+## Result
 
-The goal was a single portal for internal requests, with visual management and automatic communication between departments. This was the technical case from the hiring process I passed.
+- Deployed on Render, with the full flow end to end.
+- Intake, per-department Kanban, permissions, SLA and export.
+- Email notifications through n8n for the requester and the assignee.
 
-## My role
+There are no usage metrics, so there are no numbers here.
 
-I built the system end to end: the Flask API, authentication and roles in Supabase, the Kanban front-end, the notification flows in n8n and the deployment on Render.
+## How it works
 
-## Solution and architecture
+Each request is opened with a target department and a deadline, goes into that department's Kanban with a visual SLA and, on every status change, the API notifies n8n, which sends the right email.
 
 <Flow
   caption="One request, from intake to completion."
@@ -54,14 +58,28 @@ I built the system end to end: the Flask API, authentication and roles in Supaba
   ]}
 />
 
+<CaseVideo />
+
+<Details>
+
+## Context and problem
+
+In many companies, a request from one department to another starts as a loose message: an email, a Discord channel. There is no single place to log it, the deadline is unclear and the requester never knows whether someone has picked it up.
+
+The goal was a single portal for internal requests, with visual management and automatic communication between departments. This was the technical case from the hiring process I passed.
+
+## My role
+
+I built the system end to end: the Flask API, authentication and roles in Supabase, the Kanban front-end, the notification flows in n8n and the deployment on Render.
+
+## Solution and architecture
+
 - **Roles and permissions.** Login, sessions and password recovery use Supabase Auth; each person has a profile with a department and an access level. Managers see every request, create users and delete tickets. Regular users see only their own department's requests, and only the target department can pick up or change a request. Anyone can add a note to the history.
 - **Kanban with SLA.** Each card shows how much of the deadline has passed, from creation to the end of the deadline day. From 75% it shows "Attention", from 90% "Critical risk", and past the deadline, "Late".
 - **Handling time.** Picking up, pausing and resuming a request records who is responsible and adds up the minutes actually spent.
 - **Events for n8n.** The API fires three events (`novo_ticket`, `ticket_assumido` and `ticket_concluido`, new, picked up and done) to an n8n webhook, which emails the requester and the assignee. n8n also alerts managers about idle requests.
 - **Reports.** A button exports the requests on screen as CSV.
 - **Deployment.** Gunicorn on Render, with keys in environment variables.
-
-<Demo />
 
 ## Stack
 
@@ -101,12 +119,10 @@ I built the system end to end: the Flask API, authentication and roles in Supaba
   A bar that changes color tells you faster what needs attention than a list of dates.
 </Decision>
 
-## Outcome
-
-The system is deployed on Render with the full flow: intake, per-department Kanban, permissions, SLA, export and email notifications through n8n. There are no usage metrics, so there are no numbers here.
-
 ## What I learned
 
 - Separating what happened (the event) from who needs to know (the automation) makes both parts simpler.
 - A service key on the back-end is convenient, but it moves all the security responsibility into the API code.
 - An external integration should never be able to break the main flow.
+
+</Details>

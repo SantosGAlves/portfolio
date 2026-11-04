@@ -15,7 +15,7 @@ import { LiveFrame } from "./live-frame"
 // container, daí o 50cqi) e, no celular, a da tela.
 // --demo-reserve: altura que fica livre fora da demo no celular, para a página continuar rolando.
 
-function TryItShell({
+export function TryItShell({
   locale,
   intro,
   badge,

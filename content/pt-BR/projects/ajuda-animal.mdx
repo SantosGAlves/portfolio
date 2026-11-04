@@ -12,6 +12,8 @@ export const meta = {
   summary:
     "Canal de denúncias de maus-tratos a animais pelo WhatsApp, num projeto de extensão do IFSP com a Prefeitura de Jacareí. Fiz o bot no n8n e a integração com a API do sistema.",
   role: "Canal do WhatsApp: bot no n8n, integração com a API e sessões da conversa",
+  roleShort: "Canal do WhatsApp (bot no n8n)",
+  outcome: "protótipo demonstrado ponta a ponta",
   period: "2026 · projeto de extensão do IFSP Jacareí",
   stack: ["n8n", "Evolution API", "PostgreSQL", "Docker"],
   draft: false,
@@ -43,17 +45,19 @@ export const meta = {
   ],
 }
 
-## Contexto e problema
+<Demo />
 
-O Ajuda Animal é um projeto de extensão do IFSP Jacareí com a Prefeitura de Jacareí, para a Secretaria de Proteção Animal. É um projeto em equipe: um sistema para receber e acompanhar denúncias de maus-tratos e abandono de animais.
+## Resultado
 
-A Secretaria precisa de denúncias com dados úteis para agir: onde está o animal, o que está acontecendo e uma foto. Ligações e mensagens soltas chegam incompletas e sem acompanhamento. O WhatsApp é o canal que o cidadão já usa, mas uma conversa livre não gera dados estruturados.
+Protótipo funcional, demonstrado ponta a ponta em 19/10/2026 (o vídeo está logo abaixo, em “Como funciona”):
 
-## Minha função
-
-Fui responsável pelo canal do WhatsApp: o chatbot no n8n, a conexão com o back-end do sistema (core-api) e o banco de sessões da conversa. Também levei os dados e as fotos do WhatsApp até o sistema, onde a denúncia é criada. O painel e a API são da equipe.
+- denúncia completa pelo WhatsApp (tipo, animal, localização, foto e privacidade);
+- protocolo gerado e enviado na hora;
+- ocorrência no mapa do painel, com a foto enviada pelo cidadão.
 
 ## Como funciona
+
+O cidadão conversa com o bot no WhatsApp; o n8n conduz a conversa e registra a denúncia no sistema da equipe pela API, que devolve o protocolo.
 
 <Architecture
   link="HTTP + x-service-key"
@@ -80,6 +84,22 @@ Fui responsável pelo canal do WhatsApp: o chatbot no n8n, a conexão com o back
   ]}
 />
 
+<CaseVideo />
+
+<Details>
+
+## Contexto e problema
+
+O Ajuda Animal é um projeto de extensão do IFSP Jacareí com a Prefeitura de Jacareí, para a Secretaria de Proteção Animal. É um projeto em equipe: um sistema para receber e acompanhar denúncias de maus-tratos e abandono de animais.
+
+A Secretaria precisa de denúncias com dados úteis para agir: onde está o animal, o que está acontecendo e uma foto. Ligações e mensagens soltas chegam incompletas e sem acompanhamento. O WhatsApp é o canal que o cidadão já usa, mas uma conversa livre não gera dados estruturados.
+
+## Minha função
+
+Fui responsável pelo canal do WhatsApp: o chatbot no n8n, a conexão com o back-end do sistema (core-api) e o banco de sessões da conversa. Também levei os dados e as fotos do WhatsApp até o sistema, onde a denúncia é criada. O painel e a API são da equipe.
+
+## A conversa passo a passo
+
 **A conversa é uma máquina de estados.** Cada número de telefone tem uma linha na tabela `whatsapp_sessions`, com a etapa atual e as respostas parciais.
 
 <Flow
@@ -104,8 +124,6 @@ No banco, as etapas são `INICIO`, `MENU`, `DENUNCIA_TIPO`, `DENUNCIA_ANIMAL`, `
 - **Protocolo.** A API gera um código legível, como `DEN-2026-7K3QX9`, sem 0/O nem 1/I/L para o cidadão não confundir, e o bot o devolve na hora.
 - **Consulta.** O cidadão digita o protocolo (maiúsculas, espaços e traços não importam) e recebe o tipo, o status e a data da última atualização. Não recebe endereço, descrição nem contato.
 - **Erros.** Se a API falhar, o bot avisa, mantém as respostas guardadas e deixa tentar de novo.
-
-<Demo />
 
 ## Stack
 
@@ -132,14 +150,9 @@ No banco, as etapas são `INICIO`, `MENU`, `DENUNCIA_TIPO`, `DENUNCIA_ANIMAL`, `
   A denúncia é anônima por padrão: o contato só é guardado se o cidadão escolher a opção 2. A consulta de protocolo não expõe dados pessoais, a foto é guardada como referência (nunca em base64 na sessão) e há uma consulta pronta para apagar sessões abandonadas há mais de 30 dias, ainda a agendar.
 </Decision>
 
-## Resultado
+## Mais sobre o resultado
 
-Protótipo funcional, demonstrado ponta a ponta em 19/10/2026 (o vídeo no topo):
-
-- denúncia completa pelo WhatsApp (tipo, animal, localização, foto e privacidade);
-- protocolo gerado e enviado na hora;
-- ocorrência no mapa do painel, com a foto enviada pelo cidadão;
-- o andamento atualizado no painel aparece na consulta pelo WhatsApp.
+Na mesma demonstração, o andamento atualizado no painel aparece na consulta pelo WhatsApp.
 
 Próximos passos do projeto: o canal oficial (WhatsApp Business, da Meta), o servidor da Prefeitura e um aviso automático aos fiscais a cada nova denúncia. O nó desse aviso já existe no fluxo, mas está desativado.
 
@@ -148,3 +161,5 @@ Próximos passos do projeto: o canal oficial (WhatsApp Business, da Meta), o ser
 - Integrar por contrato (API + chave de serviço) em vez de acessar o banco direto permite trocar o canal sem mexer no resto do sistema.
 - Um chatbot de serviço público precisa ser previsível: menu numerado, comandos de saída e mensagens de erro que não perdem o que o cidadão já respondeu.
 - Privacidade é decisão de arquitetura, não um detalhe de interface.
+
+</Details>

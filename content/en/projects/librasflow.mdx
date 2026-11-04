@@ -21,6 +21,8 @@ export const meta = {
   summary:
     "Recognizes 21 letters of the Libras manual alphabet through a webcam. The core of the project was evaluation: a 99.96% that hid a data leak became 97.0% and, on images from another source, 71.2%.",
   role: "Lead developer (data, training, evaluation and web app), in a team of two",
+  roleShort: "Lead developer, in a pair",
+  outcome: "97.0% on the corrected protocol, 71.2% on the external test",
   period: "2026 · capstone, IFSP Jacareí",
   stack: ["Python", "MediaPipe", "OpenCV", "scikit-learn", "NumPy", "pandas", "SciPy", "Flask"],
   draft: false,
@@ -51,17 +53,15 @@ export const meta = {
   },
 }
 
-## Context and problem
+<Demo />
 
-Communication between deaf and hearing people still runs into barriers when there is no interpreter, and many recognition tools need powerful hardware or a software install. LibrasFlow is our capstone project for the Systems Analysis and Development degree at IFSP Jacareí: a lightweight recognizer for the manual alphabet of Libras (Brazilian Sign Language) that works with an ordinary webcam, on a modest computer, in the browser.
+## Result
 
-The scope is the 21 static letters. H, J, K, X and Z involve movement and were left out. The work was written as a scientific paper, currently being prepared for submission.
+- A recognizer that runs in real time with an ordinary webcam and no dedicated GPU: 19.5 FPS end to end.
+- A three-level evaluation: 99.96% with the leak, 97.0% with the group split and 71.2% on images from another source.
+- A public version anyone can try in the browser.
 
-## My role
-
-The project was done in a team of two with Carlos Henrique Moreira Gonçalves, advised by Prof. Tardelli Ronan Coelho Stekel, PhD, and Prof. Ana Paula Abrantes de Castro e Shiguemori, PhD. I was the lead developer: data preparation, training, the evaluation protocol (including the leak investigation) and the web app.
-
-## Solution and architecture
+## How it works
 
 The model doesn't look at the raw image. MediaPipe finds 21 hand landmarks in each frame, and the classifier works only with their geometry.
 
@@ -76,6 +76,22 @@ The model doesn't look at the raw image. MediaPipe finds 21 hand landmarks in ea
     { title: "Letter on screen", detail: "Real-time text", accent: true },
   ]}
 />
+
+<CaseVideo />
+
+<Details>
+
+## Context and problem
+
+Communication between deaf and hearing people still runs into barriers when there is no interpreter, and many recognition tools need powerful hardware or a software install. LibrasFlow is our capstone project for the Systems Analysis and Development degree at IFSP Jacareí: a lightweight recognizer for the manual alphabet of Libras (Brazilian Sign Language) that works with an ordinary webcam, on a modest computer, in the browser.
+
+The scope is the 21 static letters. H, J, K, X and Z involve movement and were left out. The work was written as a scientific paper, currently being prepared for submission.
+
+## My role
+
+The project was done in a team of two with Carlos Henrique Moreira Gonçalves, advised by Prof. Tardelli Ronan Coelho Stekel, PhD, and Prof. Ana Paula Abrantes de Castro e Shiguemori, PhD. I was the lead developer: data preparation, training, the evaluation protocol (including the leak investigation) and the web app.
+
+## Solution and architecture
 
 - **Features:** the x and y coordinates of the 21 landmarks (42 values), centered on the wrist and divided by the largest absolute value. That reduces the effect of the hand's position and size in the image.
 - **Model:** Random Forest with 100 trees, maximum depth 15 and at least 2 samples per leaf.
@@ -171,8 +187,6 @@ Measured over 300 frames on a laptop with an i5-13420H, no dedicated GPU, and a 
 
 With on-screen display, the observed end-to-end rate was 19.5 FPS.
 
-<Demo />
-
 ## Stack
 
 - **Computer vision:** MediaPipe Hands and OpenCV.
@@ -217,12 +231,9 @@ With on-screen display, the observed end-to-end rate was 19.5 FPS.
   It keeps the phrase from filling up with wrong letters while the hand moves from one sign to the next.
 </Decision>
 
-## Outcome
+## More on the outcome
 
-- A recognizer that runs in real time with an ordinary webcam and no dedicated GPU: 19.5 FPS end to end.
-- A three-level evaluation: 99.96% with the leak, 97.0% with the group split and 71.2% on images from another source.
 - An explanation for the drop: letters that follow another sign language and pairs that differ by fine details.
-- A public version anyone can try in the browser.
 
 Next steps named in the paper: evaluation across different users, Libras images with identified signers and dynamic signs with temporal models (LSTM or Transformers).
 
@@ -231,3 +242,5 @@ Next steps named in the paper: evaluation across different users, Libras images 
 - Accuracy close to 100% is a reason to investigate, not to celebrate.
 - How training and test are split changed the result more than switching models: 99.96%, 97.0% or 71.2%, as the test samples get more "new".
 - Generalizing takes varied data: other people, lighting, distance and angle. That is the main future work.
+
+</Details>

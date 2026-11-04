@@ -11,6 +11,8 @@ export const meta = {
   summary:
     "It serves customers on WhatsApp, finds the right battery from the car's model, year, transmission and start-stop, and hands over to a person when it doesn't know. Behind it, the store's catalog dashboard.",
   role: "Proposed and built end to end, on my own",
+  roleShort: "Proposed and built it, solo",
+  outcome: "reversed the client's churn",
   period: "2025–2026 · Hunt Sales",
   stack: ["GPT-4o mini", "WhatsApp", "Supabase", "PostgreSQL", "Supabase Auth", "JavaScript", "Tailwind CSS"],
   draft: false,
@@ -42,6 +44,40 @@ export const meta = {
   },
 }
 
+<TrySection intro="The agent turns the conversation into a database query. First it asks whether the customer already knows the amperage; if not, it collects model, year, transmission and start-stop, which are exactly the keys of the fitment table. In the real conversation it asks for one detail at a time; the demo below packs everything into a single message.">
+
+<Signature />
+
+</TrySection>
+
+## Result
+
+- The client was at risk of cancelling, and the solution reversed the churn.
+- Customer service now answers known cases on its own and turns unknown ones into catalog entries.
+- It opened a new kind of product at the company: an AI agent integrated with a database and a management interface. With that, the AI actually knows the client's business and is far more useful than a generic chatbot.
+
+There was no formal measurement of metrics, so there are no numbers here.
+
+## How it works
+
+The key point is that **the agent and the dashboard close a loop**. Every car the agent doesn't know becomes a task for a salesperson, and every task solved teaches the agent. The knowledge base grows with use.
+
+<Flow
+  altLabel="or"
+  caption="Customer service: from message to answer."
+  steps={[
+    { title: "Customer on WhatsApp", detail: "Asks for a battery" },
+    { title: "AI agent", detail: "Collects name, city, model, year, transmission and start-stop" },
+    { title: "Supabase query", detail: "aplicacoes → active baterias" },
+    { title: "Options and order", detail: "Brand, warranty, upfront and installment price" },
+    { title: "Unknown car", detail: "Logs it in veiculos_sugeridos and hands over to the team", alt: true },
+  ]}
+/>
+
+<CaseVideo />
+
+<Details>
+
 ## Context and problem
 
 A car battery store, with delivery and installation, served its customers on WhatsApp. Finding the right battery means matching the vehicle's **model, year, transmission and start-stop system** against amperage, type (standard or EFB) and case size. That knowledge lived in the salespeople's heads, and every order depended on one of them stopping to work it out.
@@ -54,13 +90,7 @@ I proposed the project and ran it on my own. I built the system end to end: the 
 
 The dashboard runs embedded in Hunt Sales' customer service platform (CRM), so salespeople use everything in one place. It was the first project of its kind at the company; after it, I became responsible for automations and similar systems for other clients.
 
-## How it works
-
-The agent turns the conversation into a database query. First it asks whether the customer already knows the amperage; if not, it collects model, year, transmission and start-stop, which are exactly the keys of the fitment table. In the real conversation it asks for one detail at a time; the demo below packs everything into a single message.
-
-<Signature />
-
-### Two conversations
+## Two conversations
 
 Reconstructed from real tests of the agent on WhatsApp, with names and prices changed. The agent talks in Portuguese; these are translations.
 
@@ -99,20 +129,6 @@ Delivery is today, with free installation and eco-friendly disposal of the old b
 </Chat>
 
 ## Solution and architecture
-
-The key point is that **the agent and the dashboard close a loop**. Every car the agent doesn't know becomes a task for a salesperson, and every task solved teaches the agent. The knowledge base grows with use.
-
-<Flow
-  altLabel="or"
-  caption="Customer service: from message to answer."
-  steps={[
-    { title: "Customer on WhatsApp", detail: "Asks for a battery" },
-    { title: "AI agent", detail: "Collects name, city, model, year, transmission and start-stop" },
-    { title: "Supabase query", detail: "aplicacoes → active baterias" },
-    { title: "Options and order", detail: "Brand, warranty, upfront and installment price" },
-    { title: "Unknown car", detail: "Logs it in veiculos_sugeridos and hands over to the team", alt: true },
-  ]}
-/>
 
 <Flow
   caption="Dashboard: the unknown car becomes a catalog entry."
@@ -217,13 +233,7 @@ Table names are in Portuguese, as in the code.
   HTML and JavaScript on top of Supabase, with no server of its own, so it stays light and easy to deploy on the company's domain.
 </Decision>
 
-## Outcome
-
-- The client was at risk of cancelling, and the solution reversed the churn.
-- Customer service now answers known cases on its own and turns unknown ones into catalog entries.
-- It opened a new kind of product at the company: an AI agent integrated with a database and a management interface. With that, the AI actually knows the client's business and is far more useful than a generic chatbot.
-
-There was no formal measurement of metrics, so there are no numbers here.
+## The same pattern in another niche
 
 The same pattern was replicated for an electric vehicle charger company: see the [dashboard for electric vehicle chargers](/en/projects/carregadores-ev).
 
@@ -232,3 +242,5 @@ The same pattern was replicated for an electric vehicle charger company: see the
 - In applied AI, the value is as much in the system around the model (data, dashboard, handoff) as in the prompt.
 - Design for "I don't know" first: the unknown-vehicle path is what made the system reliable.
 - The "agent + database + dashboard for humans" pattern is reusable: it worked for batteries and then for EV chargers.
+
+</Details>

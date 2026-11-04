@@ -68,6 +68,9 @@ export const projectMetaSchema = z.object({
   /** Subtítulo do estudo de caso e descrição para buscadores e redes. */
   summary: z.string().min(1).max(220),
   role: z.string().min(1),
+  /** Linha de fatos no topo do caso: "papel curto · ano · resultado principal" (sem eles, usa `role` e nada). */
+  roleShort: z.string().min(1).max(60).optional(),
+  outcome: z.string().min(1).max(70).optional(),
   /** Começa pelo ano ("2026 · ...", "2025–2026 · ..."): o card mostra o trecho antes do " · ". */
   period: z.string().min(1),
   /** Os 4 primeiros aparecem no card: ponha os mais representativos antes. */

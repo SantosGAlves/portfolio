@@ -12,6 +12,8 @@ export const meta = {
   summary:
     "App de agendamento para uma barbearia, feito em equipe de 4 pessoas: Flutter, Firebase Auth e Firestore, horários ocupados em tempo real e confirmação por e-mail via n8n.",
   role: "Grande parte do app: Firebase, telas iniciais, login, agendamento e n8n",
+  roleShort: "Grande parte do app, em equipe de 4",
+  outcome: "protótipo com o fluxo completo de agendamento",
   period: "2026 · disciplina de Dispositivos Móveis",
   stack: ["Flutter", "Firestore", "Firebase Auth", "n8n", "Dart"],
   draft: false,
@@ -31,17 +33,19 @@ export const meta = {
   ],
 }
 
-## Contexto
+<Demo />
 
-O Barbú é um protótipo de app para uma barbearia local: o cliente cria a conta, escolhe o serviço, o barbeiro e um horário livre, e acompanha os agendamentos no próprio celular.
+## Resultado
 
-Foi um projeto em grupo da disciplina de Dispositivos Móveis, feito por Carlos, Gustavo Alves, Henrique e Kendy.
+- Protótipo com o fluxo completo de agendamento, histórico e avisos.
+- Horários livres em tempo real, consultados no Firestore.
+- Confirmação por e-mail pelo webhook do n8n e lembrete no celular 1 hora antes.
 
-## Minha função
-
-Fiz grande parte do app: a integração com o Firebase (Auth e Firestore), as telas iniciais, o login, o agendamento e a integração com o n8n.
+Fidelidade e Produtos ficaram em desenvolvimento. Não há métricas de uso.
 
 ## Como funciona
+
+O app grava o agendamento no Firestore, agenda um lembrete no celular e manda os dados ao webhook do n8n, que envia a confirmação por e-mail.
 
 <Flow
   caption="Do login ao e-mail de confirmação."
@@ -54,15 +58,31 @@ Fiz grande parte do app: a integração com o Firebase (Auth e Firestore), as te
   ]}
 />
 
+<CaseVideo />
+
+<Details>
+
+## Contexto
+
+O Barbú é um protótipo de app para uma barbearia local: o cliente cria a conta, escolhe o serviço, o barbeiro e um horário livre, e acompanha os agendamentos no próprio celular.
+
+Foi um projeto em grupo da disciplina de Dispositivos Móveis, feito por Carlos, Gustavo Alves, Henrique e Kendy.
+
+## Minha função
+
+Fiz grande parte do app: a integração com o Firebase (Auth e Firestore), as telas iniciais, o login, o agendamento e a integração com o n8n.
+
+## Conta, horários e confirmação
+
 - **Conta.** O cadastro cria o usuário no Firebase Auth e guarda nome e telefone em `users/{uid}`. As regras do Firestore deixam cada pessoa ler e alterar só os próprios dados e agendamentos.
 - **Horários em tempo real.** Ao escolher o dia, o app consulta em `bookings` os agendamentos daquele barbeiro na data e mostra só os horários livres.
 - **Ao confirmar.** O app grava o agendamento em `bookings`, cria um aviso em `notifications/{uid}/items` (aparece na aba Avisos), agenda o lembrete local e envia ao webhook do n8n o nome, o e-mail, a data, o horário, o barbeiro e o serviço.
 - **Depois.** O histórico permite cancelar (o status muda para "cancelado"), e agendamentos que já passaram aparecem como concluídos.
-
-<Demo />
 
 ## Limites e próximos passos
 
 - Fidelidade, Produtos e o painel de administração ficaram como "em breve" no app.
 - O webhook aponta para um n8n local (`localhost`), então o e-mail de confirmação só sai com o n8n rodando na mesma máquina.
 - A consulta de horários não filtra o status, então um horário cancelado continua aparecendo como ocupado. E a gravação não usa transação: dois clientes confirmando o mesmo horário no mesmo instante gravariam os dois. São os primeiros ajustes que eu faria.
+
+</Details>
