@@ -87,6 +87,10 @@ A cor de status "ok" (ciano) é separada do destaque, para o verde não signific
 Contraste medido contra `--bg`; todos os textos passam AA (≥ 4,5:1) também sobre `surface` e `surface-2`.
 Sobre `bg-brand-soft` (fundo verde de destaque) o `text-subtle` cai para ~4,2:1 no escuro: ali, use `text-muted-foreground`.
 Destaque chapado e usado com parcimônia (rótulos, links, foco, detalhes). Sem gradientes nem neon.
+Selos de aviso ("exemplo ilustrativo", "dados fictícios" das demos): sempre cinza, com o utilitário `chip-note`
+(`app/globals.css`; a assinatura repete o mesmo estilo no CSS Module). Nunca verde.
+Foco: quem usa `outline-none` precisa de `focus-visible:outline-solid` junto com `focus-visible:outline-2`
+(`outline-none` zera o estilo do contorno; sem `outline-solid` o anel de foco some).
 
 ### Tipografia (`lib/fonts.ts`, via `next/font`)
 
@@ -153,7 +157,8 @@ Cada seção é uma marca da régua de progresso (`data-rail`, na ordem da pági
      sem card gigante. Ordem: Agente de IA + sistema de gestão, LibrasFlow, Plataforma de demandas, Ajuda Animal,
      Barbú, Painel para carregadores de veículos elétricos. Cada card: arte, ano (trecho do `period` antes do " · "),
      título (`shortTitle` ou `title`), uma frase (`tagline` ou `summary`), até 4 tecnologias (as 4 primeiras de
-     `stack`) e o selo "demo interativa". Fotos, prints e vídeos reais ficam só dentro dos estudos de caso
+     `stack`) e os selos: "demo interativa" (automático com `demo` ou `liveEmbed`) e os de `meta.badges`
+     (`"demo"`, `"delivered"` = "entregue a cliente"; o agente tem os dois). Fotos, prints e vídeos reais ficam só dentro dos estudos de caso
      (`media.cover` não existe mais).
   2. "Outros projetos" (seção própria, `OtherProjects`): lista compacta com ano, título, uma linha e seta: projetos
      `tier: "secondary"` (VoiceSnap, sem página, link para o GitHub) + `site.ts` → `projects.more` (API .NET 10,
@@ -162,7 +167,8 @@ Cada seção é uma marca da régua de progresso (`data-rail`, na ordem da pági
   de selos (ícone monocromático do `simple-icons` + nome) rolando devagar, só com CSS (`animate-marquee`, duas
   cópias, 3,5 s por item). Pausa ao passar o mouse, ao tocar na faixa e no botão "Pausar a faixa" (WCAG 2.2.2).
   Com `prefers-reduced-motion`, grade parada e sem botão. Cada ícone entra uma vez no HTML (`<symbol>`); a faixa usa
-  `<use>`. A faixa é `aria-hidden`: a lista por categoria, embaixo, tem o mesmo conteúdo. Dados em `content/tech.ts`
+  `<use>`. A faixa é `aria-hidden`: a lista por categoria, embaixo, tem o mesmo conteúdo e fica recolhida num
+  `<details>` ("Ver por categoria", fechado por padrão). Dados em `content/tech.ts`
   (nomes das categorias no `site.ts`). Sem ícone no simple-icons (SQL, Java, C#, OpenAI API, Whisper, Evolution
   API, webhooks, APIs REST, Lovable, Bubble, Azure) ou com ícone que é o próprio nome escrito (.NET, MySQL): só o
   nome, no mesmo selo.
@@ -198,6 +204,8 @@ Cada seção é uma marca da régua de progresso (`data-rail`, na ordem da pági
 - `meta.media.video` = vídeo no topo do caso no lugar da arte
   (vídeo com menos de 1000 px de largura fica na largura da coluna de texto, sem esticar). `video.controls: true` =
   vídeo longo com controles nativos, sem tocar sozinho e com `preload="none"` (só baixa no play).
+  `meta.livePreview` = imagem parada na moldura da versão embutida (`liveEmbed`) antes do clique; o vídeo do caso
+  fica só no topo (o LibrasFlow usa `fig-interface.webp`, com a moldura branca do print cortada por `clip-path`).
   `meta.privateCode` = nota de código privado no lugar do link do repositório, no topo do caso. `meta.draft` (padrão `true`) mostra o aviso de texto provisório.
 - Vídeos (`components/case-study/loop-video.tsx`): sem som, loop, `preload="none"`; o arquivo
   só é baixado depois do load e quando entra na tela, pausa fora dela; botão Pausar/Reproduzir (WCAG 2.2.2);
@@ -365,6 +373,8 @@ de terceiros.
   produção (`next start -H 0.0.0.0`) não tem essa trava.
 - As páginas `[slug]` exportam `instant = false`: tira a validação de navegação instantânea do dev, que acusava
   `params` fora de `<Suspense>` (as páginas são todas geradas no build).
+- O projeto não tem configuração do Prettier: não rode `prettier --write` (ele põe ponto e vírgula e quebra linhas
+  em outra largura). O estilo é sem ponto e vírgula, aspas duplas, linhas de até ~140 colunas.
 - Teste de toque no Chrome headless: `Input.dispatchTouchEvent` (arrasto de dedo) com
   `Emulation.setTouchEmulationEnabled`; `Input.synthesizeScrollGesture` com toque não rola no headless.
 
@@ -380,7 +390,10 @@ Chrome DevTools Protocol (`Emulation.setDeviceMetricsOverride` + `localStorage.t
 ## Pendências conhecidas
 
 - Repositório: github.com/SantosGAlves/portfolio (público).
-- CV em PDF (PT e EN), e-mail e LinkedIn: `[CONFIRMAR]`. GitHub confirmado: github.com/SantosGAlves.
+- CV em PDF (PT e EN): `[CONFIRMAR]` (os botões "Baixar CV" dão 404 até existirem `public/cv/gustavo-alves-dos-santos-cv.pdf`
+  e `-cv-en.pdf`). Contato confirmado: e-mail, LinkedIn, GitHub e WhatsApp (`profile.links.whatsapp`, link wa.me,
+  só no botão da seção de contato; o número nunca aparece escrito e não há telefone).
+- Cargos em inglês marcados `[REVISAR]` em `content/en/site.ts`.
 - 404 personalizada: com vários layouts raiz, o 404 padrão sai sem `lang`; resolver na Fase 3/4
   (`app/global-not-found.tsx`, ainda experimental no Next 16).
 - Imagem Open Graph: Fase 4.
