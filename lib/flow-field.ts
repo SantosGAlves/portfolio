@@ -197,10 +197,20 @@ export function startFlowField(canvas: HTMLCanvasElement, host: HTMLElement): ()
     resizeTimer = window.setTimeout(resize, 150)
   }
 
+  // Troca de tema: redesenha depois da pintura do novo tema. Ler as cores na hora forçava um
+  // recálculo de estilo dentro do clique (pior INP do botão de tema).
+  let themeFrame = 0
+  let themeTimer = 0
   const themeObserver = new MutationObserver(() => {
-    readColor()
-    paintBase()
-    draw(0, true)
+    window.cancelAnimationFrame(themeFrame)
+    window.clearTimeout(themeTimer)
+    themeFrame = window.requestAnimationFrame(() => {
+      themeTimer = window.setTimeout(() => {
+        readColor()
+        paintBase()
+        draw(0, true)
+      })
+    })
   })
   const io = new IntersectionObserver(([entry]) => {
     visible = entry.isIntersecting
@@ -223,6 +233,8 @@ export function startFlowField(canvas: HTMLCanvasElement, host: HTMLElement): ()
   return () => {
     stop()
     window.clearTimeout(resizeTimer)
+    window.cancelAnimationFrame(themeFrame)
+    window.clearTimeout(themeTimer)
     host.removeEventListener("pointermove", onPointerMove)
     host.removeEventListener("pointerleave", onPointerLeave)
     document.removeEventListener("visibilitychange", onVisibility)
