@@ -52,6 +52,7 @@ Não é "só IA": desenvolvimento de produto e back-end tem o mesmo peso.
 - Site 100% estático: os layouts raiz exportam `ensureStatic = "navigation"`; o build falha se algo virar dinâmico.
 - Metas: Lighthouse ≥ 95 nas quatro categorias (mobile), LCP < 2,5 s, CLS < 0,1, INP < 200 ms, AA, a partir de 360px.
 - MCP shadcn para componentes; MCP 21st só como inspiração (nenhum componente pago).
+- `docs/` (fora do git) também fica fora do `tsc` e do ESLint: guarda repositórios de referência com código de outros projetos.
 - Commits pequenos e descritivos, em português.
 
 ## Identidade visual (Direção A, "Console")
@@ -131,7 +132,7 @@ Destaque chapado e usado com parcimônia (rótulos, links, foco, detalhes). Sem 
 - Seção de projetos (`components/sections/projects.tsx`), nesta hierarquia:
   1. Destaques (`tier: "featured"`), por `order`: o primeiro em largura total, os demais em duas colunas.
      Ordem atual: agente de baterias, LibrasFlow, plataforma de gestão de demandas.
-  2. "Outros projetos" (`tier: "secondary"`): cards menores, sem imagem. Ajuda animal (com página),
+  2. "Outros projetos" (`tier: "secondary"`): cards menores, sem imagem. Ajuda Animal (com página, vídeo e demo),
      Barbú, app de barbearia (com página e demo) e VoiceSnap (sem página, link para o GitHub).
   3. "Mais no GitHub": lista compacta em `site.ts` → `projects.more` (API .NET 10, Streamlit + Azure,
      concorrência em Java) + link para todos os repositórios.
@@ -141,7 +142,9 @@ Destaque chapado e usado com parcimônia (rótulos, links, foco, detalhes). Sem 
   corpo MDX na ordem contexto e problema → minha função → (como funciona) → solução e arquitetura → stack →
   decisões e trade-offs → resultado → (o mesmo padrão em outro nicho) → aprendizados → próximo caso.
 - Blocos no MDX sem import (`mdx-components.tsx`): `<Flow>` (diagrama; `alt` = caminho
-  alternativo, `altLabel` = "ou"/"or"; `accent: true` destaca a etapa final), `<Decision>`, `<Metrics>`/`<Metric>`, `<Chat>` com
+  alternativo, `altLabel` = "ou"/"or"; `accent: true` destaca a etapa final), `<Architecture>` (dois blocos,
+  "minha parte" e "sistema da equipe", ligados por uma seta com rótulo; cada bloco tem uma fila de etapas e um item
+  opcional ligado por baixo, `side.under`; vira coluna no celular), `<Decision>`, `<Metrics>`/`<Metric>`, `<Chat>` com
   `<Message from="customer|agent">` e `<ChatNote>` (conversa com selo "exemplo ilustrativo"),
   `<Gallery>`/`<Shot>` (capturas com `next/image`; `<Shot layout="column|wide">` sozinha), `<PaperFigure>`
   (figura de artigo em cartão claro, legenda em mono, nota e link para o tamanho real em nova aba) e `<DataTable>`
@@ -157,7 +160,9 @@ Destaque chapado e usado com parcimônia (rótulos, links, foco, detalhes). Sem 
   em `<Body components={...}>`, com os rótulos do `site.ts` do idioma do texto.
 - `meta.media.cover` = imagem real do card (`fit: "frame"`: captura em moldura `surface-2`, cortada embaixo;
   `fit: "fill"`: foto ocupando a área); `meta.media.video` = vídeo no topo do caso no lugar da arte
-  (vídeo com menos de 1000 px de largura fica na largura da coluna de texto, sem esticar). `meta.draft` (padrão `true`) mostra o aviso de texto provisório.
+  (vídeo com menos de 1000 px de largura fica na largura da coluna de texto, sem esticar). `video.controls: true` =
+  vídeo longo com controles nativos, sem tocar sozinho e com `preload="none"` (só baixa no play).
+  `meta.privateCode` = nota de código privado no lugar do link do repositório, no caso e na página da demo. `meta.draft` (padrão `true`) mostra o aviso de texto provisório.
 - Vídeos (`components/case-study/loop-video.tsx`): sem som, loop, `preload="none"` com poster; o arquivo
   só é baixado depois do load e quando entra na tela, pausa fora dela; botão Pausar/Reproduzir (WCAG 2.2.2);
   com reduced motion não toca sozinho.
@@ -194,6 +199,14 @@ Destaque chapado e usado com parcimônia (rótulos, links, foco, detalhes). Sem 
   Substituiu o card do repositório Gest-o_Projetos_Barb-. O webhook do n8n aponta para localhost e o fluxo do n8n
   não está no repositório (por isso o e-mail da demo é "prévia ilustrativa"). Limites citados no caso, tirados do
   código: a consulta de horários não filtra o status e a gravação não usa transação.
+- Ajuda Animal (fonte: `docs/conteudo/conteudo-ajuda-animal.md` e a branch `feature-bot-whatsapp-n8n`, extraída em
+  `docs/referencias/ajuda-animal`): projeto de extensão do IFSP Jacareí com a Prefeitura de Jacareí (Secretaria de
+  Proteção Animal), em equipe. Gustavo fez o canal do WhatsApp: bot no n8n, integração com o core-api (REST +
+  `x-service-key`) e a tabela `whatsapp_sessions`; painel e API são da equipe. Protótipo demonstrado em 19/10/2026,
+  sem produção. Repositório privado: sem link de código, só a nota `privateCode`. Vídeo em
+  `public/ajuda-animal/midia-ajuda-animal/` (endereços desfocados, em português). O slide de arquitetura do vídeo virou
+  `<Architecture>` e o arquivo ficou em `docs/referencias/ajuda-animal`. Nunca usar o `n8n_ajudaanimal.json`
+  exportado (tem o número pessoal e a chave da Evolution API); só o fluxo da branch, com marcadores.
 - Plataforma de demandas: o README fala em RLS, mas o código usa a chave de serviço e checa permissões
   no Flask. O caso descreve o que o código faz. Foi o "case técnico do processo seletivo em que fui aprovado"
   ("technical case from the hiring process I passed"), sem citar a empresa.
@@ -225,7 +238,17 @@ botão "Abrir demo" no estudo de caso (`meta.demo`) e nenhuma marca de terceiros
   o aviso em `notifications/{uid}/items`, o lembrete 1 h antes, o JSON do webhook e a prévia do e-mail: em folha
   dentro do celular e, a partir de 1024px, num painel ao lado. Diferenças assumidas (nas notas da página): ocupados
   aparecem riscados em vez de sumir e horários de hoje que já passaram ficam desativados.
-- `components/pages/demo-page-shell.tsx` monta as páginas de demo (faixa, voltar, título, GitHub, notas).
+- Demo do Ajuda Animal (`components/demos/ajuda-animal/`): simulador da conversa com o bot, numa tela de chat escura
+  e neutra (sem a identidade do WhatsApp), com o selo "Simulação com dados fictícios · sem WhatsApp, sem banco".
+  `logic.ts` replica o fluxo do n8n: mesmos textos (sem emojis), roteador de etapas (as etapas da denúncia não
+  validam a resposta, como no fluxo), comandos `menu`/`voltar`/`cancelar` e `zerar`, o nó "Code: Montar Denuncia"
+  (tipos, espécie por palavra-chave, lat/lng ou endereço, `allowContact` só na opção 2) e o protocolo e a
+  normalização do core-api. Bastidores: caminho pelos nós do fluxo, linha de `whatsapp_sessions` com o que mudou,
+  a chamada ao core-api (`x-service-key: ••••`) e a miniatura do painel (mapa SVG fictício, "Avançar status").
+  Caixa "Simular falha da API" mostra as mensagens de erro do fluxo. No EN, os textos, comandos e palavras de
+  espécie são traduzidos. Sem botão do GitHub (código privado).
+- `components/pages/demo-page-shell.tsx` monta as páginas de demo (faixa, voltar, título, GitHub ou nota de código
+  privado, notas).
 - Teste da demo: pelo Chrome DevTools Protocol, clicando nos botões, preenchendo o formulário e simulando o
   arrastar com `DragEvent` + `DataTransfer` (ver "Verificação visual").
 
@@ -270,4 +293,4 @@ Chrome DevTools Protocol (`Emulation.setDeviceMetricsOverride` + `localStorage.t
   (`app/global-not-found.tsx`, ainda experimental no Next 16).
 - Imagem Open Graph: Fase 4.
 - Textos reais dos estudos de caso: agente, LibrasFlow e plataforma de demandas prontos (`draft: false`);
-  Barbú pronto; ajuda animal ainda tem `[CONFIRMAR]`.
+  Barbú e Ajuda Animal prontos.
