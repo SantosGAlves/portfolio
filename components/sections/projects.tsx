@@ -120,7 +120,10 @@ function ProjectCard({ project, locale }: { project: Project; locale: Locale }) 
   const page = hasCaseStudy(project)
   const href = page ? caseStudyPath(locale, slug) : meta.repo
   const external = !page
-  const interactive = Boolean(meta.demo || meta.liveEmbed)
+  const badges = [
+    ...(meta.demo || meta.liveEmbed || meta.badges.includes("demo") ? [copy.demoBadge] : []),
+    ...(meta.badges.includes("delivered") ? [copy.deliveredBadge] : []),
+  ]
 
   return (
     <article aria-labelledby={titleId} lang={fallback ? contentLocale : undefined} className={`grid grid-rows-[auto_1fr] ${cardShell}`}>
@@ -128,9 +131,13 @@ function ProjectCard({ project, locale }: { project: Project; locale: Locale }) 
       <div className="grid content-start gap-3 p-5 sm:p-6">
         <p className="flex min-h-[1.375rem] flex-wrap items-center justify-between gap-x-3 gap-y-1 font-mono text-meta">
           <span className="text-subtle">{yearOf(meta.period)}</span>
-          {interactive ? (
-            <span lang={fallback ? locale : undefined} className="rounded-full border border-brand-line px-2 leading-5 text-brand">
-              {copy.demoBadge}
+          {badges.length ? (
+            <span lang={fallback ? locale : undefined} className="flex flex-wrap gap-1.5">
+              {badges.map((badge) => (
+                <span key={badge} className="rounded-full border border-brand-line px-2 leading-5 text-brand">
+                  {badge}
+                </span>
+              ))}
             </span>
           ) : null}
         </p>

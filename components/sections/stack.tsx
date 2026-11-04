@@ -29,12 +29,14 @@ import {
   type SimpleIcon,
 } from "simple-icons"
 import { Section } from "@/components/layout/section"
+import { buttonVariants } from "@/components/ui/button"
 import { techGroups, techName, type TechIcon, type TechItem } from "@/content/tech"
 import { getContent, type Locale } from "@/lib/i18n"
 import { StackMarquee } from "./stack-marquee"
 
 // "Tecnologias": faixa com ícones monocromáticos (simple-icons) rolando devagar e, abaixo, a lista por
-// categoria. Cada ícone entra uma vez no HTML, como <symbol>; a faixa (duas cópias) usa <use>.
+// categoria recolhida num <details> ("Ver por categoria", fechado por padrão; teclado e leitor de tela
+// funcionam sem JS). Cada ícone entra uma vez no HTML, como <symbol>; a faixa (duas cópias) usa <use>.
 const icons: Record<TechIcon, SimpleIcon> = {
   python: siPython,
   javascript: siJavascript,
@@ -85,53 +87,72 @@ export function Stack({ locale }: { locale: Locale }) {
         </defs>
       </svg>
 
-      <StackMarquee duration={all.length * SECONDS_PER_ITEM} pause={stack.pause} play={stack.play}>
-        {all.map((item) => (
-          <TechPill key={techName(item, locale)} item={item} locale={locale} />
-        ))}
-      </StackMarquee>
+      <div className="grid gap-2">
+        <StackMarquee duration={all.length * SECONDS_PER_ITEM} pause={stack.pause} play={stack.play}>
+          {all.map((item) => (
+            <TechPill key={techName(item, locale)} item={item} locale={locale} />
+          ))}
+        </StackMarquee>
 
-      <dl className="grid border-t border-line">
-        {techGroups.map((group) => {
-          const regular = group.items.filter((i) => i.level !== "used")
-          const used = group.items.filter((i) => i.level === "used")
-          return (
-            <div key={group.key} className="grid gap-2.5 border-b border-line py-4 md:grid-cols-[14rem_minmax(0,1fr)] md:gap-6">
-              <dt className="font-mono text-meta text-subtle md:pt-1">{stack.groups[group.key]}</dt>
-              <dd className="flex flex-wrap items-center gap-x-5 gap-y-2.5">
-                <ul className="flex flex-wrap gap-2">
-                  {regular.map((item) => (
-                    <li
-                      key={techName(item, locale)}
-                      className={`inline-flex items-baseline gap-1.5 rounded-full border px-2.5 py-0.5 text-small ${
-                        item.level === "main" ? "border-brand-line text-foreground" : "border-line text-muted-foreground"
-                      }`}
-                    >
-                      {techName(item, locale)}
-                      {item.level === "main" ? <span className="font-mono text-[0.6875rem] text-brand">{stack.mainLabel}</span> : null}
-                    </li>
-                  ))}
-                </ul>
-                {used.length ? (
-                  <div className="flex flex-wrap items-center gap-2">
-                    <span className="font-mono text-meta text-subtle">{stack.usedLabel}:</span>
+        <details className="group/cat">
+          <summary
+            className={`${buttonVariants({ variant: "outline", size: "sm" })} cursor-pointer list-none [&::-webkit-details-marker]:hidden`}
+          >
+            {stack.byCategory}
+            <svg
+              aria-hidden="true"
+              viewBox="0 0 16 16"
+              className="size-3.5 transition-transform duration-200 group-open/cat:rotate-180 motion-reduce:transition-none"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.5"
+            >
+              <path d="m4 6 4 4 4-4" />
+            </svg>
+          </summary>
+          <dl className="mt-6 grid border-t border-line">
+            {techGroups.map((group) => {
+              const regular = group.items.filter((i) => i.level !== "used")
+              const used = group.items.filter((i) => i.level === "used")
+              return (
+                <div key={group.key} className="grid gap-2.5 border-b border-line py-4 md:grid-cols-[14rem_minmax(0,1fr)] md:gap-6">
+                  <dt className="font-mono text-meta text-subtle md:pt-1">{stack.groups[group.key]}</dt>
+                  <dd className="flex flex-wrap items-center gap-x-5 gap-y-2.5">
                     <ul className="flex flex-wrap gap-2">
-                      {used.map((item) => (
+                      {regular.map((item) => (
                         <li
                           key={techName(item, locale)}
-                          className="rounded-full border border-dashed border-line-strong px-2.5 py-0.5 text-small text-muted-foreground"
+                          className={`inline-flex items-baseline gap-1.5 rounded-full border px-2.5 py-0.5 text-small ${
+                            item.level === "main" ? "border-brand-line text-foreground" : "border-line text-muted-foreground"
+                          }`}
                         >
                           {techName(item, locale)}
+                          {item.level === "main" ? <span className="font-mono text-[0.6875rem] text-brand">{stack.mainLabel}</span> : null}
                         </li>
                       ))}
                     </ul>
-                  </div>
-                ) : null}
-              </dd>
-            </div>
-          )
-        })}
-      </dl>
+                    {used.length ? (
+                      <div className="flex flex-wrap items-center gap-2">
+                        <span className="font-mono text-meta text-subtle">{stack.usedLabel}:</span>
+                        <ul className="flex flex-wrap gap-2">
+                          {used.map((item) => (
+                            <li
+                              key={techName(item, locale)}
+                              className="rounded-full border border-dashed border-line-strong px-2.5 py-0.5 text-small text-muted-foreground"
+                            >
+                              {techName(item, locale)}
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    ) : null}
+                  </dd>
+                </div>
+              )
+            })}
+          </dl>
+        </details>
+      </div>
     </Section>
   )
 }

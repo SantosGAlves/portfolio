@@ -10,10 +10,11 @@ export const site: SiteContent = {
     shortName: "Gustavo Alves",
     location: "São José dos Campos/SP",
     availability: "Aberto a novas oportunidades",
-    email: "[CONFIRMAR]@email.com",
+    email: "gustasp49@gmail.com",
     links: {
       github: "https://github.com/SantosGAlves",
-      linkedin: "https://www.linkedin.com/in/[CONFIRMAR]",
+      linkedin: "https://www.linkedin.com/in/gustavo-alves-dos-santos-9aa713256/",
+      whatsapp: "https://wa.me/5512982972495",
       cv: "/cv/gustavo-alves-dos-santos-cv.pdf", // [CONFIRMAR] arquivo ainda não existe
     },
   },
@@ -122,6 +123,7 @@ export const site: SiteContent = {
     repoLink: "Código no GitHub",
     liveLink: "Testar ao vivo (usa a câmera)",
     demoBadge: "demo interativa",
+    deliveredBadge: "entregue a cliente",
     more: {
       items: [
         {
@@ -179,7 +181,7 @@ export const site: SiteContent = {
         company: "Gaudium",
         role: "Estagiário de Automação e Inovação II",
         period: "jul/2026 – atual",
-        tags: ["sob NDA"],
+        tags: ["estágio · sob NDA"],
         // NDA: só descrições gerais; sem clientes, parceiros nem link para estudos de caso.
         context: "Empresa B2B de tecnologia para mobilidade e entregas. O trabalho é confidencial, então aqui vão só descrições gerais.",
         highlights: [
@@ -192,7 +194,7 @@ export const site: SiteContent = {
         company: "Hunt Sales",
         role: "Estagiário de Desenvolvimento e Automação",
         period: "ago/2025 – jun/2026",
-        tags: [],
+        tags: ["estágio"],
         context:
           "Empresa com plataforma própria de atendimento (CRM), onde rodam os agentes e painéis que desenvolvi para os clientes.",
         highlights: [
@@ -222,6 +224,7 @@ export const site: SiteContent = {
     intro: "O que uso para construir sistemas e colocá-los em produção. Python é a linguagem principal.",
     pause: "Pausar a faixa",
     play: "Continuar a faixa",
+    byCategory: "Ver por categoria",
     mainLabel: "principal",
     usedLabel: "já trabalhei com",
     groups: {
@@ -287,6 +290,7 @@ export const site: SiteContent = {
     intro: "Estou aberto a novas oportunidades. O caminho mais rápido é o e-mail.",
     emailLabel: "E-mail",
     copyEmail: "Copiar e-mail",
+    whatsapp: "Conversar no WhatsApp",
     copied: "E-mail copiado",
   },
   caseStudy: {

@@ -5,7 +5,7 @@ import { useState, type CSSProperties, type ReactNode } from "react"
 // Faixa de tecnologias rolando devagar (animação só de CSS, `animate-marquee`). Pausa ao passar o mouse
 // (só em telas com hover), ao tocar na faixa e no botão abaixo dela (WCAG 2.2.2). Com prefers-reduced-motion
 // vira uma grade parada e o botão some. A faixa é decorativa para leitores de tela (aria-hidden): a lista por
-// categoria, logo abaixo, tem as mesmas tecnologias.
+// categoria, logo abaixo (atrás de "Ver por categoria"), tem as mesmas tecnologias.
 export function StackMarquee({
   children,
   duration,

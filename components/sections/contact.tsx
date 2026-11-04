@@ -1,12 +1,15 @@
+import { siWhatsapp } from "simple-icons"
 import { CopyButton } from "@/components/copy-button"
 import { Section } from "@/components/layout/section"
 import { buttonVariants } from "@/components/ui/button"
 import { getContent, type Locale } from "@/lib/i18n"
 
+// E-mail em destaque, com "Copiar e-mail" e o botão do WhatsApp (link wa.me; o número não aparece na página).
+// À direita, LinkedIn, GitHub e CV.
 export function Contact({ locale }: { locale: Locale }) {
   const { sections, contact, profile, ui } = getContent(locale)
   const channels = [
-    { label: "LinkedIn", value: profile.links.linkedin.replace(/^https:\/\/(www\.)?/, ""), href: profile.links.linkedin, external: true },
+    { label: "LinkedIn", value: profile.links.linkedin.replace(/^https:\/\/(www\.)?/, "").replace(/\/$/, ""), href: profile.links.linkedin, external: true },
     { label: "GitHub", value: profile.links.github.replace(/^https:\/\//, ""), href: profile.links.github, external: true },
     { label: "CV", value: ui.downloadCv, href: profile.links.cv, external: false, download: true },
   ]
@@ -22,12 +25,19 @@ export function Contact({ locale }: { locale: Locale }) {
           >
             {profile.email}
           </a>
-          <div>
+          <div className="flex flex-wrap items-center gap-3">
+            <a href={profile.links.whatsapp} target="_blank" rel="noopener noreferrer" className={buttonVariants()}>
+              <svg aria-hidden="true" viewBox="0 0 24 24" fill="currentColor" className="size-[1.125rem]">
+                <path d={siWhatsapp.path} />
+              </svg>
+              {contact.whatsapp}
+              <span className="sr-only">{ui.opensInNewTab}</span>
+            </a>
             <CopyButton
               value={profile.email}
               label={contact.copyEmail}
               copiedLabel={contact.copied}
-              className={buttonVariants({ variant: "outline", size: "sm" })}
+              className={buttonVariants({ variant: "outline" })}
             />
           </div>
         </div>

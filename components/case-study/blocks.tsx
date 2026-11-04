@@ -111,9 +111,7 @@ export function Chat({
     <figure className="my-8 overflow-hidden rounded-xl border border-line bg-surface">
       <figcaption className="flex flex-wrap items-center justify-between gap-x-4 gap-y-2 border-b border-line px-4 py-3">
         <span className="font-mono text-meta text-foreground">{title}</span>
-        <span className="rounded-full border border-brand-line bg-brand-soft px-2.5 py-0.5 font-mono text-meta text-brand">
-          {badge}
-        </span>
+        <span className="chip-note whitespace-nowrap">{badge}</span>
       </figcaption>
       <ol className="grid gap-2 p-3 sm:p-4">{items}</ol>
     </figure>

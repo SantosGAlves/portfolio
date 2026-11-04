@@ -224,6 +224,18 @@
 }
 
 /* Rótulo de seção: mono, caixa alta, na cor de destaque. */
+/* Selo de aviso ("exemplo ilustrativo", "dados fictícios"): cinza e discreto, um estilo só no site todo. */
+@utility chip-note {
+  padding: 0.1875rem 0.5rem;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-tag);
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  line-height: 1.4;
+  letter-spacing: 0.04em;
+  color: var(--text-muted);
+}
+
 @utility eyebrow {
   font-family: var(--font-mono);
   font-size: var(--text-meta);

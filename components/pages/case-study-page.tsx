@@ -51,9 +51,7 @@ export function CaseStudyPage({ locale, slug }: { locale: Locale; slug: string }
           href={meta.live}
           intro={meta.liveIntro}
           note={meta.demoNote}
-          preview={
-            video ? { src: video.src, poster: video.poster, width: video.width, height: video.height, label: video.label } : undefined
-          }
+          preview={meta.livePreview}
         />
       ) : null,
     Signature: () => (

@@ -4,7 +4,8 @@ import { getContent, type Locale } from "@/lib/i18n"
 import { caseStudyPath, getProjects } from "@/lib/projects"
 
 // Linha do tempo: período, empresa e rótulos à esquerda; função, contexto, o que fiz (verbo de ação)
-// e os links para os estudos de caso relacionados à direita. Gaudium não tem link (NDA).
+// e os links para os estudos de caso relacionados à direita, sempre com o rótulo acima dos links.
+// Gaudium não tem link (NDA).
 export function Experience({ locale }: { locale: Locale }) {
   const { sections, experience } = getContent(locale)
   const projects = getProjects(locale)
@@ -49,7 +50,7 @@ export function Experience({ locale }: { locale: Locale }) {
                   ))}
                 </ul>
                 {cases.length ? (
-                  <div className="mt-2 flex flex-wrap items-baseline gap-x-5 gap-y-2">
+                  <div className="mt-2 grid gap-1.5">
                     <span className="font-mono text-meta text-subtle">
                       {cases.length === 1 ? experience.caseStudiesLabel.one : experience.caseStudiesLabel.other}
                     </span>

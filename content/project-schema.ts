@@ -33,6 +33,13 @@ export const projectMetaSchema = z.object({
    * Só use se o site permitir iframe (sem X-Frame-Options nem frame-ancestors).
    */
   liveEmbed: z.string().url().optional(),
+  /**
+   * Imagem parada na moldura da versão embutida, antes do clique (sem ela, a moldura fica só com o botão).
+   * Use uma tela da interface, não o vídeo do topo do caso.
+   */
+  livePreview: z
+    .object({ src: publicPath, width: z.number().int(), height: z.number().int(), alt: z.string().min(1) })
+    .optional(),
   /** Introdução da seção "Experimente" da versão embutida (liveEmbed). */
   liveIntro: z.string().optional(),
   /** Demo dentro do caso (slug de lib/demos.ts): a seção "Experimente" aparece onde o MDX tem <Demo />. */
@@ -42,6 +49,11 @@ export const projectMetaSchema = z.object({
     .optional(),
   /** Nota curta sobre a demonstração ao vivo (sob a moldura, ou sob o botão sem liveEmbed), ex.: diferença entre a demo e o que o estudo mede. */
   demoNote: z.string().optional(),
+  /**
+   * Selos do card na home, além do automático: "demo" (demo interativa; já entra sozinho com `demo` ou
+   * `liveEmbed`) e "delivered" (entregue a cliente).
+   */
+  badges: z.array(z.enum(["demo", "delivered"])).default([]),
   /** planned = card "em construção", sem página de estudo de caso. */
   status: z.enum(projectStatuses),
   /** Composição abstrata do card (components/art). */
@@ -96,4 +108,4 @@ export type ProjectArt = (typeof projectArts)[number]
 export type ProjectTier = (typeof projectTiers)[number]
 
 /** Campos que precisam ser iguais nos dois idiomas. */
-export const sharedProjectFields = ["order", "tier", "page", "repo", "live", "liveEmbed", "demo", "status", "art", "stack"] as const
+export const sharedProjectFields = ["order", "tier", "page", "repo", "live", "liveEmbed", "demo", "badges", "status", "art", "stack"] as const

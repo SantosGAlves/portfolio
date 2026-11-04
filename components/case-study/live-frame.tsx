@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState, type ReactNode } from "react"
 
 // Versão pública de um projeto dentro de uma moldura de navegador, na seção "Experimente".
-// Antes do clique só existe a prévia (vídeo em loop): nenhuma requisição ao site embutido.
+// Antes do clique só existe a prévia (imagem parada da interface): nenhuma requisição ao site embutido.
 // O iframe só existe enquanto a demo está ligada: "Encerrar", sair da página (pagehide) ou desmontar
 // removem o iframe, e com ele a câmera.
 // Classes dos botões vêm do servidor (buttonVariants), para o cn e o Radix não irem ao bundle do cliente.

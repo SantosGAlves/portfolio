@@ -1,4 +1,5 @@
 import type { ReactNode } from "react"
+import Image from "next/image"
 import { AjudaAnimalSkeleton } from "@/components/demos/ajuda-animal/skeleton"
 import { BarbuSkeleton } from "@/components/demos/barbu/skeleton"
 import { CarregadoresSkeleton } from "@/components/demos/carregadores/skeleton"
@@ -8,7 +9,6 @@ import { getDemoContent, type DemoSlug } from "@/lib/demos"
 import { getContent, type Locale } from "@/lib/i18n"
 import { LazyDemo } from "./lazy-demo"
 import { LiveFrame } from "./live-frame"
-import { LoopVideo, type LoopVideoProps } from "./loop-video"
 
 // Seção "Experimente" do estudo de caso (<Demo /> no MDX): título, o que dá para fazer, selo, a demo e
 // as notas. Texto na coluna de leitura; a demo usa a largura toda do conteúdo (o <article> do caso é um
@@ -37,9 +37,7 @@ function TryItShell({
           {tryIt.title}
         </h2>
         {intro ? <p className="text-muted-foreground">{intro}</p> : null}
-        {badge ? (
-          <p className="rounded-full border border-brand-line bg-brand-soft px-3 py-1 font-mono text-meta text-brand">{badge}</p>
-        ) : null}
+        {badge ? <p className="chip-note">{badge}</p> : null}
       </div>
 
       <div className="mt-8 [--demo-reserve:3rem] sm:[--demo-reserve:0px]">{children}</div>
@@ -106,7 +104,8 @@ export function LiveTryIt({
   href: string
   intro?: string
   note?: string
-  preview?: Omit<LoopVideoProps, "playLabel" | "pauseLabel" | "className">
+  /** Imagem parada da interface na moldura, antes do clique (sem controles). */
+  preview?: { src: string; width: number; height: number; alt: string }
 }) {
   const { caseStudy, ui } = getContent(locale)
   const text = caseStudy.liveFrame
@@ -133,11 +132,14 @@ export function LiveTryIt({
         }}
         preview={
           preview ? (
-            <LoopVideo
-              {...preview}
-              playLabel={caseStudy.video.play}
-              pauseLabel={caseStudy.video.pause}
-              className="rounded-xl border border-line"
+            <Image
+              src={preview.src}
+              width={preview.width}
+              height={preview.height}
+              alt={preview.alt}
+              sizes="(min-width: 640px) 544px, 92vw"
+              // fig-interface.webp tem uma moldura branca de 3 a 11 px (é um print): o clip-path corta a moldura.
+              className="block h-auto w-full [clip-path:inset(1%_1.6%_1.5%_0.9%_round_0.75rem)]"
             />
           ) : null
         }

@@ -86,7 +86,8 @@ export type SiteContent = {
     location: string
     availability: string
     email: string
-    links: { github: string; linkedin: string; cv: string }
+    /** whatsapp: link wa.me, só no botão da seção de contato (o número não aparece escrito na página). */
+    links: { github: string; linkedin: string; whatsapp: string; cv: string }
   }
   seo: { title: string; description: string }
   hero: {
@@ -113,6 +114,8 @@ export type SiteContent = {
     liveLink: string
     /** Selo discreto no card da home dos projetos com demo interativa. */
     demoBadge: string
+    /** Selo do card de projeto entregue a um cliente (meta.badges com "delivered"). */
+    deliveredBadge: string
     /** Introdução da seção "Outros projetos". */
     otherIntro: string
     /** Repositórios menores na lista "Outros projetos" (depois dos projetos `secondary`). */
@@ -132,6 +135,8 @@ export type SiteContent = {
     intro: string
     pause: string
     play: string
+    /** Botão que abre a lista por categoria (fechada por padrão). */
+    byCategory: string
     /** Selo da linguagem principal. */
     mainLabel: string
     /** Rótulo das linguagens com que já trabalhei. */
@@ -154,6 +159,8 @@ export type SiteContent = {
     intro: string
     emailLabel: string
     copyEmail: string
+    /** Botão do WhatsApp na seção de contato. */
+    whatsapp: string
     copied: string
   }
   caseStudy: {
