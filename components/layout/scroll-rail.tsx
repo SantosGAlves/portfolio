@@ -73,7 +73,7 @@ export function ScrollRail() {
       <div ref={barRef} className="relative w-0.5 flex-1 rounded-full bg-line-strong">
         <div
           ref={fillRef}
-          className="absolute inset-0 origin-top scale-y-(--p) rounded-full bg-brand"
+          className="absolute inset-0 origin-top scale-y-(--p) rounded-full bg-ok"
           style={{ "--p": 0 } as React.CSSProperties}
         />
       </div>

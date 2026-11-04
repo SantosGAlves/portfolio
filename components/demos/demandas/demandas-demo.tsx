@@ -46,7 +46,7 @@ type Toast = { id: number; text: string; showEvents?: boolean }
 
 const columnDot: Record<Status, string> = {
   entrada: "bg-subtle",
-  andamento: "bg-brand",
+  andamento: "bg-foreground",
   pausado: "bg-warn",
   concluido: "bg-ok",
 }
@@ -143,7 +143,7 @@ export default function DemandasDemo({ content }: { content: DemandasDemoContent
         {/* Barra do app: marca neutra e o seletor de perfil */}
         <div className="flex flex-wrap items-center justify-between gap-x-6 gap-y-3 border-b border-line px-4 py-3 sm:px-5">
           <p className="flex items-center gap-2.5 font-semibold text-foreground">
-            <span aria-hidden="true" className="grid size-7 place-items-center rounded-md border border-brand-line bg-brand-soft font-mono text-[0.6875rem] text-brand">
+            <span aria-hidden="true" className="grid size-7 place-items-center rounded-md border border-line-strong bg-surface-2 font-mono text-[0.6875rem] text-foreground">
               {c.brand
                 .split(" ")
                 .filter((w) => w.length > 2)
@@ -184,7 +184,7 @@ export default function DemandasDemo({ content }: { content: DemandasDemoContent
 
         {/* Regra do perfil atual */}
         <p className="flex items-start gap-3 border-b border-line bg-surface-2/50 px-4 py-2.5 text-small text-muted-foreground sm:px-5">
-          <span aria-hidden="true" className="mt-0.5 grid size-6 shrink-0 place-items-center rounded-full bg-brand-soft font-mono text-[0.6875rem] text-brand">
+          <span aria-hidden="true" className="mt-0.5 grid size-6 shrink-0 place-items-center rounded-full bg-surface-2 font-mono text-[0.6875rem] text-muted-foreground">
             {user.name[0]}
           </span>
           <span>
@@ -236,7 +236,7 @@ export default function DemandasDemo({ content }: { content: DemandasDemoContent
             <button type="button" onClick={() => setDialog("n8n")} className={toolbarButton}>
               {c.toolbar.automations}
               {state.events.length ? (
-                <span className="rounded-full bg-brand-soft px-1.5 font-mono text-[0.6875rem] text-brand">{state.events.length}</span>
+                <span className="rounded-full bg-surface-2 px-1.5 font-mono text-[0.6875rem] text-foreground">{state.events.length}</span>
               ) : null}
             </button>
             <button type="button" onClick={() => setDialog("new")} className={buttonVariants({ size: "sm" })}>

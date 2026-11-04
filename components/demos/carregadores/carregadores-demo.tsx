@@ -94,14 +94,14 @@ export default function CarregadoresDemo({ content: c }: { content: Carregadores
                               kw: nf.format(o.kw),
                             })}
                           </span>
-                          <span className={`font-semibold tabular-nums ${best ? "text-brand" : "text-foreground"}`}>
+                          <span className={`font-semibold tabular-nums ${best ? "text-ok" : "text-foreground"}`}>
                             {duration(o.hours)}
                             {best ? <span className="sr-only"> ({c.fastest})</span> : null}
                           </span>
                         </p>
                         <div aria-hidden="true" className="h-1.5 overflow-hidden rounded-full bg-line">
                           <div
-                            className={`h-full rounded-full transition-[width] duration-500 ease-out-soft motion-reduce:transition-none ${best ? "bg-brand" : "bg-muted-foreground/60"}`}
+                            className={`h-full rounded-full transition-[width] duration-500 ease-out-soft motion-reduce:transition-none ${best ? "bg-ok" : "bg-muted-foreground/60"}`}
                             style={{ width: `${Math.max(4, (o.hours / longest) * 100)}%` }}
                           />
                         </div>
@@ -125,7 +125,7 @@ export default function CarregadoresDemo({ content: c }: { content: Carregadores
           </ul>
 
           <p className="rounded-lg border border-line px-3 py-2 font-mono text-[0.75rem] text-muted-foreground">
-            <span className="mr-2 text-brand">{c.ruleLabel}</span>
+            <span className="mr-2 text-subtle">{c.ruleLabel}</span>
             {c.rule}
           </p>
         </div>

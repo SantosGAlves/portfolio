@@ -86,7 +86,7 @@
 }
 .sig[data-live] [data-typing] > [data-v],
 .sig[data-live] .msg[data-idle] > [data-seg]:first-child > [data-v] {
-  box-shadow: 2px 0 0 var(--brand);
+  box-shadow: 2px 0 0 var(--text-muted);
   animation: caret 1s steps(1) infinite;
 }
 .sig[data-live] .msg[data-idle] > [data-seg]:first-child > [data-v] {
@@ -127,7 +127,7 @@
 }
 .field b {
   font-weight: 400;
-  color: var(--brand);
+  color: var(--text);
 }
 .field[data-hl] {
   background: var(--brand-soft);
@@ -195,7 +195,7 @@
 .step[data-state="run"] .icon::before {
   width: 10px;
   height: 10px;
-  border: 1.5px solid var(--brand);
+  border: 1.5px solid var(--ok);
   border-right-color: transparent;
   animation: spin 0.7s linear infinite;
 }
@@ -218,14 +218,14 @@
 .step[data-state="wait"] .icon::before {
   width: 8px;
   height: 8px;
-  border: 1px solid var(--brand);
-  background: var(--brand-soft);
+  border: 1px solid var(--warn);
+  background: color-mix(in srgb, var(--warn) 14%, transparent);
   animation: breathe 1.8s var(--ease-out-soft) infinite;
 }
 .sig:not([data-live]) .step[data-final="wait"] .status,
 .step[data-state="wait"] .status {
   opacity: 1;
-  color: var(--brand);
+  color: var(--warn);
 }
 @keyframes spin {
   to {
@@ -248,9 +248,9 @@
   justify-self: end;
   max-width: 92%;
   padding: 0.625rem 0.875rem;
-  border: 1px solid var(--brand-line);
+  border: 1px solid var(--line-strong);
   border-radius: 14px 14px 4px 14px;
-  background: var(--brand-soft);
+  background: var(--surface-2);
   font-size: 0.9375rem;
   line-height: 1.55;
   transition:
@@ -287,7 +287,7 @@
   width: 5px;
   height: 5px;
   border-radius: 50%;
-  background: var(--brand);
+  background: var(--text-muted);
   animation: dots 1s var(--ease-out-soft) infinite;
 }
 .dots i:nth-child(2) {

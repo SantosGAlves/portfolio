@@ -16,7 +16,7 @@ const palette: Record<Tone, { card: string; code: string; text: string; muted: s
     text: "text-foreground",
     muted: "text-muted-foreground",
     label: "text-subtle",
-    accent: "text-brand",
+    accent: "text-subtle",
     line: "border-line",
   },
   app: {

@@ -99,7 +99,7 @@ function Section({ n, title, note, children }: { n: string; title: string; note?
     <section className="grid gap-3">
       <div className="grid gap-1">
         <h3 className="flex items-baseline gap-2 text-small font-semibold">
-          <span className="font-mono text-meta text-brand">{n}</span>
+          <span className="font-mono text-meta text-subtle">{n}</span>
           {title}
         </h3>
         {note ? <p className="text-[0.8125rem] text-muted-foreground">{note}</p> : null}
@@ -123,10 +123,10 @@ function SessionTable({ before, after, changed }: { before: Session | null; afte
           <div
             key={field}
             className={`grid grid-cols-[minmax(0,9.5rem)_minmax(0,1fr)] gap-3 px-3 py-2 not-first:border-t not-first:border-line ${
-              isChanged ? "bg-brand-soft" : "bg-surface"
+              isChanged ? "bg-ok-soft" : "bg-surface"
             }`}
           >
-            <dt className={isChanged ? "text-brand" : "text-subtle"}>
+            <dt className={isChanged ? "text-ok" : "text-subtle"}>
               {field}
               {isChanged ? <span className="sr-only"> ({changed})</span> : null}
             </dt>
@@ -202,7 +202,7 @@ function Dashboard({ content, reports, onAdvance }: { content: AjudaAnimalDemoCo
         </g>
         {pins.map((p) => (
           <g key={p.n} transform={`translate(${p.x.toFixed(1)} ${p.y.toFixed(1)})`}>
-            <circle r="9" className={p.resolved ? "fill-ok" : "fill-brand"} />
+            <circle r="9" className={p.resolved ? "fill-ok" : "fill-warn"} />
             <text textAnchor="middle" dy="3.5" className="fill-background font-mono text-[9px] font-semibold">
               {p.n}
             </text>
@@ -219,11 +219,11 @@ function Dashboard({ content, reports, onAdvance }: { content: AjudaAnimalDemoCo
             return (
               <li key={r.protocol} className="grid gap-2 rounded-xl border border-line bg-surface p-3">
                 <div className="flex flex-wrap items-center gap-2">
-                  <span aria-hidden="true" className={`grid size-5 place-items-center rounded-full font-mono text-[0.6875rem] font-semibold text-background ${done ? "bg-ok" : "bg-brand"}`}>
+                  <span aria-hidden="true" className={`grid size-5 place-items-center rounded-full font-mono text-[0.6875rem] font-semibold text-background ${done ? "bg-ok" : "bg-warn"}`}>
                     {i + 1}
                   </span>
                   <span className="font-mono text-small font-semibold">{r.protocol}</span>
-                  <span className={`ml-auto rounded-full border px-2 py-0.5 font-mono text-[0.6875rem] ${done ? "border-ok text-ok" : "border-brand-line text-brand"}`}>
+                  <span className={`ml-auto rounded-full border px-2 py-0.5 font-mono text-[0.6875rem] ${done ? "border-ok text-ok" : "border-warn text-warn"}`}>
                     {content.statuses[r.status]}
                   </span>
                 </div>

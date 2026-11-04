@@ -9,7 +9,7 @@ import { CloseIcon, Dialog } from "./parts"
 // a cada ação, com o JSON e a prévia do e-mail que o n8n mandaria.
 
 const accent: Record<DemoEventName, { border: string; text: string }> = {
-  novo_ticket: { border: "border-brand", text: "text-brand" },
+  novo_ticket: { border: "border-line-strong", text: "text-foreground" },
   ticket_assumido: { border: "border-warn", text: "text-warn" },
   ticket_concluido: { border: "border-ok", text: "text-ok" },
   alerta_inatividade: { border: "border-danger", text: "text-danger" },

@@ -23,7 +23,7 @@ export function Architecture({ groups, link, caption }: { groups: ArchGroup[]; l
         {groups.map((group, g) => (
           <div key={group.label} className="contents">
             {g > 0 ? (
-              <div className="grid justify-items-center gap-1 py-1 text-center font-mono text-meta text-brand lg:mt-[4.6rem] lg:self-start lg:px-2">
+              <div className="grid justify-items-center gap-1 py-1 text-center font-mono text-meta text-subtle lg:mt-[4.6rem] lg:self-start lg:px-2">
                 {/* Quebra só entre palavras (não no hífen de "x-service-key"). */}
                 <span>
                   {link.split(" ").map((word, i) => (
@@ -36,7 +36,7 @@ export function Architecture({ groups, link, caption }: { groups: ArchGroup[]; l
                 <span aria-hidden="true" className="lg:hidden">
                   ↓
                 </span>
-                <span aria-hidden="true" className="hidden h-px w-full bg-brand lg:block" />
+                <span aria-hidden="true" className="hidden h-px w-full bg-line-strong lg:block" />
               </div>
             ) : null}
             <Group group={group} />
@@ -56,8 +56,8 @@ function Group({ group }: { group: ArchGroup }) {
   const place = "lg:[grid-column:var(--c)] lg:[grid-row:var(--r)]"
 
   return (
-    <div className={`grid content-start gap-3 rounded-xl border p-4 ${group.mine ? "border-brand-line bg-brand-soft" : "border-line"}`}>
-      <p className={`font-mono text-meta ${group.mine ? "text-brand" : "text-subtle"}`}>{group.label}</p>
+    <div className={`grid content-start gap-3 rounded-xl border p-4 ${group.mine ? "border-line-strong bg-surface-2" : "border-line"}`}>
+      <p className={`font-mono text-meta ${group.mine ? "text-foreground" : "text-subtle"}`}>{group.label}</p>
       <div style={{ "--arch-cols": cols } as CSSProperties} className="grid gap-2 lg:gap-x-0 lg:gap-y-0 lg:[grid-template-columns:var(--arch-cols)]">
         {nodes.map((node, i) => (
           <div key={node.title} className="contents">

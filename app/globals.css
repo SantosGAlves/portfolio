@@ -11,6 +11,9 @@
    Tokens da Direção A ("Console"), versão verde terminal.
    Fonte única da verdade: cores, fontes, tamanhos e raios saem daqui.
    Contrastes medidos contra o fundo e o card de cada tema (ver CLAUDE.md).
+   Papéis (60-30-10): neutros nos fundos, superfícies e texto; verde (--brand) só no que é clicável
+   (botão principal, links, "Ver projeto →", foco); ciano (--ok) só status e sucesso; âmbar (--warn) só
+   atenção; cinza (--text-subtle) para rótulos, notas e selos informativos.
    ------------------------------------------------------------------ */
 :root,
 :root[data-theme="dark"] {
@@ -25,9 +28,9 @@
   --text: #ededf0; /* 16,4:1 */
   --text-muted: #9a9da6; /* 7,1:1 */
   --text-subtle: #82868f; /* 5,3:1 */
-  --brand: #7ee08f; /* 11,8:1 — identidade: rótulos, links, foco, estado ativo */
+  --brand: #7ee08f; /* 11,8:1 — só o que é clicável: botão principal, links, foco, controle ativo */
   --brand-rgb: 126 224 143;
-  --ok: #6cc7e0; /* 9,9:1 — só sucesso: ✓ da execução, status ok */
+  --ok: #6cc7e0; /* 9,9:1 — só status e sucesso: entregue, disponível, etapa final, ✓ da execução */
   --ok-rgb: 108 199 224;
   --warn: #e8b04b; /* 9,8:1 — só estados de alerta (ex.: SLA em atenção) */
   --danger: #f2857c; /* 7,7:1 — só estados críticos (ex.: SLA atrasado) */
@@ -38,6 +41,7 @@
   --brand-line: rgb(var(--brand-rgb) / 0.34);
   --brand-glow: rgb(var(--brand-rgb) / 0.12);
   --ok-line: rgb(var(--ok-rgb) / 0.4);
+  --ok-soft: rgb(var(--ok-rgb) / 0.1);
 }
 
 :root[data-theme="light"] {
@@ -65,6 +69,7 @@
   --brand-line: rgb(var(--brand-rgb) / 0.32);
   --brand-glow: rgb(var(--brand-rgb) / 0.1);
   --ok-line: rgb(var(--ok-rgb) / 0.4);
+  --ok-soft: rgb(var(--ok-rgb) / 0.08);
 }
 
 :root {
@@ -75,7 +80,7 @@
   --card-foreground: var(--text);
   --popover: var(--surface-2);
   --popover-foreground: var(--text);
-  --primary: var(--text);
+  --primary: var(--brand); /* botão de destaque: um por tela */
   --primary-foreground: var(--on-primary);
   --secondary: var(--surface-2);
   --secondary-foreground: var(--text);
@@ -125,6 +130,7 @@
   --color-brand-glow: var(--brand-glow);
   --color-ok: var(--ok);
   --color-ok-line: var(--ok-line);
+  --color-ok-soft: var(--ok-soft);
   --color-warn: var(--warn);
   --color-danger: var(--danger);
 
@@ -137,8 +143,8 @@
   --font-mono: var(--font-geist-mono), ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
 
   /* Escala tipográfica */
-  --text-name: clamp(3rem, 0.5rem + 10.5vw, 9.5rem);
-  --text-name--line-height: 0.86;
+  --text-name: clamp(2.25rem, 1.2rem + 4.6vw, 5.5rem); /* menor desde a reestruturação: divide a linha com a foto */
+  --text-name--line-height: 0.92;
   --text-name--letter-spacing: -0.055em;
   --text-name--font-weight: 700;
   --text-role: clamp(1.25rem, 1rem + 1.1vw, 1.875rem);
@@ -243,7 +249,7 @@
   line-height: 1.5;
   letter-spacing: var(--tracking-label);
   text-transform: uppercase;
-  color: var(--brand);
+  color: var(--text-subtle); /* rótulo de seção: informativo, não clicável */
 }
 
 /* Header: borda inferior aparece depois dos primeiros 64px de rolagem. */

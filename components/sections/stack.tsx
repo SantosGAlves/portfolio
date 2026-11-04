@@ -123,11 +123,11 @@ export function Stack({ locale }: { locale: Locale }) {
                         <li
                           key={techName(item, locale)}
                           className={`inline-flex items-baseline gap-1.5 rounded-full border px-2.5 py-0.5 text-small ${
-                            item.level === "main" ? "border-brand-line text-foreground" : "border-line text-muted-foreground"
+                            item.level === "main" ? "border-line-strong text-foreground" : "border-line text-muted-foreground"
                           }`}
                         >
                           {techName(item, locale)}
-                          {item.level === "main" ? <span className="font-mono text-[0.6875rem] text-brand">{stack.mainLabel}</span> : null}
+                          {item.level === "main" ? <span className="font-mono text-[0.6875rem] text-subtle">{stack.mainLabel}</span> : null}
                         </li>
                       ))}
                     </ul>
@@ -163,11 +163,11 @@ function TechPill({ item, locale }: { item: TechItem; locale: Locale }) {
   return (
     <span
       className={`inline-flex h-11 shrink-0 items-center gap-2.5 rounded-full border bg-surface px-4 text-small whitespace-nowrap motion-reduce:h-9 motion-reduce:gap-2 motion-reduce:px-3 ${
-        main ? "border-brand-line text-foreground" : "border-line text-muted-foreground"
+        main ? "border-line-strong text-foreground" : "border-line text-muted-foreground"
       }`}
     >
       {item.icon ? (
-        <svg viewBox="0 0 24 24" fill="currentColor" className={`size-[1.125rem] shrink-0 ${main ? "text-brand" : "text-foreground/80"}`}>
+        <svg viewBox="0 0 24 24" fill="currentColor" className={`size-[1.125rem] shrink-0 ${main ? "text-foreground" : "text-foreground/80"}`}>
           <use href={`#si-${item.icon}`} />
         </svg>
       ) : null}

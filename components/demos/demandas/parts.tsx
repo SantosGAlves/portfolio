@@ -53,7 +53,7 @@ export function Dialog({
 }
 
 const slaColor: Record<SlaState, string> = {
-  ok: "bg-brand",
+  ok: "bg-ok",
   warning: "bg-warn",
   critical: "bg-danger",
   late: "bg-danger",
@@ -107,7 +107,7 @@ export function PriorityTag({ priority, label }: { priority: Priority; label: st
 
 export function SectorTag({ label }: { label: string }) {
   return (
-    <span className="rounded-full border border-brand-line px-2 py-0.5 font-mono text-[0.6875rem] text-brand">
+    <span className="rounded-full border border-line-strong px-2 py-0.5 font-mono text-[0.6875rem] text-muted-foreground">
       <span aria-hidden="true">→ </span>
       {label}
     </span>

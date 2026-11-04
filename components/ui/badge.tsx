@@ -10,7 +10,8 @@ const badgeVariants = cva(
     variants: {
       variant: {
         default: "border-line bg-surface-2 text-muted-foreground",
-        brand: "border-brand-line bg-transparent text-brand",
+        /** Status e sucesso (ex.: "entregue a cliente"): ciano, nunca verde (verde = clicável). */
+        ok: "border-ok-line bg-transparent text-ok",
         outline: "border-line-strong bg-transparent text-muted-foreground",
       },
     },

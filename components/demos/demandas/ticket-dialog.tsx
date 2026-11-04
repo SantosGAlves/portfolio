@@ -251,7 +251,7 @@ function TicketBody({
             <dt className="font-mono text-meta text-subtle">{c.timeSpent}</dt>
             <dd className="font-mono text-foreground">
               {formatMinutes(minutesWithClock(ticket, now))}
-              {running ? <span aria-hidden="true" className="ml-2 inline-block size-1.5 rounded-full bg-brand align-middle" /> : null}
+              {running ? <span aria-hidden="true" className="ml-2 inline-block size-1.5 rounded-full bg-ok align-middle" /> : null}
             </dd>
           </div>
           <div className="grid gap-0.5">

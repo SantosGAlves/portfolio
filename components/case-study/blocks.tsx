@@ -21,9 +21,9 @@ export function Flow({ steps, caption, altLabel = "/" }: { steps: FlowStep[]; ca
             <div
               className={`grid content-start gap-1.5 rounded-xl border p-4 ${steps.length > 5 ? "lg:p-3.5" : ""} ${
                 step.accent
-                  ? "border-brand-line bg-brand-soft"
+                  ? "border-ok-line bg-ok-soft"
                   : step.alt
-                    ? "border-dashed border-brand-line bg-surface"
+                    ? "border-dashed border-line-strong bg-surface"
                     : "border-line bg-surface"
               }`}
             >
@@ -31,12 +31,12 @@ export function Flow({ steps, caption, altLabel = "/" }: { steps: FlowStep[]; ca
               <span className={`font-mono text-meta ${step.accent ? "text-muted-foreground" : "text-subtle"}`}>
                 {String(i + 1).padStart(2, "0")}
               </span>
-              <span className={`text-small font-semibold ${step.accent ? "text-brand" : "text-foreground"}`}>{step.title}</span>
+              <span className={`text-small font-semibold ${step.accent ? "text-ok" : "text-foreground"}`}>{step.title}</span>
               {step.detail ? <span className="text-[0.8125rem] leading-snug text-muted-foreground">{step.detail}</span> : null}
             </div>
             {i < steps.length - 1 ? (
               steps[i + 1].alt ? (
-                <span className="grid h-6 place-items-center font-mono text-meta text-brand lg:h-auto">{altLabel}</span>
+                <span className="grid h-6 place-items-center font-mono text-meta text-subtle lg:h-auto">{altLabel}</span>
               ) : (
                 <span aria-hidden="true" className="grid h-5 place-items-center font-mono text-subtle lg:h-auto">
                   <span className="lg:hidden">↓</span>
@@ -60,7 +60,7 @@ export function Decision({ title, tradeoff, children }: { title: string; tradeof
       <div className="grid gap-3 text-muted-foreground [&_p]:m-0">{children}</div>
       {tradeoff ? (
         <p className="mt-1 border-t border-line pt-3 text-small text-muted-foreground">
-          <span className="mr-2 font-mono text-meta text-brand">trade-off</span>
+          <span className="mr-2 font-mono text-meta text-subtle">trade-off</span>
           {tradeoff}
         </p>
       ) : null}
@@ -132,7 +132,7 @@ export function Message({
     <li
       className={`grid max-w-[88%] gap-2 rounded-2xl border px-3.5 py-2.5 text-small text-foreground sm:max-w-[80%] [&_ol]:my-0 [&_ol]:gap-1 [&_ol]:text-foreground [&_p]:m-0 [&_p]:text-foreground ${
         customer
-          ? "justify-self-end rounded-br-md border-brand-line bg-brand-soft"
+          ? "justify-self-end rounded-br-md border-line-strong bg-surface-2"
           : "justify-self-start rounded-bl-md border-line bg-surface-2"
       }`}
     >
@@ -146,7 +146,7 @@ export function Message({
 export function ChatNote({ label, children }: { label: string; labels?: ChatLabels; children: ReactNode }) {
   return (
     <li className="mt-2 grid gap-1 rounded-lg border border-dashed border-line-strong px-3.5 py-2.5 text-small text-muted-foreground [&_code]:text-[0.8125rem] [&_p]:m-0">
-      <span className="font-mono text-meta text-brand">{label}</span>
+      <span className="font-mono text-meta text-subtle">{label}</span>
       <div>{children}</div>
     </li>
   )
@@ -235,7 +235,7 @@ export function DataTable({
           </thead>
           <tbody>
             {rows.map((row, i) => (
-              <tr key={row.join("|")} className={`border-t border-line ${i === highlight ? "bg-brand-soft" : ""}`}>
+              <tr key={row.join("|")} className={`border-t border-line ${i === highlight ? "bg-ok-soft" : ""}`}>
                 {row.map((cell, j) =>
                   j === 0 ? (
                     <th key={j} scope="row" className="px-4 py-2.5 font-semibold text-foreground">
@@ -290,7 +290,7 @@ export function PaperFigure({
       </div>
       <figcaption className="grid gap-1 font-mono text-meta text-subtle">
         <span>
-          <span className="text-brand">{label}</span> · {caption}
+          <span className="text-foreground">{label}</span> · {caption}
         </span>
         <span>
           {note ? `${note} · ` : null}
