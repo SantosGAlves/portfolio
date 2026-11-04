@@ -26,18 +26,26 @@ Não é "só IA": desenvolvimento de produto e back-end tem o mesmo peso.
 - Linha de função do hero: opção A, "Desenvolvedor de software · IA aplicada e automação"
   / "Software developer · applied AI and automation". Opção B guardada no comentário de `site.ts`:
   "Desenvolvedor back-end com foco em IA aplicada". A linha só quebra depois do "·".
-- "O que eu construo": três áreas de peso igual: Agentes de IA, Automação de processos e
-  Produtos e back-end (APIs, bancos de dados, painéis, autenticação, deploy).
-- Linguagens sem barras de nível, porcentagens ou parede de badges: Python como principal,
-  Java, Go e C# como "já trabalhei com".
-- Frase honesta em "Como eu trabalho": desenvolve com apoio de agentes de código (Claude Code),
-  revisando e testando o que vai para produção.
+- Frase de efeito do hero (`hero.tagline`, uma linha por item): "Agentes de IA, automações / e o back-end que
+  mantém tudo de pé." / "AI agents, automations, / and the back-end that keeps it all running."
+- "O que eu faço": quatro áreas curtas, gerais, sem ligar a projetos: Agentes de IA e LLMs, Automação e
+  integrações, Back-end e dados, Machine learning e visão computacional (título, uma frase, palavras-chave).
+- Linguagens sem barras de nível nem porcentagens: Python marcado como principal; Java, C# e Go como
+  "já trabalhei com" (seção "Tecnologias").
+- "Como eu trabalho" (em "Formação e competências"): cada qualidade com a prova e o link para o caso. Inclui a
+  frase honesta: desenvolve com apoio de agentes de código (Claude Code), revisando e testando o que vai para
+  produção, com link para o código deste site.
 - Hunt Sales (ago/2025 – jun/2026): Gustavo propôs e desenvolveu sozinho o sistema completo da loja de baterias:
   agente de IA (GPT-4o mini, WhatsApp) + sistema de gestão (Supabase, Auth, painel HTML/JS + Tailwind, domínio da empresa).
   Resultado sem métricas formais: reverteu o churn do cliente e virou um novo tipo de produto, replicado
   (ex.: carregadores de veículos elétricos). Fonte dos fatos: `docs/conteudo/conteudo-agente-baterias.md`.
-- Gaudium (jul/2026 – atual): "Automações de processos e integrações via API" e "Desenvolvimento de sites e
-  produtos web, com foco em back-end". Nada além disso (NDA).
+- Gaudium (jul/2026 – atual): empresa B2B de tecnologia para mobilidade e entregas. Só descrições gerais (NDA):
+  automações de processos com n8n e integrações via API; agentes de IA e LLMs aplicados a processos internos;
+  sites e produtos web com foco em back-end. Sem clientes, parceiros nem link para estudo de caso (a plataforma de
+  demandas foi o case técnico do processo seletivo e não pode ser ligada à empresa).
+- Experiência na home: Gaudium, Hunt Sales e o projeto de extensão Ajuda Animal (2026), em tópicos curtos com verbo
+  de ação e links para os casos relacionados (`caseStudies`). Texto aprovado: a entrega da Hunt Sales "reverteu o
+  risco de cancelamento de um cliente" (o cliente estava em risco; não houve cancelamento).
 - O projeto principal é apresentado como "Agente de IA + sistema de gestão", nunca como "um chatbot".
 
 ### Traduções decididas
@@ -87,12 +95,20 @@ Destaque chapado e usado com parcimônia (rótulos, links, foco, detalhes). Sem 
 - Escala: tokens `text-name`, `text-role`, `text-h2`, `text-h3`, `text-body`, `text-small`, `text-meta`.
   Todo token novo de tamanho precisa entrar no grupo `font-size` de `lib/utils.ts`, senão o `cn` o confunde com cor.
 
+### Página inicial
+
+Ordem (`components/pages/home-page.tsx`): Hero → O que eu faço → Experiência → Tecnologias → Projetos → Outros
+projetos → Formação e competências → Contato. O menu do header (`site.ts` → `nav`) segue a mesma ordem, sem
+"Outros projetos"; entre 1024 e 1280 px o header usa o nome curto e um espaço menor entre os links, para caber.
+Cada seção é uma marca da régua de progresso (`data-rail`, na ordem da página).
+
 ### Hero
 
 - Saudação pequena em mono ("olá, eu sou" / "hi, I'm"), depois o nome como `h1`:
   "Gustavo" em Schibsted bold e "Alves dos Santos" em Newsreader itálico, em linhas separadas
   (com `{" "}` entre os spans para o nome acessível ficar correto).
-- Abaixo: função, parágrafo de apoio e CTAs numa coluna (máx. 46rem); os três fatos em linha a partir de 1024px.
+- Logo abaixo do nome, a função em mono; depois a frase de efeito (`text-role`, segunda linha esmaecida), o parágrafo
+  de apoio e os CTAs numa coluna (máx. 46rem); os três fatos em linha a partir de 1024px.
   O lado direito fica para o fundo "Fluxo". A assinatura saiu do hero (foi para o estudo de caso do agente).
 - O nome é o elemento do LCP; o fundo só começa depois do evento `load` (`lib/after-load.ts`).
 
@@ -138,9 +154,17 @@ Destaque chapado e usado com parcimônia (rótulos, links, foco, detalhes). Sem 
      título (`shortTitle` ou `title`), uma frase (`tagline` ou `summary`), até 4 tecnologias (as 4 primeiras de
      `stack`) e o selo "demo interativa". Fotos, prints e vídeos reais ficam só dentro dos estudos de caso
      (`media.cover` não existe mais).
-  2. "Outros projetos": lista compacta com ano, título, uma linha e seta: projetos `tier: "secondary"` (VoiceSnap,
-     sem página, link para o GitHub) + `site.ts` → `projects.more` (API .NET 10, Streamlit + Azure, concorrência
-     em Java), e o link "Todos os repositórios".
+  2. "Outros projetos" (seção própria, `OtherProjects`): lista compacta com ano, título, uma linha e seta: projetos
+     `tier: "secondary"` (VoiceSnap, sem página, link para o GitHub) + `site.ts` → `projects.more` (API .NET 10,
+     Streamlit + Azure, concorrência em Java), e o link "Todos os repositórios".
+- Seção "Tecnologias" (`components/sections/stack.tsx` + `stack-marquee.tsx`), inspirada em victrhugo.site: faixa
+  de selos (ícone monocromático do `simple-icons` + nome) rolando devagar, só com CSS (`animate-marquee`, duas
+  cópias, 3,5 s por item). Pausa ao passar o mouse, ao tocar na faixa e no botão "Pausar a faixa" (WCAG 2.2.2).
+  Com `prefers-reduced-motion`, grade parada e sem botão. Cada ícone entra uma vez no HTML (`<symbol>`); a faixa usa
+  `<use>`. A faixa é `aria-hidden`: a lista por categoria, embaixo, tem o mesmo conteúdo. Dados em `content/tech.ts`
+  (nomes das categorias no `site.ts`). Sem ícone no simple-icons (SQL, Java, C#, OpenAI API, Whisper, Evolution
+  API, webhooks, APIs REST, Lovable, Bubble, Azure) ou com ícone que é o próprio nome escrito (.NET, MySQL): só o
+  nome, no mesmo selo.
 - Sem versão EN: a página EN mostra o texto em português (`lang="pt-BR"`), com aviso,
   canonical para a versão PT e fora do sitemap.
 - Template: cabeçalho com metadados em mono → vídeo ou arte → "Resumo em 30 segundos" (`tldr`) →
@@ -180,7 +204,7 @@ Destaque chapado e usado com parcimônia (rótulos, links, foco, detalhes). Sem 
 - Mídia do agente: `public/agente-baterias/midia-agente-baterias/` (já censurada). Os `.png` originais ficam
   fora do git; o site usa só `.webp` e `.mp4`.
 - Mídia do LibrasFlow: `public/librasflow/` (vídeo e poster convertidos do GIF de demonstração do repositório,
-  sem a faixa do editor; `librasflow-card.webp` sem a barra de texto do topo). O banner do repositório não é usado
+  sem a faixa do editor). O banner do repositório não é usado
   (estética de "IA brilhante", contra as regras visuais). Figuras do artigo em `public/librasflow/midia-librasflow/`
   (matriz de confusão e interface), com rótulos em português; a legenda avisa isso. O pipeline é um `<Flow>` de
   6 etapas traduzido (a figura do pipeline foi apagada).
@@ -223,8 +247,8 @@ Destaque chapado e usado com parcimônia (rótulos, links, foco, detalhes). Sem 
   `<Architecture>` e o arquivo ficou em `docs/referencias/ajuda-animal`. Nunca usar o `n8n_ajudaanimal.json`
   exportado (tem o número pessoal e a chave da Evolution API); só o fluxo da branch, com marcadores.
 - Carregadores de veículos elétricos (`carregadores-ev`; fonte: `docs/conteudo/conteudo-agente-baterias.md`,
-  seção "Mesmo padrão, outro nicho"): projeto na Hunt Sales, cliente nunca identificado. Período "2025–2026 · Hunt
-  Sales" (o do estágio; ano exato `[CONFIRMAR]`, comentário no meta). O conteúdo saiu do caso das baterias, que
+  seção "Mesmo padrão, outro nicho"): projeto na Hunt Sales, cliente nunca identificado. Período "2026 · Hunt
+  Sales" (confirmado). O conteúdo saiu do caso das baterias, que
   ficou com uma linha e o link. Só fatos da fonte: veículos (kWh, limite AC), produtos com várias saídas,
   simulador, multiempresa, Realtime, gravações pelo webhook do n8n; stack Node.js/Express, HTML/CSS/JS, Supabase, n8n.
 - Plataforma de demandas: o README fala em RLS, mas o código usa a chave de serviço e checa permissões
