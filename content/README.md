@@ -28,12 +28,12 @@ export const meta = {
   repo: "https://github.com/...", // opcional: link "Código no GitHub"
   privateCode: "...",       // opcional: nota de código privado no lugar do link, no topo do caso
   live: "https://...",      // opcional: botão "Testar ao vivo" no topo do caso (nova aba)
-  liveEmbed: "https://...", // opcional: abre a demo numa janela dentro do caso (iframe com câmera);
-                            // só se o site permitir iframe (sem X-Frame-Options nem frame-ancestors)
-  liveExternal: "...",      // opcional: texto do link para a versão externa (ex.: "Abrir a versão do IFSP")
-  liveIntro: "...",         // opcional: frases de abertura da janela
+  liveEmbed: "https://...", // opcional: versão pública embutida na seção "Experimente" (<Demo />), numa moldura
+                            // de navegador; o iframe com câmera só carrega no clique. O topo ganha um link
+                            // para a seção. Só se o site permitir iframe (sem X-Frame-Options nem frame-ancestors)
+  liveIntro: "...",         // opcional: introdução da seção da versão embutida
   demo: "demandas",         // opcional: demo do site; aparece onde o texto tiver <Demo /> (seção "Experimente")
-  demoNote: "...",          // opcional: nota curta sob o botão da demonstração ao vivo (live)
+  demoNote: "...",          // opcional: nota curta sobre a demonstração ao vivo (sob a moldura)
   status: "shipped",        // "shipped" | "in-progress" | "planned" (card sem página)
   art: "automation",        // "battery" | "librasflow" | "automation" | "kanban" | "booking" | "planned"
   title: "Nome do projeto",

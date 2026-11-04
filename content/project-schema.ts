@@ -24,23 +24,22 @@ export const projectMetaSchema = z.object({
   repo: z.string().url().optional(),
   /** Código privado: nota no lugar do link do repositório, no topo do caso. */
   privateCode: z.string().optional(),
-  /** Demonstração pública ao vivo (link em nova aba no estudo de caso). */
+  /** Demonstração pública ao vivo: botão em nova aba no topo do caso (ou, com liveEmbed, endereço da moldura). */
   live: z.string().url().optional(),
   /**
-   * Endereço da demonstração para abrir numa janela dentro do caso (iframe com câmera).
+   * Endereço embutido na seção "Experimente" (<Demo /> no MDX), numa moldura de navegador; o iframe
+   * (allow="camera; fullscreen") só carrega no clique. O topo do caso ganha um link para a seção.
    * Só use se o site permitir iframe (sem X-Frame-Options nem frame-ancestors).
    */
   liveEmbed: z.string().url().optional(),
-  /** Texto do link para a versão externa (ex.: "Abrir a versão do IFSP"). */
-  liveExternal: z.string().optional(),
-  /** Frases de abertura da janela da demonstração ao vivo. */
+  /** Introdução da seção "Experimente" da versão embutida (liveEmbed). */
   liveIntro: z.string().optional(),
   /** Demo dentro do caso (slug de lib/demos.ts): a seção "Experimente" aparece onde o MDX tem <Demo />. */
   demo: z
     .string()
     .regex(/^[a-z0-9-]+$/, "use o slug da demo, ex.: demandas")
     .optional(),
-  /** Nota curta sob o botão da demonstração ao vivo (meta.live), ex.: diferença entre a demo e o que o estudo mede. */
+  /** Nota curta sobre a demonstração ao vivo (sob a moldura, ou sob o botão sem liveEmbed), ex.: diferença entre a demo e o que o estudo mede. */
   demoNote: z.string().optional(),
   /** planned = card "em construção", sem página de estudo de caso. */
   status: z.enum(projectStatuses),

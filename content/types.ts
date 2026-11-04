@@ -99,19 +99,8 @@ export type SiteContent = {
     secondaryTitle: string
     /** Link para o repositório de um projeto. */
     repoLink: string
-    /** Botão da demonstração pública ao vivo, no estudo de caso. */
+    /** Botão da demonstração pública ao vivo (em nova aba), no topo do caso sem meta.liveEmbed. */
     liveLink: string
-    /** Janela da demonstração ao vivo (meta.liveEmbed). {titulo} = título do projeto. */
-    liveDialog: {
-      trigger: string
-      eyebrow: string
-      loading: string
-      frameTitle: string
-      close: string
-      fallback: string
-      /** Link externo quando o projeto não define meta.liveExternal. */
-      external: string
-    }
     /** Selo discreto no card da home dos projetos com demo interativa. */
     demoBadge: string
     /** Lista compacta de repositórios menores, sem card. */
@@ -160,7 +149,10 @@ export type SiteContent = {
     /** Botão dos vídeos em loop. */
     video: { play: string; pause: string }
     /** Seção da demo dentro do caso (<Demo /> no MDX). `id` = âncora (/projetos/<slug>#experimente). */
-    tryIt: { id: string; title: string; loading: string }
+    /** `link` = atalho no topo do caso até a versão embutida (meta.liveEmbed). */
+    tryIt: { id: string; title: string; loading: string; link: string }
+    /** Moldura de navegador da versão pública (meta.liveEmbed). {titulo} = título do projeto. */
+    liveFrame: { start: string; privacy: string; stop: string; open: string; loading: string; frameTitle: string }
   }
   /** Ordem dos links do header (seções da página inicial). */
   nav: SectionKey[]

@@ -121,15 +121,6 @@ export const site: SiteContent = {
     secondaryTitle: "Other projects",
     repoLink: "Code on GitHub",
     liveLink: "Try it live (uses your camera)",
-    liveDialog: {
-      trigger: "Try it here (uses your camera)",
-      eyebrow: "Live demo",
-      loading: "Loading the public version…",
-      frameTitle: "{titulo}: live demo",
-      close: "Close",
-      fallback: "Camera didn't open in here?",
-      external: "Open in a new tab",
-    },
     demoBadge: "interactive demo",
     more: {
       title: "More on GitHub",
@@ -257,7 +248,15 @@ export const site: SiteContent = {
     fallbackNotice: "This case study is only available in Portuguese for now.",
     illustrativeNotice: "Draft text. Parts marked [CONFIRMAR] are still under review; sample data is illustrative.",
     video: { play: "Play", pause: "Pause" },
-    tryIt: { id: "try-it", title: "Try it", loading: "Loading the demo…" },
+    tryIt: { id: "try-it", title: "Try it", loading: "Loading the demo…", link: "Try it live" },
+    liveFrame: {
+      start: "Try it with your camera",
+      privacy: "Runs in your browser: no image leaves your computer.",
+      stop: "Stop",
+      open: "Open in a new tab",
+      loading: "Loading the public version…",
+      frameTitle: "{titulo}: live public version",
+    },
   },
   nav: ["projects", "build", "experience", "contact"],
   ui: {

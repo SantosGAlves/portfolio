@@ -2,9 +2,8 @@ import type { ComponentProps } from "react"
 import { notFound } from "next/navigation"
 import { ProjectArt } from "@/components/art/project-art"
 import { MediaFigure } from "@/components/case-study/blocks"
-import { LiveDemo } from "@/components/case-study/live-demo"
 import { LoopVideo } from "@/components/case-study/loop-video"
-import { TryIt } from "@/components/case-study/try-it"
+import { LiveTryIt, TryIt } from "@/components/case-study/try-it"
 import { Signature } from "@/components/hero/signature"
 import { buttonVariants } from "@/components/ui/button"
 import { getContent, homePath, type Locale } from "@/lib/i18n"
@@ -38,8 +37,24 @@ export function CaseStudyPage({ locale, slug }: { locale: Locale; slug: string }
         />
       </MediaFigure>
     ),
-    // Seção "Experimente": a demo do projeto (meta.demo), no ponto do texto em que o <Demo /> aparece.
-    Demo: () => (demo && isDemoSlug(demo) ? <TryIt slug={demo} locale={contentLocale} /> : null),
+    // Seção "Experimente", no ponto do texto em que o <Demo /> aparece: a demo feita para o site (meta.demo)
+    // ou a versão pública embutida numa moldura de navegador (meta.liveEmbed).
+    Demo: () =>
+      demo && isDemoSlug(demo) ? (
+        <TryIt slug={demo} locale={contentLocale} />
+      ) : meta.live && meta.liveEmbed ? (
+        <LiveTryIt
+          locale={contentLocale}
+          title={meta.title}
+          embed={meta.liveEmbed}
+          href={meta.live}
+          intro={meta.liveIntro}
+          note={meta.demoNote}
+          preview={
+            video ? { src: video.src, poster: video.poster, width: video.width, height: video.height, label: video.label } : undefined
+          }
+        />
+      ) : null,
     Signature: () => (
       <div className="my-10">
         <Signature content={textCopy.signature} buttonClassName={buttonVariants({ variant: "outline", size: "sm" })} />
@@ -79,38 +94,11 @@ export function CaseStudyPage({ locale, slug }: { locale: Locale; slug: string }
           <div className="grid gap-3">
             <div className="flex flex-wrap items-center gap-x-6 gap-y-3">
               {meta.live && meta.liveEmbed ? (
-                <>
-                  <LiveDemo
-                    embed={meta.liveEmbed}
-                    href={meta.live}
-                    lang={fallback ? locale : undefined}
-                    triggerClassName={buttonVariants()}
-                    closeClassName={buttonVariants({ variant: "ghost", size: "icon-sm" })}
-                    text={{
-                      trigger: projects.liveDialog.trigger,
-                      eyebrow: projects.liveDialog.eyebrow,
-                      title: meta.title,
-                      intro: meta.liveIntro,
-                      loading: projects.liveDialog.loading,
-                      frameTitle: projects.liveDialog.frameTitle.replace("{titulo}", meta.title),
-                      close: projects.liveDialog.close,
-                      note: meta.demoNote,
-                      fallback: projects.liveDialog.fallback,
-                      external: meta.liveExternal ?? projects.liveDialog.external,
-                      opensInNewTab: ui.opensInNewTab,
-                    }}
-                  />
-                  <a
-                    href={meta.live}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex min-h-11 items-center gap-2 rounded-sm text-small font-semibold text-foreground hover:underline hover:underline-offset-4"
-                  >
-                    {meta.liveExternal ?? projects.liveDialog.external}
-                    <span aria-hidden="true">↗</span>
-                    <span className="sr-only">{ui.opensInNewTab}</span>
-                  </a>
-                </>
+                // A versão pública fica embutida na seção "Experimente"; aqui só o atalho até ela.
+                <a href={`#${textCopy.caseStudy.tryIt.id}`} className={buttonVariants()}>
+                  {textCopy.caseStudy.tryIt.link}
+                  <span aria-hidden="true">↓</span>
+                </a>
               ) : meta.live ? (
                 <a
                   href={meta.live}
@@ -140,7 +128,7 @@ export function CaseStudyPage({ locale, slug }: { locale: Locale; slug: string }
                 </a>
               ) : null}
             </div>
-            {meta.live && meta.demoNote ? <p className="max-w-[60ch] text-small text-subtle">{meta.demoNote}</p> : null}
+            {meta.live && !meta.liveEmbed && meta.demoNote ? <p className="max-w-[60ch] text-small text-subtle">{meta.demoNote}</p> : null}
             {!meta.repo && meta.privateCode ? (
               <p className="max-w-[60ch] border-l-2 border-line-strong pl-3 text-small text-muted-foreground">{meta.privateCode}</p>
             ) : null}

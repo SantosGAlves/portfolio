@@ -152,10 +152,14 @@ Destaque chapado e usado com parcimônia (rótulos, links, foco, detalhes). Sem 
   (figura de artigo em cartão claro, legenda em mono, nota e link para o tamanho real em nova aba) e `<DataTable>`
   (o MDX não tem tabelas em Markdown). Nada de rolagem horizontal: diagrama com texto vira `<Flow>`.
 - `meta.live` = demonstração pública externa: botão "Testar ao vivo (usa a câmera)" no topo do caso, em nova aba.
-  Com `meta.liveEmbed`, o botão vira "Testar aqui (usa a câmera)" e abre uma janela (`components/case-study/live-demo.tsx`,
-  `<dialog>` nativo com iframe `allow="camera"`), e o link externo (`meta.liveExternal`) fica ao lado. O iframe só
-  existe com a janela aberta: fechar destrói a página e desliga a câmera. `meta.liveIntro` abre a janela;
-  `meta.demoNote` aparece no rodapé dela. No celular a janela ocupa a tela e o texto vai para o rodapé;
+  Com `meta.liveEmbed`, a versão pública vai para a seção "Experimente" (`<Demo />` no MDX) e o topo do caso ganha
+  só um link para ela ("Testar ao vivo ↓" / "Try it live ↓"). `components/case-study/live-frame.tsx`: moldura de
+  navegador (barra com o endereço de `meta.live`); antes do clique, só a prévia (o vídeo do topo do caso em loop),
+  o botão "Testar com a câmera" e o aviso "Roda no seu navegador: nenhuma imagem sai do seu computador", sem
+  nenhuma requisição ao site. O clique cria o iframe (`allow="camera; fullscreen"`, foco nele); "Encerrar",
+  sair da página (`pagehide`) ou desmontar removem o iframe e desligam a câmera. "Abrir em nova aba" sempre
+  visível. `meta.liveIntro` = intro da seção; `meta.demoNote` = nota sob a moldura. No celular a moldura ocupa a
+  largura da tela e a altura sob o header, menos `--demo-reserve` (cabem a câmera e a letra reconhecida).
   `meta.demo` = slug de uma demo do site, mostrada na seção "Experimente" do caso (ver "Demos dentro dos estudos
   de caso"); não há botão "Abrir demo".
 - Blocos que dependem do idioma (`<Video>`, `<Signature>`) são passados por `case-study-page.tsx`
@@ -190,8 +194,9 @@ Destaque chapado e usado com parcimônia (rótulos, links, foco, detalhes). Sem 
   divisão por grupos (DBSCAN ε 0,05, 6.270 grupos) → **71,2%** no teste externo (3.812 imagens; não 69%, que é a
   variante de 63 atributos, descartada). São 34.374 amostras, não "imagens". Demo pública: librasflow.ifsp.dev
   (MLP no navegador; os números do estudo são do Random Forest). Nunca escrever "100% de acurácia".
-  Em 04/11/2026 o librasflow.ifsp.dev não mandava `X-Frame-Options` nem CSP, então abre em iframe
-  (`/#demo`); o reconhecimento roda no navegador (o `demo.js` só busca o modelo), o que sustenta a frase "nenhuma
+  Em 04/11/2026 o librasflow.ifsp.dev não mandava `X-Frame-Options`, CSP (nem em `<meta>`) ou `Permissions-Policy`,
+  e os scripts não fogem do iframe; por isso abre embutido em `/#palco-demo` (o palco da câmera; `/#demo` parava no
+  título da seção). Dentro do iframe a pessoa ainda clica em "Ativar câmera", que é do site do IFSP; o reconhecimento roda no navegador (o `demo.js` só busca o modelo), o que sustenta a frase "nenhuma
   imagem sai do seu computador". A página pública é só em português; o texto EN avisa. A versão nativa
   ("Experimente" com `@mediapipe/tasks-vision` e a MLP em JSON) depende do código em `docs/referencias/librasflow-web`,
   que ainda não existe.
@@ -224,6 +229,9 @@ de terceiros.
 - Ligar uma demo: `meta.demo: "<slug>"` e `<Demo />` no MDX, no ponto do texto (padrão: logo depois da seção de
   arquitetura ou "Como funciona", antes de Stack). O slug precisa estar em `lib/demos.ts` (conteúdo) e em
   `components/case-study/lazy-demo.tsx` (import); slug desconhecido quebra o build.
+- Versão pública hospedada em outro site (LibrasFlow): `meta.liveEmbed` + `<Demo />`, na mesma seção, dentro da
+  moldura de navegador de `live-frame.tsx` (ver `meta.live` acima). Antes de usar, conferir com `curl -I` que o
+  site aceita iframe.
 - `components/case-study/try-it.tsx` (servidor): título com âncora (`caseStudy.tryIt.id`: `#experimente` /
   `#try-it`), intro, selo, a demo e as notas. O texto fica na coluna de leitura; a demo sai dela e usa a largura
   do conteúdo (o `<article>` do caso é `@container`; margem `calc(50% - 50cqi)`) e, no celular, a da tela
