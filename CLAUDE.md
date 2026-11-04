@@ -141,7 +141,10 @@ Destaque chapado e usado com parcimônia (rótulos, links, foco, detalhes). Sem 
 - Blocos no MDX sem import (`mdx-components.tsx`): `<Flow>` (diagrama; `alt` = caminho
   alternativo, `altLabel` = "ou"/"or"), `<Decision>`, `<Metrics>`/`<Metric>`, `<Chat>` com
   `<Message from="customer|agent">` e `<ChatNote>` (conversa com selo "exemplo ilustrativo"),
-  `<Gallery>`/`<Shot>` (capturas com `next/image`).
+  `<Gallery>`/`<Shot>` (capturas com `next/image`; `<Shot layout="column|wide">` sozinha, `minWidth` faz figuras
+  com texto miúdo rolarem na horizontal no celular) e `<DataTable>` (o MDX não tem tabelas em Markdown).
+- `meta.live` = demonstração pública: botão "Testar ao vivo (usa a câmera)" no topo do caso, em nova aba;
+  `meta.liveNote` = nota curta sob o botão.
 - Blocos que dependem do idioma (`<Video>`, `<Signature>`) são passados por `case-study-page.tsx`
   em `<Body components={...}>`, com os rótulos do `site.ts` do idioma do texto.
 - `meta.media.cover` = imagem real do card (`fit: "frame"`: captura em moldura `surface-2`, cortada embaixo;
@@ -154,17 +157,22 @@ Destaque chapado e usado com parcimônia (rótulos, links, foco, detalhes). Sem 
   fora do git; o site usa só `.webp` e `.mp4`.
 - Mídia do LibrasFlow: `public/librasflow/` (vídeo e poster convertidos do GIF de demonstração do repositório,
   sem a faixa do editor; `librasflow-card.webp` sem a barra de texto do topo). O banner do repositório não é usado
-  (estética de "IA brilhante", contra as regras visuais).
+  (estética de "IA brilhante", contra as regras visuais). Figuras do artigo em `public/librasflow/midia-librasflow/`
+  (pipeline, matriz de confusão, interface), com rótulos em português; a versão EN avisa isso na legenda.
 - Artes abstratas (`components/art/project-art.tsx`), composições HTML/SVG do servidor nas cores do tema,
   decorativas: painel + agente, pontos da mão, fluxo de nós e Kanban com SLA (plataforma de demandas).
   As telas do repositório da plataforma não são usadas: têm o logo da Gaudium e dados de teste.
 - JSON-LD `Person` na página inicial; links com `[CONFIRMAR]` ficam fora do `sameAs`.
 
-### Fatos dos casos (fonte: os repositórios)
+### Fatos dos casos
 
-- LibrasFlow (commit V4.0): 34.374 linhas → ~6.270 grupos com DBSCAN por letra (eps 0,05); split 80/20 por
-  grupo, balanceado por amostras; validação em 3.812 imagens reais (15 das 21 letras): 69% de acerto,
-  E/M/N ~0%, S/U ~5%, R 10%, L 44%; B, V, A, I, W, D acima de 95%. Nunca escrever "100% de acurácia".
+- LibrasFlow (fonte: `docs/conteudo/conteudo-librasflow-e-demos.md`, do artigo do TCC, mais atual que o repositório):
+  TCC de ADS no IFSP Jacareí, em dupla com Carlos Henrique Moreira Gonçalves (coautor, sempre citado); orientação
+  do Prof. Dr. Tardelli Ronan Coelho Stekel e da Profa. Dra. Ana Paula Abrantes de Castro e Shiguemori. Artigo
+  "em preparação para submissão" (sem nome de revista). Números: 99,96% com vazamento → 97,01% ± 2,59% com
+  divisão por grupos (DBSCAN ε 0,05, 6.270 grupos) → **71,2%** no teste externo (3.812 imagens; não 69%, que é a
+  variante de 63 atributos, descartada). São 34.374 amostras, não "imagens". Demo pública: librasflow.ifsp.dev
+  (MLP no navegador; os números do estudo são do Random Forest). Nunca escrever "100% de acurácia".
 - Plataforma de demandas: o README fala em RLS, mas o código usa a chave de serviço e checa permissões
   no Flask. O caso descreve o que o código faz. Citar que foi o case do processo seletivo: `[CONFIRMAR]`.
 

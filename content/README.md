@@ -26,6 +26,8 @@ export const meta = {
   tier: "secondary",        // "featured" = destaque (o 1º em largura total) | "secondary" = card menor
   page: true,               // false = sem estudo de caso; o card leva ao repositório
   repo: "https://github.com/...", // opcional: link "Código no GitHub"
+  live: "https://...",      // opcional: botão "Testar ao vivo" no topo do caso (nova aba)
+  liveNote: "...",          // opcional: nota curta sob o botão ao vivo
   status: "shipped",        // "shipped" | "in-progress" | "planned" (card sem página)
   art: "automation",        // "battery" | "librasflow" | "automation" | "kanban" | "planned"
   title: "Nome do projeto",
@@ -89,6 +91,10 @@ Outros blocos disponíveis:
 <Gallery>
   <Shot src="/pasta/tela.webp" width={1540} height={824} alt="Descrição" caption="Legenda" />
 </Gallery>
+
+<Shot layout="wide" minWidth={720} src="/pasta/diagrama.webp" width={1190} height={240} alt="..." caption="..." />
+
+<DataTable caption="Legenda" head={["Coluna", "Valor"]} rows={[["Linha", "1"]]} highlight={0} />
 
 <Signature />   {/* demonstração interativa do agente (texto em site.ts) */}
 ```
