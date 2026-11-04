@@ -1,6 +1,7 @@
 import type { ReactNode } from "react"
 import { AjudaAnimalSkeleton } from "@/components/demos/ajuda-animal/skeleton"
 import { BarbuSkeleton } from "@/components/demos/barbu/skeleton"
+import { CarregadoresSkeleton } from "@/components/demos/carregadores/skeleton"
 import { DemandasSkeleton } from "@/components/demos/demandas/skeleton"
 import { buttonVariants } from "@/components/ui/button"
 import { getDemoContent, type DemoSlug } from "@/lib/demos"
@@ -52,6 +53,7 @@ const skeletons: Record<DemoSlug, () => ReactNode> = {
   demandas: DemandasSkeleton,
   barbu: BarbuSkeleton,
   "ajuda-animal": AjudaAnimalSkeleton,
+  carregadores: CarregadoresSkeleton,
 }
 
 /** Demo feita para o site (meta.demo): o código só carrega quando a seção chega perto da tela. */
@@ -108,12 +110,12 @@ export function LiveTryIt({
 }) {
   const { caseStudy, ui } = getContent(locale)
   const text = caseStudy.liveFrame
-
-  return (
   // librasflow.ifsp.dev: cabeçalho fixo de 60 px até 880 px de largura e 75 px acima disso (menu e botão do
   // GitHub aparecem); medido em 04/11/2026. O iframe sobe por essa altura e cresce na mesma medida.
   const crop =
     "-top-[60px] h-[calc(100%+60px)] @min-[881px]:-top-[75px] @min-[881px]:h-[calc(100%+75px)]"
+
+  return (
     <TryItShell locale={locale} intro={intro} notes={note ? <p className="text-small text-subtle">{note}</p> : undefined}>
       <LiveFrame
         embed={embed}
@@ -121,9 +123,9 @@ export function LiveTryIt({
         host={new URL(href).host}
         text={{
           start: text.start,
+          hint: text.hint,
           privacy: text.privacy,
           stop: text.stop,
-          hint: text.hint,
           open: text.open,
           opensInNewTab: ui.opensInNewTab,
           loading: text.loading,
@@ -141,8 +143,8 @@ export function LiveTryIt({
         }
         startClassName={buttonVariants()}
         stopClassName={buttonVariants({ variant: "outline" })}
+        cropClassName={crop}
       />
     </TryItShell>
-        cropClassName={crop}
   )
 }

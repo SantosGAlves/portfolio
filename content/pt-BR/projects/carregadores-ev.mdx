@@ -1,0 +1,91 @@
+export const meta = {
+  order: 6,
+  tier: "featured",
+  status: "shipped",
+  art: "charger",
+  demo: "carregadores",
+  title: "Painel para carregadores de veículos elétricos",
+  tagline: "Catálogo de carros e carregadores com simulador de recarga, e um agente que faz a mesma conta na conversa.",
+  kind: "Agente de IA + sistema de gestão",
+  summary:
+    "O padrão do agente de baterias aplicado a outro nicho: catálogo de veículos e de carregadores com várias saídas, simulador do tempo de recarga, painel multiempresa em tempo real e regras de negócio no n8n.",
+  role: "Responsável pelo sistema na Hunt Sales",
+  // Ano exato dentro do estágio (ago/2025 – jun/2026): [CONFIRMAR]. Por ora, o período do estágio.
+  period: "2025–2026 · Hunt Sales",
+  stack: ["Supabase", "n8n", "Node.js", "Express", "JavaScript"],
+  draft: false,
+  tldr: [
+    {
+      label: "Problema",
+      text: "Uma empresa de soluções de recarga de veículos elétricos precisava responder quanto tempo cada carro leva para carregar em cada produto, e isso depende de dados técnicos dos dois lados.",
+    },
+    {
+      label: "Solução",
+      text: "O mesmo padrão do agente de baterias: um banco com os veículos e os carregadores, um painel de gestão com simulador de recarga e um agente que faz a mesma conta na conversa.",
+    },
+    {
+      label: "Resultado",
+      text: "A segunda aplicação do padrão “agente + base de dados + painel”, que virou um tipo de produto na Hunt Sales. Não houve medição formal de métricas.",
+    },
+  ],
+}
+
+{/* Projeto de cliente da Hunt Sales: o cliente não é identificado em nenhum idioma. Fonte: docs/conteudo/conteudo-agente-baterias.md. */}
+
+## Contexto e problema
+
+Depois do [agente de vendas da loja de baterias](/projetos/agente-baterias), o modelo foi replicado para uma empresa de soluções de recarga de veículos elétricos, também cliente da Hunt Sales.
+
+A pergunta que o cliente final faz antes de comprar é quanto tempo o carro dele leva para carregar. A resposta depende dos dois lados: a capacidade da bateria e o limite de recarga do carro, e a potência de cada saída do carregador. Um mesmo carregador pode ter várias saídas, com potências diferentes.
+
+## Minha função
+
+Com o resultado do agente de baterias, passei a ser o responsável pelas automações e pelos sistemas parecidos para outros clientes da Hunt Sales. Este foi um deles, no mesmo desenho: agente, base de dados e painel de gestão.
+
+## Solução e arquitetura
+
+<Flow
+  caption="O painel grava pelo n8n; o simulador e o agente leem os mesmos dados."
+  steps={[
+    { title: "Painel de gestão", detail: "Node.js + Express servindo o front-end" },
+    { title: "Webhook do n8n", detail: "Valida e aplica as regras de negócio" },
+    { title: "Supabase", detail: "Veículos, produtos e saídas, por empresa" },
+    { title: "Simulador e agente", detail: "Tempo de recarga em cada saída", accent: true },
+  ]}
+/>
+
+- **Veículos** com a capacidade da bateria (kWh) e o limite de recarga em corrente alternada (kW).
+- **Produtos com várias saídas:** um carregador pode ter vários plugs com potências diferentes (relação produto → saídas, com exclusão em cascata).
+- **Simulador de recarga:** para o veículo escolhido, calcula o tempo em cada carregador pelo gargalo técnico, `tempo (h) = bateria (kWh) ÷ min(limite AC do carro, potência do plug)`. O agente faz a mesma conta na conversa, com os dados de recarga em AC e DC, para o cliente ter uma ideia antes de comprar.
+- **Multiempresa:** o painel valida se a empresa está ativa antes de carregar os dados, e cada consulta é filtrada por empresa.
+- **Tempo real:** o Supabase Realtime atualiza a tela quando os dados mudam, sem recarregar.
+- **Regras de negócio no n8n:** as gravações passam por um webhook do n8n, que centraliza a validação antes de chegar ao banco.
+
+<Demo />
+
+## Stack
+
+- **Painel:** Node.js com Express servindo o front-end em HTML, CSS e JavaScript.
+- **Banco:** Supabase, com o Realtime para atualizar a tela.
+- **Regras e gravações:** n8n, por webhook.
+
+## Decisões e trade-offs
+
+<Decision title="O gargalo decide o tempo">
+  A potência que carrega o carro é a menor entre o limite AC do carro e a saída do carregador. Por isso o simulador mostra o tempo por saída, e não por produto: num carregador com duas saídas, a mais forte só ajuda se o carro aceitar essa potência.
+</Decision>
+
+<Decision title="Regras de negócio num lugar só">
+  As gravações passam pelo webhook do n8n antes de chegar ao banco, em vez de cada tela validar por conta própria.
+</Decision>
+
+## Resultado
+
+- O padrão “agente + base de dados + painel para humanos” funcionou num segundo nicho, com outro tipo de dado técnico.
+- O agente passou a responder o tempo de recarga a partir dos dados cadastrados no painel.
+
+Não houve medição formal de métricas, então não há números aqui.
+
+## Aprendizados
+
+- O que se reaproveita de um cliente para outro é o desenho (agente, base de dados e painel), não as tabelas: aqui o dado central é a relação entre carro e saída, e não uma tabela de compatibilidade.

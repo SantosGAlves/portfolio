@@ -17,6 +17,7 @@ const loaders: { [S in DemoSlug]: () => Promise<{ default: ComponentType<{ conte
   demandas: () => import("@/components/demos/demandas/demandas-demo"),
   barbu: () => import("@/components/demos/barbu/barbu-demo"),
   "ajuda-animal": () => import("@/components/demos/ajuda-animal/ajuda-animal-demo"),
+  carregadores: () => import("@/components/demos/carregadores/carregadores-demo"),
 }
 
 export type LazyDemoText = { load: string; loading: string; error: string; retry: string }
@@ -34,11 +35,10 @@ const MARGIN = 300 // px: começa a baixar um pouco antes de a seção entrar na
 
 export function LazyDemo({ slug, content, fallback, text, buttonClassName }: Props) {
   const ref = useRef<HTMLDivElement>(null)
-  const [Demo, setDemo] = useState<ComponentType<{ content: typeof content }> | null>(null)
   const started = useRef(false)
   const [state, setState] = useState<"idle" | "loading" | "error">("idle")
+  const [Demo, setDemo] = useState<ComponentType<{ content: typeof content }> | null>(null)
 
-  useEffect(() => {
   const load = useCallback(() => {
     if (started.current) return
     started.current = true
@@ -51,6 +51,7 @@ export function LazyDemo({ slug, content, fallback, text, buttonClassName }: Pro
       })
   }, [slug])
 
+  useEffect(() => {
     const el = ref.current
     if (!el || Demo) return
     if (typeof IntersectionObserver === "undefined") {
@@ -68,17 +69,17 @@ export function LazyDemo({ slug, content, fallback, text, buttonClassName }: Pro
       if (entries.some((entry) => entry.isIntersecting)) load()
     }, { rootMargin: `${MARGIN}px 0px` })
     observer.observe(el)
-    return () => {
     const opts = { passive: true } as const
     window.addEventListener("scroll", check, opts)
     window.addEventListener("touchend", check, opts)
     window.addEventListener("resize", check, opts)
     check()
+    return () => {
       observer.disconnect()
-    }
       window.removeEventListener("scroll", check)
       window.removeEventListener("touchend", check)
       window.removeEventListener("resize", check)
+    }
   }, [Demo, load])
 
   if (Demo) return <Demo content={content} />

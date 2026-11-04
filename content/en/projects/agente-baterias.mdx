@@ -224,18 +224,7 @@ Table names are in Portuguese, as in the code.
 
 There was no formal measurement of metrics, so there are no numbers here.
 
-## The same pattern in another niche
-
-The model was replicated for a company that sells electric vehicle charging solutions:
-
-- **Vehicles** with battery capacity (kWh) and alternating current charging limit (kW).
-- **Products with several outputs:** one charger can have several plugs with different power ratings (a product → outputs relation, with cascading deletes).
-- **Charging simulator:** for the chosen vehicle, it calculates the time on each charger from the technical bottleneck, `time (h) = battery (kWh) ÷ min(car's AC limit, plug power)`. The agent does the same calculation in the conversation, using AC and DC charging data, so the customer gets an idea before buying.
-- **Multi-tenant:** the dashboard checks that the company is active before loading data, and every query is filtered by company.
-- **Real time:** Supabase Realtime updates the screen when data changes, without reloading.
-- **Business rules in n8n:** writes go through an n8n webhook, which centralizes validation before reaching the database.
-
-Stack for that project: Node.js with Express serving the front-end, HTML, CSS and JavaScript, Supabase and n8n.
+The same pattern was replicated for an electric vehicle charger company: see the [dashboard for electric vehicle chargers](/en/projects/carregadores-ev).
 
 ## What I learned
 

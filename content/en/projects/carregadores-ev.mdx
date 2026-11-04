@@ -1,0 +1,91 @@
+export const meta = {
+  order: 6,
+  tier: "featured",
+  status: "shipped",
+  art: "charger",
+  demo: "carregadores",
+  title: "Dashboard for electric vehicle chargers",
+  tagline: "A catalog of cars and chargers with a charging simulator, and an agent that does the same math in the conversation.",
+  kind: "AI agent + management system",
+  summary:
+    "The battery agent's pattern applied to another niche: a catalog of vehicles and multi-output chargers, a charging time simulator, a real-time multi-tenant dashboard and business rules in n8n.",
+  role: "Owner of the system at Hunt Sales",
+  // Exact year within the internship (Aug 2025 – Jun 2026): [CONFIRMAR]. For now, the internship period.
+  period: "2025–2026 · Hunt Sales",
+  stack: ["Supabase", "n8n", "Node.js", "Express", "JavaScript"],
+  draft: false,
+  tldr: [
+    {
+      label: "Problem",
+      text: "A company selling electric vehicle charging solutions needed to answer how long each car takes to charge on each product, and that depends on technical data from both sides.",
+    },
+    {
+      label: "Solution",
+      text: "The same pattern as the battery agent: a database of vehicles and chargers, a management dashboard with a charging simulator, and an agent that does the same calculation in the conversation.",
+    },
+    {
+      label: "Outcome",
+      text: "The second application of the “agent + database + dashboard” pattern, which became a kind of product at Hunt Sales. There was no formal measurement of metrics.",
+    },
+  ],
+}
+
+{/* Hunt Sales client project: the client is not identified in any language. Source: docs/conteudo/conteudo-agente-baterias.md. */}
+
+## Context and problem
+
+After the [sales agent for the battery store](/en/projects/agente-baterias), the model was replicated for a company that sells electric vehicle charging solutions, also a Hunt Sales client.
+
+The question the end customer asks before buying is how long their car takes to charge. The answer depends on both sides: the car's battery capacity and charging limit, and the power of each charger output. One charger can have several outputs with different power ratings.
+
+## My role
+
+After the battery agent's results, I became responsible for automations and similar systems for other Hunt Sales clients. This was one of them, with the same design: agent, database and management dashboard.
+
+## Solution and architecture
+
+<Flow
+  caption="The dashboard writes through n8n; the simulator and the agent read the same data."
+  steps={[
+    { title: "Management dashboard", detail: "Node.js + Express serving the front-end" },
+    { title: "n8n webhook", detail: "Validates and applies the business rules" },
+    { title: "Supabase", detail: "Vehicles, products and outputs, per company" },
+    { title: "Simulator and agent", detail: "Charging time on each output", accent: true },
+  ]}
+/>
+
+- **Vehicles** with battery capacity (kWh) and alternating current charging limit (kW).
+- **Products with several outputs:** one charger can have several plugs with different power ratings (a product → outputs relation, with cascading deletes).
+- **Charging simulator:** for the chosen vehicle, it calculates the time on each charger from the technical bottleneck, `time (h) = battery (kWh) ÷ min(car's AC limit, plug power)`. The agent does the same calculation in the conversation, using AC and DC charging data, so the customer gets an idea before buying.
+- **Multi-tenant:** the dashboard checks that the company is active before loading data, and every query is filtered by company.
+- **Real time:** Supabase Realtime updates the screen when data changes, without reloading.
+- **Business rules in n8n:** writes go through an n8n webhook, which centralizes validation before reaching the database.
+
+<Demo />
+
+## Stack
+
+- **Dashboard:** Node.js with Express serving the front-end in HTML, CSS and JavaScript.
+- **Database:** Supabase, with Realtime to update the screen.
+- **Rules and writes:** n8n, through a webhook.
+
+## Decisions and trade-offs
+
+<Decision title="The bottleneck sets the time">
+  The power that actually charges the car is the lower of the car's AC limit and the charger output. That is why the simulator shows the time per output, not per product: on a charger with two outputs, the stronger one only helps if the car accepts that power.
+</Decision>
+
+<Decision title="Business rules in one place">
+  Writes go through the n8n webhook before reaching the database, instead of each screen validating on its own.
+</Decision>
+
+## Outcome
+
+- The “agent + database + dashboard for humans” pattern worked in a second niche, with a different kind of technical data.
+- The agent answers charging time from the data registered in the dashboard.
+
+There was no formal measurement of metrics, so there are no numbers here.
+
+## What I learned
+
+- What carries over from one client to the next is the design (agent, database and dashboard), not the tables: here the central data is the relation between car and output, not a compatibility table.

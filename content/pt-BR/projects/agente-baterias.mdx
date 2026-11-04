@@ -221,18 +221,7 @@ O ponto central é que **o agente e o painel fecham um ciclo**. Cada carro que o
 
 Não houve medição formal de métricas, então não há números aqui.
 
-## O mesmo padrão em outro nicho
-
-O modelo foi replicado para uma empresa de soluções de recarga de veículos elétricos:
-
-- **Veículos** com capacidade da bateria (kWh) e limite de recarga em corrente alternada (kW).
-- **Produtos com várias saídas:** um carregador pode ter vários plugs com potências diferentes (relação produto → saídas, com exclusão em cascata).
-- **Simulador de recarga:** para o veículo escolhido, calcula o tempo em cada carregador pelo gargalo técnico, `tempo (h) = bateria (kWh) ÷ min(limite AC do carro, potência do plug)`. O agente faz a mesma conta na conversa, com os dados de recarga em AC e DC, para o cliente ter uma ideia antes de comprar.
-- **Multiempresa:** o painel valida se a empresa está ativa antes de carregar os dados, e cada consulta é filtrada por empresa.
-- **Tempo real:** o Supabase Realtime atualiza a tela quando os dados mudam, sem recarregar.
-- **Regras de negócio no n8n:** as gravações passam por um webhook do n8n, que centraliza a validação antes de chegar ao banco.
-
-Stack desse projeto: Node.js com Express servindo o front-end, HTML, CSS e JavaScript, Supabase e n8n.
+O mesmo padrão foi replicado para uma empresa de carregadores de veículos elétricos: veja o [painel para carregadores de veículos elétricos](/projetos/carregadores-ev).
 
 ## Aprendizados
 
