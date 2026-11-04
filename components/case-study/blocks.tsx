@@ -4,12 +4,12 @@ import { Children, cloneElement, isValidElement, type ReactElement, type ReactNo
 // Blocos disponíveis dentro dos .mdx dos estudos de caso (sem import:
 // registrados em mdx-components.tsx). Todos são componentes de servidor.
 
-type FlowStep = { title: string; detail?: string; alt?: boolean }
+type FlowStep = { title: string; detail?: string; alt?: boolean; accent?: boolean }
 
 /**
  * Diagrama de fluxo em etapas: horizontal a partir de 1024px, vertical no celular.
  * `alt: true` marca um caminho alternativo (borda tracejada), como um fallback;
- * antes dele aparece `altLabel` ("ou") em vez da seta.
+ * antes dele aparece `altLabel` ("ou") em vez da seta. `accent: true` destaca uma etapa (ex.: o resultado final).
  * No desktop o diagrama passa um pouco da coluna de texto para caber as etapas.
  */
 export function Flow({ steps, caption, altLabel = "/" }: { steps: FlowStep[]; caption?: string; altLabel?: string }) {
@@ -19,12 +19,16 @@ export function Flow({ steps, caption, altLabel = "/" }: { steps: FlowStep[]; ca
         {steps.map((step, i) => (
           <li key={step.title} className="relative grid lg:grid-cols-[1fr_1.5rem]">
             <div
-              className={`grid content-start gap-1.5 rounded-xl border bg-surface p-4 ${
-                step.alt ? "border-dashed border-brand-line" : "border-line"
+              className={`grid content-start gap-1.5 rounded-xl border p-4 ${steps.length > 5 ? "lg:p-3.5" : ""} ${
+                step.accent
+                  ? "border-brand-line bg-brand-soft"
+                  : step.alt
+                    ? "border-dashed border-brand-line bg-surface"
+                    : "border-line bg-surface"
               }`}
             >
               <span className="font-mono text-meta text-subtle">{String(i + 1).padStart(2, "0")}</span>
-              <span className="text-small font-semibold text-foreground">{step.title}</span>
+              <span className={`text-small font-semibold ${step.accent ? "text-brand" : "text-foreground"}`}>{step.title}</span>
               {step.detail ? <span className="text-[0.8125rem] leading-snug text-muted-foreground">{step.detail}</span> : null}
             </div>
             {i < steps.length - 1 ? (
@@ -177,7 +181,6 @@ export function Shot({
   height,
   caption,
   layout = "gallery",
-  minWidth,
 }: {
   src: string
   alt: string
@@ -185,33 +188,17 @@ export function Shot({
   height: number
   caption?: string
   layout?: keyof typeof shotLayouts
-  /**
-   * Largura mínima em px para figuras com texto miúdo (diagramas, matrizes):
-   * abaixo dela, a figura rola na horizontal dentro do bloco, sem rolar a página.
-   */
-  minWidth?: number
 }) {
-  const image = (
-    <Image
-      src={src}
-      alt={alt}
-      width={width}
-      height={height}
-      sizes={shotLayouts[layout].sizes}
-      className="h-auto w-full rounded-lg border border-line"
-      style={minWidth ? { minWidth } : undefined}
-    />
-  )
   return (
     <figure className={`grid content-start gap-2.5 ${shotLayouts[layout].figure}`}>
-      {minWidth ? (
-        // Foco pelo teclado para poder rolar com as setas.
-        <div tabIndex={0} role="group" aria-label={caption ?? alt} className="overflow-x-auto rounded-lg">
-          {image}
-        </div>
-      ) : (
-        image
-      )}
+      <Image
+        src={src}
+        alt={alt}
+        width={width}
+        height={height}
+        sizes={shotLayouts[layout].sizes}
+        className="h-auto w-full rounded-lg border border-line"
+      />
       {caption ? <figcaption className="text-small text-muted-foreground">{caption}</figcaption> : null}
     </figure>
   )
@@ -265,6 +252,54 @@ export function DataTable({
         </table>
       </div>
       {caption ? <figcaption className="font-mono text-meta text-subtle">{caption}</figcaption> : null}
+    </figure>
+  )
+}
+
+/**
+ * Figura reproduzida de um artigo (gráfico, matriz): cartão claro nos dois temas,
+ * porque a imagem original tem fundo branco. Legenda em mono com o rótulo,
+ * uma nota (ex.: idioma dos rótulos) e o link para a imagem em tamanho real.
+ */
+export function PaperFigure({
+  src,
+  alt,
+  width,
+  height,
+  label,
+  caption,
+  note,
+  fullLabel,
+  newTab,
+}: {
+  src: string
+  alt: string
+  width: number
+  height: number
+  label: string
+  caption: string
+  note?: string
+  fullLabel: string
+  newTab: string
+}) {
+  return (
+    <figure className="my-10 grid gap-3">
+      <div className="rounded-xl border border-line bg-white p-3 sm:p-5">
+        <Image src={src} alt={alt} width={width} height={height} sizes="(min-width: 768px) 696px, 92vw" className="h-auto w-full" />
+      </div>
+      <figcaption className="grid gap-1 font-mono text-meta text-subtle">
+        <span>
+          <span className="text-brand">{label}</span> · {caption}
+        </span>
+        <span>
+          {note ? `${note} · ` : null}
+          <a href={src} target="_blank" rel="noopener noreferrer" className="text-brand hover:underline hover:underline-offset-4">
+            {fullLabel}
+            <span aria-hidden="true"> ↗</span>
+            <span className="sr-only"> {newTab}</span>
+          </a>
+        </span>
+      </figcaption>
     </figure>
   )
 }

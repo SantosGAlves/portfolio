@@ -5,7 +5,7 @@ export const meta = {
   art: "librasflow",
   repo: "https://github.com/SantosGAlves/LibrasFlow",
   live: "https://librasflow.ifsp.dev",
-  liveNote: "The public version runs in the browser with an MLP network; the numbers in this case study come from the Random Forest.",
+  demoNote: "The public version runs in the browser with an MLP network; the numbers in this case study come from the Random Forest.",
   title: "LibrasFlow",
   kind: "Capstone project · computer vision",
   summary:
@@ -62,14 +62,16 @@ The project was done in a team of two with Carlos Henrique Moreira Gonçalves, a
 
 The model doesn't look at the raw image. MediaPipe finds 21 hand landmarks in each frame, and the classifier works only with their geometry.
 
-<Shot
-  layout="wide"
-  src="/librasflow/midia-librasflow/fig-pipeline.webp"
-  width={1190}
-  height={240}
-  minWidth={720}
-  alt="Six-step flow, labeled in Portuguese: camera (webcam frame), MediaPipe Hands (21 hand landmarks), normalization (centered on the wrist and rescaled), classifier (coordinates to letter), stability filter (confirms after 30 frames) and letter on screen (real-time text)."
-  caption="From webcam frame to letter on screen. Figure from the paper, labels in Portuguese."
+<Flow
+  caption="From webcam frame to letter on screen."
+  steps={[
+    { title: "Camera", detail: "One webcam frame" },
+    { title: "MediaPipe Hands", detail: "21 hand landmarks" },
+    { title: "Normalization", detail: "Centered on the wrist and rescaled" },
+    { title: "Classifier", detail: "Random Forest: from 42 values to a letter" },
+    { title: "Stability filter", detail: "Confirms after 30 matching frames" },
+    { title: "Letter on screen", detail: "Real-time text", accent: true },
+  ]}
 />
 
 - **Features:** the x and y coordinates of the 21 landmarks (42 values), centered on the wrist and divided by the largest absolute value. That reduces the effect of the hand's position and size in the image.
@@ -133,14 +135,16 @@ A leak-free protocol still tests on images from the same dataset. To measure gen
 
 MediaPipe didn't find the hand in 599 images (13.6%). On the remaining 3,812, accuracy was **71.2%** (95% CI: 69.8%–72.6%), and balanced accuracy was 58.9%.
 
-<Shot
-  layout="column"
+<PaperFigure
   src="/librasflow/midia-librasflow/fig-matriz-confusao.webp"
   width={800}
   height={720}
-  minWidth={560}
   alt="Confusion matrix of the external test, with true classes in rows and predicted classes in columns, labeled in Portuguese. The diagonal is strong for A, B, C, D, I, O and W. The largest errors: E predicted as S in 510 images, R as V in 117, S as A in 99, U as V in 89 and L as D in 50."
-  caption="Confusion matrix of the external test, 3,812 images. Figure from the paper, labels in Portuguese."
+  label="Figure from the paper"
+  caption="Confusion matrix of the external test, 3,812 images."
+  note="Labels in Portuguese, as in the original"
+  fullLabel="Open full size"
+  newTab="(opens in a new tab)"
 />
 
 - **M, N and E follow another sign language.** In this dataset, those letters appear in their American Sign Language (ASL) form, which differs from the Libras form used in training. E was classified as S in 510 of 552 images. Without M and N, accuracy rises to 72.6%; without M, N and E, to **85.3%** (95% CI: 84.0%–86.4%).

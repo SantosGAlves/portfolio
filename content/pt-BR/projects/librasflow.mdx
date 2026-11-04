@@ -5,7 +5,7 @@ export const meta = {
   art: "librasflow",
   repo: "https://github.com/SantosGAlves/LibrasFlow",
   live: "https://librasflow.ifsp.dev",
-  liveNote: "A versão pública roda no navegador, com uma rede MLP; os números deste estudo são do Random Forest.",
+  demoNote: "A versão pública roda no navegador, com uma rede MLP; os números deste estudo são do Random Forest.",
   title: "LibrasFlow",
   kind: "TCC · visão computacional",
   summary:
@@ -62,14 +62,16 @@ O TCC foi feito em dupla com Carlos Henrique Moreira Gonçalves, com orientaçã
 
 O modelo não olha a imagem bruta. O MediaPipe encontra 21 pontos da mão em cada quadro, e o classificador trabalha só com a geometria deles.
 
-<Shot
-  layout="wide"
-  src="/librasflow/midia-librasflow/fig-pipeline.webp"
-  width={1190}
-  height={240}
-  minWidth={720}
-  alt="Fluxo em seis etapas: câmera (quadro da webcam), MediaPipe Hands (21 pontos da mão), normalização (centra no pulso e ajusta a escala), classificador (coordenadas para letra), filtro de estabilidade (confirma após 30 quadros) e letra na tela (texto em tempo real)."
-  caption="Do quadro da webcam à letra na tela. Figura do artigo."
+<Flow
+  caption="Do quadro da webcam à letra na tela."
+  steps={[
+    { title: "Câmera", detail: "Um quadro da webcam" },
+    { title: "MediaPipe Hands", detail: "21 pontos da mão" },
+    { title: "Normalização", detail: "Centra no punho e ajusta a escala" },
+    { title: "Classificador", detail: "Random Forest: dos 42 valores à letra" },
+    { title: "Filtro de estabilidade", detail: "Confirma após 30 quadros iguais" },
+    { title: "Letra na tela", detail: "Texto em tempo real", accent: true },
+  ]}
 />
 
 - **Atributos:** as coordenadas x e y dos 21 pontos (42 valores), centradas no punho e divididas pelo maior valor absoluto. Isso reduz o efeito da posição e do tamanho da mão na imagem.
@@ -133,14 +135,16 @@ Um protocolo sem vazamento ainda testa com imagens do mesmo conjunto. Para medir
 
 O MediaPipe não encontrou a mão em 599 imagens (13,6%). Nas 3.812 restantes, a acurácia foi de **71,2%** (IC 95%: 69,8%–72,6%), e a acurácia balanceada, de 58,9%.
 
-<Shot
-  layout="column"
+<PaperFigure
   src="/librasflow/midia-librasflow/fig-matriz-confusao.webp"
   width={800}
   height={720}
-  minWidth={560}
   alt="Matriz de confusão do teste externo, com as classes reais nas linhas e as previstas nas colunas. A diagonal é forte em A, B, C, D, I, O e W. Os maiores erros: E previsto como S em 510 imagens, R como V em 117, S como A em 99, U como V em 89 e L como D em 50."
-  caption="Matriz de confusão do teste externo, com 3.812 imagens. Figura do artigo."
+  label="Figura do artigo"
+  caption="Matriz de confusão do teste externo, com 3.812 imagens."
+  note="Rótulos em português, como no original"
+  fullLabel="Abrir em tamanho real"
+  newTab="(abre em nova aba)"
 />
 
 - **M, N e E seguem outra língua de sinais.** Nesse conjunto, essas letras aparecem na forma da língua de sinais americana (ASL), diferente da forma em Libras usada no treino. O E foi classificado como S em 510 de 552 imagens. Sem M e N, a acurácia vai a 72,6%; sem M, N e E, a **85,3%** (IC 95%: 84,0%–86,4%).
