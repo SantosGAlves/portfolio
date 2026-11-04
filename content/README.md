@@ -34,7 +34,7 @@ export const meta = {
   demo: "demandas",         // opcional: demo dentro do site (/demos/demandas), botão "Abrir demo"
   demoNote: "...",          // opcional: nota curta sob os botões de demo
   status: "shipped",        // "shipped" | "in-progress" | "planned" (card sem página)
-  art: "automation",        // "battery" | "librasflow" | "automation" | "kanban" | "planned"
+  art: "automation",        // "battery" | "librasflow" | "automation" | "kanban" | "booking" | "planned"
   title: "Nome do projeto",
   kind: "Agente de IA · n8n", // rótulo curto acima do título
   summary: "Duas linhas para o card (até 220 caracteres).",

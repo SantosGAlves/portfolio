@@ -4,7 +4,7 @@ import { z } from "zod"
 // Validados no build por lib/projects.ts: campo faltando ou errado derruba o build.
 
 export const projectStatuses = ["shipped", "in-progress", "planned"] as const
-export const projectArts = ["battery", "librasflow", "automation", "kanban", "planned"] as const
+export const projectArts = ["battery", "librasflow", "automation", "kanban", "booking", "planned"] as const
 export const projectTiers = ["featured", "secondary"] as const
 
 /** Arquivo em public/ (caminho começando com "/"). */

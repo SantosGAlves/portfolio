@@ -1,17 +1,65 @@
 export const meta = {
   order: 5,
   tier: "secondary",
-  page: false,
   status: "in-progress",
-  art: "planned",
-  repo: "https://github.com/SantosGAlves/Gest-o_Projetos_Barb-",
-  title: "Barbearia Premium App",
+  art: "booking",
+  repo: "https://github.com/SantosGAlves/barbu_barbearia",
+  demo: "barbu",
+  demoNote: "A demo recria as telas e o fluxo do app no navegador, com dados fictícios e sem Firebase.",
+  title: "Barbú, app de barbearia",
   kind: "App mobile · Flutter",
   summary:
-    "App de agendamento para barbearia, com login e cadastro pelo Firebase Auth, marcação de serviços e tema escuro. Catálogo de produtos e programa de fidelidade em desenvolvimento.",
-  role: "Desenvolvimento do app",
-  period: "2026",
-  stack: ["Flutter", "Dart", "Firebase"],
+    "App de agendamento para uma barbearia, feito em equipe de 4 pessoas: Flutter, Firebase Auth e Firestore, horários ocupados em tempo real e confirmação por e-mail via n8n.",
+  role: "Grande parte do app: Firebase, telas iniciais, login, agendamento e n8n",
+  period: "2026 · disciplina de Dispositivos Móveis",
+  stack: ["Flutter", "Dart", "Firebase Auth", "Firestore", "n8n"],
+  draft: false,
+  tldr: [
+    {
+      label: "Objetivo",
+      text: "Um app para organizar e automatizar o agendamento de cortes de uma barbearia local, como projeto da disciplina de Dispositivos Móveis.",
+    },
+    {
+      label: "Solução",
+      text: "Login pelo Firebase Auth, agendamento em 3 etapas que consulta no Firestore os horários já ocupados, lembrete no celular 1 hora antes e um webhook para o n8n mandar a confirmação por e-mail.",
+    },
+    {
+      label: "Resultado",
+      text: "Protótipo com o fluxo completo de agendamento, histórico e avisos. Fidelidade e Produtos ficaram em desenvolvimento. Não há métricas de uso.",
+    },
+  ],
 }
 
-{/* Sem página de estudo de caso (page: false): o card leva ao repositório. */}
+## Contexto
+
+O Barbú é um protótipo de app para uma barbearia local: o cliente cria a conta, escolhe o serviço, o barbeiro e um horário livre, e acompanha os agendamentos no próprio celular.
+
+Foi um projeto em grupo da disciplina de Dispositivos Móveis, feito por Carlos, Gustavo Alves, Henrique e Kendy.
+
+## Minha função
+
+Fiz grande parte do app: a integração com o Firebase (Auth e Firestore), as telas iniciais, o login, o agendamento e a integração com o n8n.
+
+## Como funciona
+
+<Flow
+  caption="Do login ao e-mail de confirmação."
+  steps={[
+    { title: "Login", detail: "Firebase Auth com e-mail e senha" },
+    { title: "Agendamento", detail: "Serviço, barbeiro, dia e horário" },
+    { title: "Firestore", detail: "Lê os horários ocupados e grava em bookings" },
+    { title: "Lembrete", detail: "Notificação local 1 hora antes" },
+    { title: "n8n", detail: "O webhook vira o e-mail de confirmação", accent: true },
+  ]}
+/>
+
+- **Conta.** O cadastro cria o usuário no Firebase Auth e guarda nome e telefone em `users/{uid}`. As regras do Firestore deixam cada pessoa ler e alterar só os próprios dados e agendamentos.
+- **Horários em tempo real.** Ao escolher o dia, o app consulta em `bookings` os agendamentos daquele barbeiro na data e mostra só os horários livres.
+- **Ao confirmar.** O app grava o agendamento em `bookings`, cria um aviso em `notifications/{uid}/items` (aparece na aba Avisos), agenda o lembrete local e envia ao webhook do n8n o nome, o e-mail, a data, o horário, o barbeiro e o serviço.
+- **Depois.** O histórico permite cancelar (o status muda para "cancelado"), e agendamentos que já passaram aparecem como concluídos.
+
+## Limites e próximos passos
+
+- Fidelidade, Produtos e o painel de administração ficaram como "em breve" no app.
+- O webhook aponta para um n8n local (`localhost`), então o e-mail de confirmação só sai com o n8n rodando na mesma máquina.
+- A consulta de horários não filtra o status, então um horário cancelado continua aparecendo como ocupado. E a gravação não usa transação: dois clientes confirmando o mesmo horário no mesmo instante gravariam os dois. São os primeiros ajustes que eu faria.

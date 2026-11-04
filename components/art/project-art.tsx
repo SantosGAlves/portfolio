@@ -18,6 +18,7 @@ export function ProjectArt({ art, className = "" }: { art: ArtKind; className?: 
       {art === "librasflow" ? <LibrasArt /> : null}
       {art === "automation" ? <AutomationArt /> : null}
       {art === "kanban" ? <KanbanArt /> : null}
+      {art === "booking" ? <BookingArt /> : null}
     </div>
   )
 }
@@ -208,6 +209,80 @@ function KanbanArt() {
           <rect x="222" y="186" width="100" height="22" rx="6" fill="var(--surface)" stroke="var(--brand-line)" />
           <text x="230" y="200" fontSize="8.5" fill="var(--brand)">
             n8n · ticket_assumido
+          </text>
+        </g>
+      </svg>
+    </div>
+  )
+}
+
+const slots = [
+  ["09:00", "free"],
+  ["10:00", "busy"],
+  ["11:00", "free"],
+  ["14:00", "picked"],
+  ["15:00", "busy"],
+  ["16:00", "free"],
+  ["17:00", "free"],
+  ["18:00", "busy"],
+] as const
+
+// App de agendamento (Barbú): celular com as etapas, os dias e a grade de horários
+// (ocupados riscados, um escolhido), ligado ao webhook do n8n.
+function BookingArt() {
+  return (
+    <div className="absolute inset-[7%]">
+      <svg viewBox="0 0 330 214" className="size-full overflow-visible transition-transform duration-500 ease-out-soft group-hover/card:-translate-y-1">
+        <g fontFamily="var(--font-mono)">
+          <rect x="70" y="4" width="112" height="206" rx="18" fill="var(--surface)" stroke="var(--line-strong)" />
+          <rect x="108" y="11" width="36" height="5" rx="2.5" fill="var(--surface-2)" />
+          {[0, 1, 2].map((i) => (
+            <rect key={i} x={98 + i * 20} y="26" width={i === 2 ? 22 : 16} height="3" rx="1.5" fill="var(--brand)" opacity={i === 2 ? 1 : 0.5} />
+          ))}
+          {[0, 1, 2, 3].map((i) => (
+            <g key={i}>
+              <rect x={82 + i * 23} y="40" width="19" height="26" rx="5" fill={i === 1 ? "var(--brand)" : "var(--surface-2)"} />
+              <rect x={87 + i * 23} y="47" width="9" height="5" rx="2" fill={i === 1 ? "var(--bg)" : "var(--text-subtle)"} opacity="0.7" />
+              <rect x={86 + i * 23} y="56" width="11" height="3" rx="1.5" fill={i === 1 ? "var(--bg)" : "var(--text-subtle)"} opacity="0.45" />
+            </g>
+          ))}
+          <rect x="82" y="77" width="34" height="4" rx="2" fill="var(--text-subtle)" opacity="0.45" />
+          {slots.map(([time, state], i) => {
+            const x = 82 + (i % 2) * 46
+            const y = 88 + Math.floor(i / 2) * 22
+            const picked = state === "picked"
+            const busy = state === "busy"
+            return (
+              <g key={time}>
+                <rect
+                  x={x}
+                  y={y}
+                  width="42"
+                  height="17"
+                  rx="5"
+                  fill={picked ? "var(--brand)" : "var(--surface-2)"}
+                  stroke={picked ? "none" : "var(--line)"}
+                  opacity={busy ? 0.5 : 1}
+                />
+                <text x={x + 21} y={y + 11.5} fontSize="7.5" textAnchor="middle" fill={picked ? "var(--bg)" : busy ? "var(--text-subtle)" : "var(--text-muted)"}>
+                  {time}
+                </text>
+                {busy ? <line x1={x + 9} y1={y + 8.5} x2={x + 33} y2={y + 8.5} stroke="var(--text-subtle)" strokeWidth="0.8" /> : null}
+              </g>
+            )
+          })}
+          <rect x="82" y="182" width="88" height="16" rx="5" fill="var(--brand)" opacity="0.9" />
+          <rect x="108" y="188" width="36" height="4" rx="2" fill="var(--bg)" opacity="0.7" />
+        </g>
+        <g fontFamily="var(--font-mono)">
+          <path d="M176 154 C 214 154 206 70 236 70" fill="none" stroke="var(--brand)" strokeOpacity="0.6" strokeDasharray="3 4" />
+          <rect x="216" y="46" width="104" height="22" rx="6" fill="var(--surface)" stroke="var(--brand-line)" />
+          <text x="224" y="60" fontSize="8.5" fill="var(--brand)">
+            bookings.add()
+          </text>
+          <rect x="216" y="76" width="104" height="22" rx="6" fill="var(--surface)" stroke="var(--line-strong)" />
+          <text x="224" y="90" fontSize="8.5" fill="var(--text-muted)">
+            n8n · webhook
           </text>
         </g>
       </svg>
