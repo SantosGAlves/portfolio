@@ -25,20 +25,28 @@ export function Hero({ locale }: { locale: Locale }) {
                 {hero.lastName}
               </span>
             </h1>
+            <p className="mt-4 max-w-[34ch] font-mono text-[0.875rem] leading-relaxed text-muted-foreground sm:max-w-none">
+              {/* "função · foco": a linha só quebra depois do "·" */}
+              {hero.role.split(" · ").map((part, i, all) => (
+                <span key={part}>
+                  {i ? " " : null}
+                  <span className="whitespace-nowrap">
+                    {part}
+                    {i < all.length - 1 ? " ·" : null}
+                  </span>
+                </span>
+              ))}
+            </p>
           </div>
         </div>
 
         <div className="grid gap-10 lg:gap-12">
           <div className="grid max-w-[46rem] content-start gap-6">
-            <p className="max-w-[30ch] text-role">
-              {/* "função · foco": a linha só quebra depois do "·" */}
-              {hero.role.split(" · ").map((part, i, all) => (
-                <span key={part}>
-                  {i ? " " : null}
-                  <span className={i ? "whitespace-nowrap text-muted-foreground" : "whitespace-nowrap"}>
-                    {part}
-                    {i < all.length - 1 ? " ·" : null}
-                  </span>
+            <p className="text-role">
+              {/* Frase de efeito: uma linha por item (no celular, a segunda pode quebrar). */}
+              {hero.tagline.map((line, i) => (
+                <span key={line} className={i ? "block text-muted-foreground" : "block"}>
+                  {line}
                 </span>
               ))}
             </p>

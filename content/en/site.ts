@@ -29,6 +29,7 @@ export const site: SiteContent = {
     lastName: "Alves dos Santos",
     // Option A (in use). Option B: "Back-end developer focused on applied AI".
     role: "Software developer · applied AI and automation",
+    tagline: ["AI agents, automations,", "and the back-end that keeps it all running."],
     lede: "I build software, mostly back-end, and I like turning manual processes into systems that run on their own and call a person when they need one. Right now I build AI agents that query databases, n8n automations and the systems behind them: APIs, dashboards and authentication.",
     ctaProjects: "See projects",
     facts: [
@@ -105,17 +106,24 @@ export const site: SiteContent = {
     },
   },
   sections: {
+    build: { id: "what-i-do", eyebrow: "What I do", title: "From agent to back-end", nav: "What I do" },
+    experience: { id: "experience", eyebrow: "Experience", title: "Work and extension projects", nav: "Experience" },
+    stack: { id: "stack", eyebrow: "Stack", title: "What I work with", nav: "Stack" },
     projects: { id: "projects", eyebrow: "Selected work", title: "Projects", nav: "Projects" },
-    build: { id: "what-i-build", eyebrow: "What I build", title: "From agent to back-end", nav: "What I build" },
-    experience: { id: "experience", eyebrow: "Experience", title: "Where I've worked", nav: "Experience" },
-    education: { id: "education", eyebrow: "Education", title: "Education and capstone project", nav: "Education" },
+    other: { id: "other-projects", eyebrow: "Repositories", title: "Other projects", nav: "Other projects" },
+    education: {
+      id: "education",
+      eyebrow: "Education and skills",
+      title: "Studies, languages and how I work",
+      nav: "Education",
+    },
     contact: { id: "contact", eyebrow: "Contact", title: "Let's talk", nav: "Contact" },
   },
   projects: {
     intro: "From the problem to a system in production: AI agents, automations and the systems behind them.",
     plannedLabel: "Next project",
     status: { shipped: "shipped", "in-progress": "in progress", planned: "coming soon" },
-    secondaryTitle: "Other projects",
+    otherIntro: "Smaller and study projects, with the code on GitHub.",
     repoLink: "Code on GitHub",
     liveLink: "Try it live (uses your camera)",
     demoBadge: "interactive demo",
@@ -145,60 +153,46 @@ export const site: SiteContent = {
   },
   build: {
     intro:
-      "Three areas with equal weight. In practice they overlap: an agent is only useful with a reliable back-end behind it.",
+      "Four areas that overlap in practice: an agent is only useful with reliable data and a back-end behind it.",
     areas: [
       {
-        title: "AI agents",
-        text: "Agents that understand the request, query real data through tools and hand over to a person when they don't have the answer.",
-        includes: ["Extracting data from the message", "Tool calls and database queries", "Handoff to a human"],
-        tools: ["LLM APIs", "tool calling", "Python", "Supabase"],
+        title: "AI agents and LLMs",
+        text: "Agents that understand the request, query real data and hand over to a person when they don't have the answer.",
+        items: ["customer service", "data queries", "system integration"],
       },
       {
-        title: "Process automation",
-        text: "Flows that take repetitive work off people's hands: they receive an event, decide what to do and record the outcome.",
-        includes: [
-          "Chatbots and automated customer service",
-          "System integrations through APIs and webhooks",
-          "Scheduled routines and notifications",
-        ],
-        tools: ["n8n", "webhooks", "REST APIs", "Python"],
+        title: "Automation and integrations",
+        text: "Flows that take repetitive work off people's hands and get systems talking to each other.",
+        items: ["n8n", "APIs", "webhooks", "CRMs"],
       },
       {
-        title: "Products and back-end",
-        text: "The systems behind the agents, end to end: APIs, databases, management dashboards, authentication and deployment.",
-        includes: [
-          "APIs and database modeling",
-          "Management and data-entry dashboards",
-          "Authentication, RLS, deployment and domain",
-        ],
-        tools: ["Python", "PostgreSQL · Supabase", "RLS", "[CONFIRMAR] hosting"],
+        title: "Back-end and data",
+        text: "The systems behind everything, end to end: from the database model to deployment.",
+        items: ["APIs", "databases", "authentication", "deployment"],
+      },
+      {
+        title: "Machine learning and computer vision",
+        text: "Models trained and evaluated carefully, ready to run in real time.",
+        items: ["models", "evaluation", "real-time applications"],
       },
     ],
-    includesLabel: "Includes",
-    toolsLabel: "Tools",
-    languages: {
-      title: "Languages",
-      primaryLabel: "Main",
-      primary: { name: "Python", note: "the one I use most, for agents, automation and back-end" },
-      otherLabel: "Also worked with",
-      other: ["Java", "Go", "C#"],
-    },
-    workflow: {
-      title: "How I work",
-      text: "I build with the help of coding agents such as Claude Code. They speed up the writing; I decide what to build, review every change and test what goes to production. This site was built that way.",
-    },
   },
   experience: {
-    caseStudyLink: "Read the case study",
+    caseStudiesLabel: { one: "Case study", other: "Case studies" },
     items: [
       {
         company: "Gaudium",
         role: "Automation & Innovation Intern II", // [REVISAR] official title in English
         period: "Jul 2026 – present",
         tags: ["under NDA"],
+        // NDA: general descriptions only; no clients, partners or case study links.
         context:
-          "B2B technology company for ride-hailing and delivery agencies. The details of this work are confidential.",
-        highlights: ["Process automation and API integrations.", "Building websites and web products, focused on back-end."],
+          "B2B technology company for mobility and deliveries. The work is confidential, so these are general descriptions only.",
+        highlights: [
+          "Build process automations with n8n and API integrations.",
+          "Apply AI agents and LLMs to internal processes.",
+          "Develop websites and web products, focused on back-end.",
+        ],
       },
       {
         company: "Hunt Sales",
@@ -208,27 +202,92 @@ export const site: SiteContent = {
         context:
           "A company with its own customer service platform (CRM), where the agents and dashboards I built for its clients run.",
         highlights: [
-          "Proposed and delivered the company's first AI agent with a management system; after that, I became responsible for similar projects for other clients.",
-          "AI agents for WhatsApp customer service (GPT-4o mini) that query a database and hand over to humans.",
-          "Management systems that feed the agents (Supabase, authentication, web dashboards).",
-          "API integrations with CRMs and Meta ads, among others.",
+          "Proposed and delivered, on my own, the company's first AI agent with a management system (GPT-4o mini, Supabase and a web dashboard with authentication), which reversed a client's cancellation risk and became a new kind of product.",
+          "Took charge of the following projects of the same kind, such as the dashboard for electric vehicle chargers.",
+          "Built WhatsApp customer service agents that query a database and hand over to humans.",
+          "Integrated CRMs and Meta ads through APIs.",
         ],
-        caseStudy: "agente-baterias",
+        caseStudies: ["agente-baterias", "carregadores-ev"],
+      },
+      {
+        company: "Ajuda Animal",
+        role: "Owner of the WhatsApp channel",
+        period: "2026",
+        tags: ["extension project"],
+        context: "IFSP Jacareí extension project with the Jacareí city government, in a team.",
+        highlights: [
+          "Built the report chatbot in n8n, connected to WhatsApp through the Evolution API.",
+          "Integrated the bot with the system's API and created the conversation session database.",
+          "Applied LGPD (Brazil's data protection law) safeguards: reports are anonymous by default and contact details are kept only with the citizen's consent.",
+        ],
+        caseStudies: ["ajuda-animal"],
       },
     ],
   },
+  stack: {
+    intro: "What I use to build systems and put them into production. Python is my main language.",
+    pause: "Pause the strip",
+    play: "Resume the strip",
+    mainLabel: "main",
+    usedLabel: "also worked with",
+    groups: {
+      languages: "Languages",
+      ai: "AI and data",
+      backend: "Back-end and databases",
+      automation: "Automation and integrations",
+      nocode: "No-code and low-code",
+      frontend: "Front-end",
+      infra: "Infrastructure and tools",
+    },
+  },
   education: {
+    formationTitle: "Education",
     degree: "Technology Degree (Tecnólogo) in Systems Analysis and Development",
     school: "IFSP · Jacareí campus",
     period: "graduating Dec 2026",
-    note: "Federal Institute of São Paulo.",
     capstone: {
       label: "Capstone project",
       title: "LibrasFlow",
-      text: "Recognition of the Brazilian Sign Language (Libras) manual alphabet with computer vision.",
+      text: "Recognition of the Brazilian Sign Language (Libras) manual alphabet with computer vision. Scientific paper in preparation.",
       slug: "librasflow",
       link: "Read the case study",
     },
+    languagesTitle: "Languages",
+    languages: [
+      { name: "Portuguese", level: "native" },
+      {
+        name: "English",
+        level: "advanced reading and listening (technical documentation), conversation in progress",
+      },
+    ],
+    workTitle: "How I work",
+    work: [
+      {
+        label: "Autonomy",
+        text: "Proposed and delivered, on my own, a product that became a service line.",
+        cases: ["agente-baterias"],
+      },
+      {
+        label: "Focus on results",
+        text: "The delivery reversed a client's cancellation risk.",
+        cases: ["agente-baterias"],
+      },
+      {
+        label: "Technical rigor",
+        text: "Found and fixed a data leak in my own model instead of reporting 99.96%.",
+        cases: ["librasflow"],
+      },
+      {
+        label: "Teamwork",
+        text: "Group projects at IFSP and an extension project with the Jacareí city government.",
+        cases: ["librasflow", "barbu", "ajuda-animal"],
+      },
+      {
+        label: "Building with AI",
+        text: "I use coding agents such as Claude Code, reviewing and testing what goes to production. This site was built that way.",
+        links: [{ label: "This site's code", href: "https://github.com/SantosGAlves/portfolio" }],
+      },
+    ],
   },
   contact: {
     intro: "I'm open to new opportunities. Email is the fastest way to reach me.",
@@ -255,7 +314,7 @@ export const site: SiteContent = {
       frameTitle: "{titulo}: live public version",
     },
   },
-  nav: ["projects", "build", "experience", "contact"],
+  nav: ["build", "experience", "stack", "projects", "education", "contact"],
   ui: {
     skipToContent: "Skip to content",
     downloadCv: "Download CV",

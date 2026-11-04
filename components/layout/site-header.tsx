@@ -13,13 +13,14 @@ export function SiteHeader({ locale }: { locale: Locale }) {
     <header className="site-header sticky top-[env(safe-area-inset-top,0px)] z-50 border-b bg-background/90 backdrop-blur-sm">
       <div className="container-site flex h-(--header-h) items-center justify-between gap-4">
         <a href={home} className="shrink-0 rounded-sm text-[0.9375rem] font-bold tracking-[-0.01em] text-foreground">
-          <span className="sm:hidden">{profile.shortName}</span>
-          <span className="hidden sm:inline">{profile.name}</span>
+          {/* Nome curto no celular e entre 1024 e 1280 px, onde o menu de seis links ocupa o espaço. */}
+          <span className="sm:hidden lg:inline xl:hidden">{profile.shortName}</span>
+          <span className="hidden sm:inline lg:hidden xl:inline">{profile.name}</span>
         </a>
 
         <div className="flex items-center gap-3">
-          <nav aria-label={ui.navLabel} className="mr-3 hidden lg:block">
-            <ul className="flex items-center gap-7 text-small text-muted-foreground">
+          <nav aria-label={ui.navLabel} className="mr-1 hidden lg:block xl:mr-3">
+            <ul className="flex items-center gap-5 text-small text-muted-foreground xl:gap-7">
               {nav.map((key) => (
                 <li key={key}>
                   <a

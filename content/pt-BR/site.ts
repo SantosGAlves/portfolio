@@ -28,6 +28,7 @@ export const site: SiteContent = {
     lastName: "Alves dos Santos",
     // Opção A (em uso). Opção B: "Desenvolvedor back-end com foco em IA aplicada".
     role: "Desenvolvedor de software · IA aplicada e automação",
+    tagline: ["Agentes de IA, automações", "e o back-end que mantém tudo de pé."],
     lede: "Desenvolvo software, principalmente back-end, e gosto de transformar processos manuais em sistemas que rodam sozinhos e chamam uma pessoa quando precisam. Hoje construo agentes de IA que consultam bancos de dados, automações no n8n e os sistemas por trás deles: APIs, painéis e autenticação.",
     ctaProjects: "Ver projetos",
     facts: [
@@ -100,17 +101,24 @@ export const site: SiteContent = {
     },
   },
   sections: {
+    build: { id: "o-que-eu-faco", eyebrow: "O que eu faço", title: "Do agente ao back-end", nav: "O que faço" },
+    experience: { id: "experiencia", eyebrow: "Experiência", title: "Trabalho e extensão", nav: "Experiência" },
+    stack: { id: "tecnologias", eyebrow: "Tecnologias", title: "Com o que eu trabalho", nav: "Tecnologias" },
     projects: { id: "projetos", eyebrow: "Projetos selecionados", title: "Projetos", nav: "Projetos" },
-    build: { id: "construo", eyebrow: "O que eu construo", title: "Do agente ao back-end", nav: "O que construo" },
-    experience: { id: "experiencia", eyebrow: "Experiência", title: "Onde trabalhei", nav: "Experiência" },
-    education: { id: "formacao", eyebrow: "Formação", title: "Formação e TCC", nav: "Formação" },
+    other: { id: "outros-projetos", eyebrow: "Repositórios", title: "Outros projetos", nav: "Outros projetos" },
+    education: {
+      id: "formacao",
+      eyebrow: "Formação e competências",
+      title: "Estudo, idiomas e como eu trabalho",
+      nav: "Formação",
+    },
     contact: { id: "contato", eyebrow: "Contato", title: "Vamos conversar", nav: "Contato" },
   },
   projects: {
     intro: "Do problema ao sistema em produção: agentes de IA, automações e os sistemas por trás deles.",
     plannedLabel: "Próximo projeto",
     status: { shipped: "entregue", "in-progress": "em andamento", planned: "em construção" },
-    secondaryTitle: "Outros projetos",
+    otherIntro: "Projetos menores e de estudo, com o código no GitHub.",
     repoLink: "Código no GitHub",
     liveLink: "Testar ao vivo (usa a câmera)",
     demoBadge: "demo interativa",
@@ -140,66 +148,44 @@ export const site: SiteContent = {
   },
   build: {
     intro:
-      "Três frentes com o mesmo peso. Na prática elas se misturam: um agente só é útil com um back-end confiável por trás.",
+      "Quatro frentes que se misturam na prática: um agente só é útil com dados confiáveis e um back-end por trás.",
     areas: [
       {
-        title: "Agentes de IA",
-        text: "Agentes que entendem o pedido, consultam dados reais por meio de ferramentas e chamam uma pessoa quando não têm a resposta.",
-        includes: [
-          "Extração de dados da mensagem",
-          "Chamada de ferramentas e consultas ao banco",
-          "Encaminhamento para atendimento humano",
-        ],
-        tools: ["APIs de LLM", "tool calling", "Python", "Supabase"],
+        title: "Agentes de IA e LLMs",
+        text: "Agentes que entendem o pedido, consultam dados reais e chamam uma pessoa quando não têm a resposta.",
+        items: ["atendimento", "consulta a dados", "integração com sistemas"],
       },
       {
-        title: "Automação de processos",
-        text: "Fluxos que tiram tarefas repetitivas das mãos das pessoas: recebem um evento, decidem o que fazer e registram o resultado.",
-        includes: [
-          "Chatbots e atendimento automatizado",
-          "Integrações entre sistemas via API e webhooks",
-          "Rotinas agendadas e notificações",
-        ],
-        tools: ["n8n", "webhooks", "APIs REST", "Python"],
+        title: "Automação e integrações",
+        text: "Fluxos que tiram tarefas repetitivas das mãos das pessoas e fazem os sistemas conversarem.",
+        items: ["n8n", "APIs", "webhooks", "CRMs"],
       },
       {
-        title: "Produtos e back-end",
-        text: "Os sistemas por trás dos agentes, de ponta a ponta: APIs, bancos de dados, painéis de gestão, autenticação e deploy.",
-        includes: [
-          "APIs e modelagem de banco de dados",
-          "Painéis de gestão e cadastro",
-          "Autenticação, RLS, deploy e domínio",
-        ],
-        tools: ["Python", "PostgreSQL · Supabase", "RLS", "[CONFIRMAR] hospedagem"],
+        title: "Back-end e dados",
+        text: "Os sistemas por trás de tudo, de ponta a ponta: do modelo do banco ao deploy.",
+        items: ["APIs", "bancos de dados", "autenticação", "deploy"],
+      },
+      {
+        title: "Machine learning e visão computacional",
+        text: "Modelos treinados e avaliados com cuidado, prontos para rodar em tempo real.",
+        items: ["modelos", "avaliação", "aplicações em tempo real"],
       },
     ],
-    includesLabel: "Inclui",
-    toolsLabel: "Ferramentas",
-    languages: {
-      title: "Linguagens",
-      primaryLabel: "Principal",
-      primary: { name: "Python", note: "a que mais uso, em agentes, automações e back-end" },
-      otherLabel: "Já trabalhei com",
-      other: ["Java", "Go", "C#"],
-    },
-    workflow: {
-      title: "Como eu trabalho",
-      text: "Desenvolvo com apoio de agentes de código, como o Claude Code. Eles aceleram a escrita; eu decido o que construir, reviso cada mudança e testo o que vai para produção. Este site foi feito assim.",
-    },
   },
   experience: {
-    caseStudyLink: "Ver o estudo de caso",
+    caseStudiesLabel: { one: "Estudo de caso", other: "Estudos de caso" },
     items: [
       {
         company: "Gaudium",
         role: "Estagiário de Automação e Inovação II",
         period: "jul/2026 – atual",
         tags: ["sob NDA"],
-        context:
-          "Empresa B2B de tecnologia para agências de corrida e entrega. Os detalhes deste trabalho são confidenciais.",
+        // NDA: só descrições gerais; sem clientes, parceiros nem link para estudos de caso.
+        context: "Empresa B2B de tecnologia para mobilidade e entregas. O trabalho é confidencial, então aqui vão só descrições gerais.",
         highlights: [
-          "Automações de processos e integrações via API.",
-          "Desenvolvimento de sites e produtos web, com foco em back-end.",
+          "Automatizo processos com n8n e integrações via API.",
+          "Aplico agentes de IA e LLMs a processos internos.",
+          "Desenvolvo sites e produtos web, com foco em back-end.",
         ],
       },
       {
@@ -210,27 +196,92 @@ export const site: SiteContent = {
         context:
           "Empresa com plataforma própria de atendimento (CRM), onde rodam os agentes e painéis que desenvolvi para os clientes.",
         highlights: [
-          "Propus e entreguei o primeiro agente de IA com sistema de gestão da empresa; a partir dele, fiquei responsável pelos projetos similares para outros clientes.",
-          "Agentes de IA para atendimento no WhatsApp (GPT-4o mini), com consulta a banco de dados e transferência para humanos.",
-          "Sistemas de gestão que alimentam os agentes (Supabase, autenticação, painéis web).",
-          "Integrações via API com CRMs e com anúncios da Meta, entre outras.",
+          "Propus e entreguei sozinho o primeiro agente de IA com sistema de gestão da empresa (GPT-4o mini, Supabase e painel web com autenticação), que reverteu o risco de cancelamento de um cliente e virou um novo tipo de produto.",
+          "Fiquei responsável pelos projetos seguintes do mesmo tipo, como o painel para carregadores de veículos elétricos.",
+          "Criei agentes de atendimento no WhatsApp com consulta a banco de dados e transferência para humanos.",
+          "Integrei CRMs e anúncios da Meta via API.",
         ],
-        caseStudy: "agente-baterias",
+        caseStudies: ["agente-baterias", "carregadores-ev"],
+      },
+      {
+        company: "Ajuda Animal",
+        role: "Responsável pelo canal de WhatsApp",
+        period: "2026",
+        tags: ["projeto de extensão"],
+        context: "Projeto de extensão do IFSP Jacareí com a Prefeitura de Jacareí, em equipe.",
+        highlights: [
+          "Desenvolvi o chatbot de denúncias no n8n, ligado ao WhatsApp pela Evolution API.",
+          "Integrei o bot à API do sistema e criei o banco de sessões das conversas.",
+          "Apliquei cuidados de LGPD: a denúncia é anônima por padrão e o contato só fica guardado com o consentimento do cidadão.",
+        ],
+        caseStudies: ["ajuda-animal"],
       },
     ],
   },
+  stack: {
+    intro: "O que uso para construir sistemas e colocá-los em produção. Python é a linguagem principal.",
+    pause: "Pausar a faixa",
+    play: "Continuar a faixa",
+    mainLabel: "principal",
+    usedLabel: "já trabalhei com",
+    groups: {
+      languages: "Linguagens",
+      ai: "IA e dados",
+      backend: "Back-end e bancos",
+      automation: "Automação e integrações",
+      nocode: "No-code e low-code",
+      frontend: "Front-end",
+      infra: "Infra e ferramentas",
+    },
+  },
   education: {
+    formationTitle: "Formação",
     degree: "Tecnólogo em Análise e Desenvolvimento de Sistemas",
     school: "IFSP · Câmpus Jacareí",
     period: "conclusão em dez/2026",
-    note: "Instituto Federal de São Paulo.",
     capstone: {
       label: "TCC",
       title: "LibrasFlow",
-      text: "Reconhecimento do alfabeto manual de Libras com visão computacional.",
+      text: "Reconhecimento do alfabeto manual de Libras com visão computacional. Artigo científico em preparação.",
       slug: "librasflow",
       link: "Ver estudo de caso",
     },
+    languagesTitle: "Idiomas",
+    languages: [
+      { name: "Português", level: "nativo" },
+      {
+        name: "Inglês",
+        level: "leitura e compreensão avançadas (documentação técnica), conversação em desenvolvimento",
+      },
+    ],
+    workTitle: "Como eu trabalho",
+    work: [
+      {
+        label: "Autonomia",
+        text: "Propus e entreguei sozinho um produto que virou linha de serviço.",
+        cases: ["agente-baterias"],
+      },
+      {
+        label: "Foco no resultado",
+        text: "A entrega reverteu o risco de cancelamento de um cliente.",
+        cases: ["agente-baterias"],
+      },
+      {
+        label: "Rigor técnico",
+        text: "Encontrei e corrigi um vazamento de dados no meu próprio modelo, em vez de reportar 99,96%.",
+        cases: ["librasflow"],
+      },
+      {
+        label: "Trabalho em equipe",
+        text: "Projetos em grupo no IFSP e extensão com a Prefeitura de Jacareí.",
+        cases: ["librasflow", "barbu", "ajuda-animal"],
+      },
+      {
+        label: "Desenvolvimento com IA",
+        text: "Uso agentes de código como o Claude Code, revisando e testando o que vai para produção. Este site foi feito assim.",
+        links: [{ label: "Código deste site", href: "https://github.com/SantosGAlves/portfolio" }],
+      },
+    ],
   },
   contact: {
     intro: "Estou aberto a novas oportunidades. O caminho mais rápido é o e-mail.",
@@ -258,7 +309,7 @@ export const site: SiteContent = {
       frameTitle: "{titulo}: versão pública ao vivo",
     },
   },
-  nav: ["projects", "build", "experience", "contact"],
+  nav: ["build", "experience", "stack", "projects", "education", "contact"],
   ui: {
     skipToContent: "Pular para o conteúdo",
     downloadCv: "Baixar CV",

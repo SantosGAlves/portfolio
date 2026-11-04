@@ -184,6 +184,14 @@
 
   --ease-out-soft: cubic-bezier(0.2, 0.7, 0.2, 1);
 
+  /* Faixa de tecnologias: a trilha tem duas cópias iguais; andar 50% fecha o ciclo sem emenda. */
+  --animate-marquee: marquee var(--marquee-duration, 120s) linear infinite;
+  @keyframes marquee {
+    to {
+      transform: translateX(-50%);
+    }
+  }
+
   --animate-status-ping: status-ping 2.4s var(--ease-out-soft) infinite;
   @keyframes status-ping {
     0% {

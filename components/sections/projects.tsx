@@ -3,16 +3,48 @@ import { Section } from "@/components/layout/section"
 import { getContent, type Locale } from "@/lib/i18n"
 import { caseStudyPath, getProjects, hasCaseStudy, type Project } from "@/lib/projects"
 
-// Destaques: cards com o mesmo peso, em duas colunas (uma no celular), na ordem de `meta.order`.
+// Projetos: cards com o mesmo peso, em duas colunas (uma no celular), na ordem de `meta.order`.
 // Cada card tem a arte padronizada, o ano, o título, uma frase, até 4 tecnologias e o selo de demo.
-// Depois, "Outros projetos": lista compacta com ano e uma linha (projetos `secondary` + repositórios
-// do site.ts) e o link para todos os repositórios. "planned" vira uma faixa discreta.
+// "planned" vira uma faixa discreta. "Outros projetos" é a seção seguinte (OtherProjects).
 export function Projects({ locale }: { locale: Locale }) {
-  const { sections, projects: copy, profile, ui } = getContent(locale)
+  const { sections, projects: copy } = getContent(locale)
   const all = getProjects(locale)
-  const active = all.filter((p) => p.meta.status !== "planned")
-  const featured = active.filter((p) => p.meta.tier === "featured")
+  const featured = all.filter((p) => p.meta.status !== "planned" && p.meta.tier === "featured")
   const planned = all.filter((p) => p.meta.status === "planned")
+
+  return (
+    <Section id={sections.projects.id} eyebrow={sections.projects.eyebrow} title={sections.projects.title} intro={copy.intro}>
+      <div className="grid gap-5 md:grid-cols-2">
+        {featured.map((p) => (
+          <ProjectCard key={p.slug} project={p} locale={locale} />
+        ))}
+      </div>
+
+      {planned.length ? (
+        <div className="grid gap-5">
+          {planned.map((p) => (
+            <div
+              key={p.slug}
+              lang={p.fallback ? p.contentLocale : undefined}
+              className="grid gap-x-8 gap-y-2 rounded-card border border-dashed border-line-strong p-5 sm:grid-cols-[auto_1fr] sm:items-baseline sm:p-6"
+            >
+              <p className="font-mono text-meta text-brand">
+                {copy.plannedLabel} · {copy.status.planned}
+              </p>
+              <p className="text-small text-muted-foreground">{p.meta.tagline ?? p.meta.summary}</p>
+            </div>
+          ))}
+        </div>
+      ) : null}
+    </Section>
+  )
+}
+
+// "Outros projetos": lista compacta com ano e uma linha (projetos `secondary` + repositórios do
+// site.ts → projects.more) e o link para todos os repositórios.
+export function OtherProjects({ locale }: { locale: Locale }) {
+  const { sections, projects: copy, profile, ui } = getContent(locale)
+  const active = getProjects(locale).filter((p) => p.meta.status !== "planned")
 
   const others = [
     ...active
@@ -28,75 +60,47 @@ export function Projects({ locale }: { locale: Locale }) {
   ]
 
   return (
-    <Section id={sections.projects.id} eyebrow={sections.projects.eyebrow} title={sections.projects.title} intro={copy.intro}>
-      <div className="grid gap-5 md:grid-cols-2">
-        {featured.map((p) => (
-          <ProjectCard key={p.slug} project={p} locale={locale} />
-        ))}
+    <Section id={sections.other.id} eyebrow={sections.other.eyebrow} title={sections.other.title} intro={copy.otherIntro}>
+      <div className="grid gap-4">
+        <ul className="grid border-t border-line">
+          {others.map((item) => {
+            const external = /^https?:\/\//.test(item.href)
+            return (
+              <li key={item.href} lang={item.lang} className="border-b border-line">
+                <a
+                  href={item.href}
+                  {...(external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
+                  className="group/more grid grid-cols-[3.25rem_minmax(0,1fr)_auto] gap-x-4 gap-y-1 rounded-sm py-4 md:grid-cols-[3.25rem_17rem_minmax(0,1fr)_auto] md:items-baseline md:gap-x-6"
+                >
+                  <span className="font-mono text-meta text-subtle">{item.year}</span>
+                  <span className="font-semibold text-foreground transition-colors group-hover/more:text-brand">
+                    {item.title}
+                    {external ? <span className="sr-only"> {ui.opensInNewTab}</span> : null}
+                  </span>
+                  <span className="col-start-2 row-start-2 text-small text-muted-foreground md:col-start-auto md:row-start-auto">
+                    {item.text}
+                  </span>
+                  <span aria-hidden="true" className="col-start-3 row-start-1 font-mono text-meta text-brand md:col-start-auto md:row-start-auto">
+                    {external ? "↗" : "→"}
+                  </span>
+                </a>
+              </li>
+            )
+          })}
+        </ul>
+        <a
+          href={profile.links.github}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="justify-self-start rounded-sm text-small font-semibold text-brand hover:underline hover:underline-offset-4"
+        >
+          {copy.more.allLink}
+          <span aria-hidden="true" className="ml-1.5 inline-block">
+            ↗
+          </span>
+          <span className="sr-only"> {ui.opensInNewTab}</span>
+        </a>
       </div>
-
-      {planned.length ? (
-        <div className="mt-5 grid gap-5">
-          {planned.map((p) => (
-            <div
-              key={p.slug}
-              lang={p.fallback ? p.contentLocale : undefined}
-              className="grid gap-x-8 gap-y-2 rounded-card border border-dashed border-line-strong p-5 sm:grid-cols-[auto_1fr] sm:items-baseline sm:p-6"
-            >
-              <p className="font-mono text-meta text-brand">
-                {copy.plannedLabel} · {copy.status.planned}
-              </p>
-              <p className="text-small text-muted-foreground">{p.meta.tagline ?? p.meta.summary}</p>
-            </div>
-          ))}
-        </div>
-      ) : null}
-
-      {others.length ? (
-        <div className="mt-14 grid gap-4">
-          <div className="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-2">
-            <h3 className="eyebrow">{copy.secondaryTitle}</h3>
-            <a
-              href={profile.links.github}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-small font-semibold text-brand hover:underline hover:underline-offset-4"
-            >
-              {copy.more.allLink}
-              <span aria-hidden="true" className="ml-1.5 inline-block">
-                ↗
-              </span>
-              <span className="sr-only"> {ui.opensInNewTab}</span>
-            </a>
-          </div>
-          <ul className="grid border-t border-line">
-            {others.map((item) => {
-              const external = /^https?:\/\//.test(item.href)
-              return (
-                <li key={item.href} lang={item.lang} className="border-b border-line">
-                  <a
-                    href={item.href}
-                    {...(external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
-                    className="group/more grid grid-cols-[3.25rem_minmax(0,1fr)_auto] gap-x-4 gap-y-1 rounded-sm py-4 md:grid-cols-[3.25rem_17rem_minmax(0,1fr)_auto] md:items-baseline md:gap-x-6"
-                  >
-                    <span className="font-mono text-meta text-subtle md:row-span-1">{item.year}</span>
-                    <span className="font-semibold text-foreground transition-colors group-hover/more:text-brand">
-                      {item.title}
-                      {external ? <span className="sr-only"> {ui.opensInNewTab}</span> : null}
-                    </span>
-                    <span className="col-start-2 row-start-2 text-small text-muted-foreground md:col-start-auto md:row-start-auto">
-                      {item.text}
-                    </span>
-                    <span aria-hidden="true" className="col-start-3 row-start-1 font-mono text-meta text-brand md:col-start-auto md:row-start-auto">
-                      {external ? "↗" : "→"}
-                    </span>
-                  </a>
-                </li>
-              )
-            })}
-          </ul>
-        </div>
-      ) : null}
     </Section>
   )
 }
