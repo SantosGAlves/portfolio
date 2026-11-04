@@ -31,6 +31,7 @@ export function CaseStudyPage({ locale, slug }: { locale: Locale; slug: string }
       <MediaFigure caption={caption}>
         <LoopVideo
           {...props}
+          lazyPoster
           playLabel={textCopy.caseStudy.video.play}
           pauseLabel={textCopy.caseStudy.video.pause}
           className="rounded-xl border border-line"
@@ -171,6 +172,7 @@ export function CaseStudyPage({ locale, slug }: { locale: Locale; slug: string }
               label={video.label}
               playLabel={copy.video.play}
               pauseLabel={copy.video.pause}
+              lazyPoster
               className="rounded-card border border-line bg-surface"
             />
           )}

@@ -12,17 +12,22 @@ export type LoopVideoProps = {
   label: string
   playLabel: string
   pauseLabel: string
+  /** Vídeo abaixo da primeira tela: o poster vira um <img loading="lazy">. O atributo poster do
+   * <video> sempre baixa na hora e disputava banda com fontes e CSS no carregamento. */
+  lazyPoster?: boolean
   className?: string
 }
 
 // Vídeo sem som e em loop. Até o load da página só aparece o poster; o arquivo
 // é baixado quando o vídeo entra na tela e pausa quando sai.
 // Com prefers-reduced-motion não toca sozinho: fica o poster e o botão "Reproduzir".
-export function LoopVideo({ src, poster, width, height, label, playLabel, pauseLabel, className }: LoopVideoProps) {
+export function LoopVideo({ src, poster, width, height, label, playLabel, pauseLabel, lazyPoster = false, className }: LoopVideoProps) {
   const ref = useRef<HTMLVideoElement>(null)
   const userPaused = useRef(false)
   const [ready, setReady] = useState(false)
   const [playing, setPlaying] = useState(false)
+  // Com lazyPoster, a imagem fica por cima até o primeiro quadro do vídeo aparecer.
+  const [started, setStarted] = useState(false)
 
   useEffect(() => {
     const video = ref.current
@@ -50,13 +55,16 @@ export function LoopVideo({ src, poster, width, height, label, playLabel, pauseL
 
     const onPlay = () => setPlaying(true)
     const onPause = () => setPlaying(false)
+    const onPlaying = () => setStarted(true)
     video.addEventListener("play", onPlay)
     video.addEventListener("pause", onPause)
+    video.addEventListener("playing", onPlaying)
     return () => {
       cancel()
       io?.disconnect()
       video.removeEventListener("play", onPlay)
       video.removeEventListener("pause", onPause)
+      video.removeEventListener("playing", onPlaying)
     }
   }, [src])
 
@@ -77,7 +85,7 @@ export function LoopVideo({ src, poster, width, height, label, playLabel, pauseL
     <div className={`relative overflow-hidden ${className ?? ""}`}>
       <video
         ref={ref}
-        poster={poster}
+        poster={lazyPoster ? undefined : poster}
         width={width}
         height={height}
         muted
@@ -87,6 +95,19 @@ export function LoopVideo({ src, poster, width, height, label, playLabel, pauseL
         aria-label={label}
         className="block h-auto w-full"
       />
+      {lazyPoster && !started ? (
+        // eslint-disable-next-line @next/next/no-img-element -- poster de vídeo, já otimizado em .webp
+        <img
+          src={poster}
+          alt=""
+          aria-hidden="true"
+          width={width}
+          height={height}
+          loading="lazy"
+          decoding="async"
+          className="pointer-events-none absolute inset-0 size-full object-cover"
+        />
+      ) : null}
       {ready ? (
         <button
           type="button"
