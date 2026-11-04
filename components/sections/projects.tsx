@@ -4,7 +4,8 @@ import { getContent, type Locale } from "@/lib/i18n"
 import { caseStudyPath, getProjects, hasCaseStudy, type Project } from "@/lib/projects"
 
 // Projetos: cards com o mesmo peso, em duas colunas (uma no celular), na ordem de `meta.order`.
-// Cada card tem a arte padronizada, o ano, o título, uma frase, até 4 tecnologias e o selo de demo.
+// Cada card tem a arte padronizada, o ano, o selo de status, o título, uma frase, até 4 tecnologias e o
+// rodapé com "Ver projeto →" e "▶ Testar demo".
 // "planned" vira uma faixa discreta. "Outros projetos" é a seção seguinte (OtherProjects).
 export function Projects({ locale }: { locale: Locale }) {
   const { sections, projects: copy } = getContent(locale)
@@ -28,7 +29,7 @@ export function Projects({ locale }: { locale: Locale }) {
               lang={p.fallback ? p.contentLocale : undefined}
               className="grid gap-x-8 gap-y-2 rounded-card border border-dashed border-line-strong p-5 sm:grid-cols-[auto_1fr] sm:items-baseline sm:p-6"
             >
-              <p className="font-mono text-meta text-brand">
+              <p className="font-mono text-meta text-subtle">
                 {copy.plannedLabel} · {copy.status.planned}
               </p>
               <p className="text-small text-muted-foreground">{p.meta.tagline ?? p.meta.summary}</p>
@@ -110,8 +111,11 @@ function yearOf(period: string): string {
   return period.split(" · ")[0]
 }
 
+// Card clicável inteiro (o link do título cobre o card com ::after), com cara de botão também no celular,
+// onde não há hover: borda forte, leve elevação, "Ver projeto →" sempre visível no rodapé, na cor de ação, e
+// retorno ao tocar (:active). "▶ Testar demo" é um segundo link, por cima, direto para a demo do caso.
 const cardShell =
-  "group/card relative overflow-hidden rounded-card border border-line bg-surface transition-colors duration-300 hover:border-line-strong has-[a:focus-visible]:outline-2 has-[a:focus-visible]:outline-offset-3 has-[a:focus-visible]:outline-brand"
+  "group/card relative grid grid-rows-[auto_1fr] overflow-hidden rounded-card border border-line-strong bg-surface shadow-card transition-[border-color,transform,background-color] duration-200 ease-out-soft hover:-translate-y-0.5 hover:border-brand-line has-[a:active]:translate-y-0 has-[a:active]:bg-surface-2 has-[a:focus-visible]:outline-2 has-[a:focus-visible]:outline-offset-3 has-[a:focus-visible]:outline-brand motion-reduce:transition-none motion-reduce:hover:translate-y-0"
 
 function ProjectCard({ project, locale }: { project: Project; locale: Locale }) {
   const { projects: copy, ui } = getContent(locale)
@@ -120,28 +124,23 @@ function ProjectCard({ project, locale }: { project: Project; locale: Locale }) 
   const page = hasCaseStudy(project)
   const href = page ? caseStudyPath(locale, slug) : meta.repo
   const external = !page
-  const badges = [
-    ...(meta.demo || meta.liveEmbed || meta.badges.includes("demo") ? [copy.demoBadge] : []),
-    ...(meta.badges.includes("delivered") ? [copy.deliveredBadge] : []),
-  ]
+  const demo = page && (meta.demo || meta.liveEmbed || meta.badges.includes("demo"))
+  const demoHref = `${caseStudyPath(locale, slug)}#${getContent(contentLocale).caseStudy.tryIt.id}`
+  const delivered = meta.badges.includes("delivered")
 
   return (
-    <article aria-labelledby={titleId} lang={fallback ? contentLocale : undefined} className={`grid grid-rows-[auto_1fr] ${cardShell}`}>
-      <ProjectArt art={meta.art} className="aspect-[16/10] border-b border-line" />
-      <div className="grid content-start gap-3 p-5 sm:p-6">
-        <p className="flex min-h-[1.375rem] flex-wrap items-center justify-between gap-x-3 gap-y-1 font-mono text-meta">
+    <article aria-labelledby={titleId} lang={fallback ? contentLocale : undefined} className={cardShell}>
+      <ProjectArt art={meta.art} className="aspect-[2/1] border-b border-line sm:aspect-[16/10]" />
+      <div className="grid grid-rows-[auto_auto_1fr_auto] gap-3 p-5 sm:p-6">
+        <p className="flex min-h-[1.375rem] flex-wrap items-center gap-x-3 gap-y-1 font-mono text-meta">
           <span className="text-subtle">{yearOf(meta.period)}</span>
-          {badges.length ? (
-            <span lang={fallback ? locale : undefined} className="flex flex-wrap gap-1.5">
-              {badges.map((badge) => (
-                <span key={badge} className="rounded-full border border-brand-line px-2 leading-5 text-brand">
-                  {badge}
-                </span>
-              ))}
+          {delivered ? (
+            <span lang={fallback ? locale : undefined} className="rounded-full border border-ok-line px-2 leading-5 text-ok">
+              {copy.deliveredBadge}
             </span>
           ) : null}
         </p>
-        <h3 id={titleId} className="flex items-start justify-between gap-4 text-h3">
+        <h3 id={titleId} className="text-h3">
           {href ? (
             <a
               href={href}
@@ -155,23 +154,36 @@ function ProjectCard({ project, locale }: { project: Project; locale: Locale }) 
           ) : (
             (meta.shortTitle ?? meta.title)
           )}
-          <span
-            aria-hidden="true"
-            className="grid size-9 shrink-0 place-items-center rounded-full border border-line-strong font-mono text-small text-muted-foreground transition-colors duration-200 group-hover/card:border-brand-line group-hover/card:text-brand"
-          >
-            {external ? "↗" : "→"}
-          </span>
         </h3>
-        <p className="text-muted-foreground">{meta.tagline ?? meta.summary}</p>
-        {meta.stack.length ? (
-          <ul className="mt-1 flex flex-wrap gap-2">
-            {meta.stack.slice(0, 4).map((tech) => (
-              <li key={tech} className="rounded-full border border-line px-2.5 py-0.5 font-mono text-meta text-muted-foreground">
-                {tech}
-              </li>
-            ))}
-          </ul>
-        ) : null}
+        <div className="grid content-start gap-3">
+          <p className="text-muted-foreground">{meta.tagline ?? meta.summary}</p>
+          {meta.stack.length ? (
+            <ul className="flex flex-wrap gap-2">
+              {meta.stack.slice(0, 4).map((tech) => (
+                <li key={tech} className="rounded-full border border-line px-2.5 py-0.5 font-mono text-meta text-muted-foreground">
+                  {tech}
+                </li>
+              ))}
+            </ul>
+          ) : null}
+        </div>
+        {/* Rodapé: a ação do card (o link do título já cobre o card; este texto é só a pista visual). */}
+        <div lang={fallback ? locale : undefined} className="mt-2 flex flex-wrap items-center justify-between gap-3 border-t border-line pt-4">
+          <span aria-hidden="true" className="inline-flex items-center gap-1.5 text-small font-semibold text-brand">
+            {external ? copy.viewCode : copy.viewProject}
+            <span className="transition-transform duration-200 group-hover/card:translate-x-0.5">{external ? "↗" : "→"}</span>
+          </span>
+          {demo ? (
+            <a
+              href={demoHref}
+              className="relative z-10 inline-flex min-h-9 items-center gap-1.5 rounded-full border border-brand-line px-3 font-mono text-meta text-brand transition-colors hover:bg-brand-soft active:bg-brand-soft"
+            >
+              <span aria-hidden="true">▶</span>
+              {copy.tryDemo}
+              <span className="sr-only">: {meta.shortTitle ?? meta.title}</span>
+            </a>
+          ) : null}
+        </div>
       </div>
     </article>
   )
