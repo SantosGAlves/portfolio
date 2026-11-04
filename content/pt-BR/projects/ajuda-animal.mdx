@@ -1,57 +1,147 @@
 export const meta = {
   order: 4,
   tier: "secondary",
-  status: "shipped", // [CONFIRMAR] entregue ou em andamento
+  status: "in-progress",
   art: "automation",
-  title: "Chatbot e automações para um projeto de ajuda animal",
-  kind: "Automação · n8n",
+  demo: "ajuda-animal",
+  demoNote: "A demo simula a conversa no navegador, com os textos e as regras do fluxo real, sem WhatsApp e sem banco.",
+  privateCode: "Código privado: projeto de extensão em parceria com a Prefeitura. Posso mostrar os detalhes em entrevista.",
+  title: "Ajuda Animal: denúncias de maus-tratos pelo WhatsApp",
+  kind: "Chatbot no WhatsApp · n8n",
   summary:
-    "Chatbot e fluxos no n8n para um projeto de extensão de ajuda animal, para que a equipe gaste menos tempo com mensagens repetidas. [CONFIRMAR]",
-  role: "Desenvolvimento dos fluxos e do chatbot [CONFIRMAR]",
-  period: "[CONFIRMAR]",
-  stack: ["n8n", "[CONFIRMAR] canal do chatbot"],
+    "Canal de denúncias de maus-tratos a animais pelo WhatsApp, num projeto de extensão do IFSP com a Prefeitura de Jacareí. Fiz o bot no n8n e a integração com a API do sistema.",
+  role: "Canal do WhatsApp: bot no n8n, integração com a API e sessões da conversa",
+  period: "2026 · projeto de extensão do IFSP Jacareí",
+  stack: ["n8n", "Evolution API", "PostgreSQL", "Docker"],
+  draft: false,
+  media: {
+    video: {
+      src: "/ajuda-animal/midia-ajuda-animal/ajuda-animal-demo.mp4",
+      poster: "/ajuda-animal/midia-ajuda-animal/ajuda-animal-demo-poster.webp",
+      width: 1280,
+      height: 720,
+      controls: true,
+      label:
+        "Demonstração do Ajuda Animal: o cidadão faz a denúncia pelo WhatsApp, ela aparece no mapa do painel da Secretaria e o andamento volta para o cidadão na consulta do protocolo.",
+      caption: "Demonstração ponta a ponta, de 19/10/2026 (1 min 33 s, sem som). Endereços e coordenadas estão desfocados.",
+    },
+  },
   tldr: [
-    { label: "Problema", text: "[CONFIRMAR] O que a equipe do projeto fazia à mão." },
-    { label: "Solução", text: "Um chatbot e automações no n8n. [CONFIRMAR] o que cada fluxo resolve." },
-    { label: "Resultado", text: "[CONFIRMAR]" },
+    {
+      label: "Problema",
+      text: "A Secretaria de Proteção Animal recebia denúncias por ligações e mensagens soltas, que chegavam sem local, sem foto e sem como acompanhar.",
+    },
+    {
+      label: "Solução",
+      text: "Um bot no WhatsApp conduz a denúncia passo a passo (tipo, animal, localização, foto e anonimato), registra no sistema pela API e devolve um protocolo.",
+    },
+    {
+      label: "Resultado",
+      text: "Protótipo funcional, demonstrado ponta a ponta em 19/10/2026: a denúncia cai no mapa do painel e o cidadão acompanha pelo protocolo. Ainda não está em produção.",
+    },
   ],
 }
 
 ## Contexto e problema
 
-[CONFIRMAR] O projeto de extensão, quem ele atende e quais pedidos chegavam todos os dias.
+O Ajuda Animal é um projeto de extensão do IFSP Jacareí com a Prefeitura de Jacareí, para a Secretaria de Proteção Animal. É um projeto em equipe: um sistema para receber e acompanhar denúncias de maus-tratos e abandono de animais.
+
+A Secretaria precisa de denúncias com dados úteis para agir: onde está o animal, o que está acontecendo e uma foto. Ligações e mensagens soltas chegam incompletas e sem acompanhamento. O WhatsApp é o canal que o cidadão já usa, mas uma conversa livre não gera dados estruturados.
 
 ## Minha função
 
-[CONFIRMAR]
+Fui responsável pelo canal do WhatsApp: o chatbot no n8n, a conexão com o back-end do sistema (core-api) e o banco de sessões da conversa. Também levei os dados e as fotos do WhatsApp até o sistema, onde a denúncia é criada. O painel e a API são da equipe.
 
-## Solução e arquitetura
+## Como funciona
 
-<Flow
-  altLabel="ou"
-  caption="Fluxo provisório."
-  steps={[
-    { title: "Mensagem", detail: "[CONFIRMAR] canal" },
-    { title: "n8n", detail: "Classifica o pedido" },
-    { title: "Resposta automática", detail: "Dúvidas frequentes" },
-    { title: "Equipe", detail: "Casos que precisam de uma pessoa", alt: true },
+<Architecture
+  link="HTTP + x-service-key"
+  caption="O bot só grava pela API do sistema. O estado da conversa fica num banco separado."
+  groups={[
+    {
+      label: "Minha parte: canal do WhatsApp",
+      mine: true,
+      nodes: [
+        { title: "Cidadão", detail: "Pelo WhatsApp, sem instalar nada" },
+        { title: "Evolution API", detail: "Recebe e envia as mensagens" },
+        { title: "n8n", detail: "Conduz a conversa" },
+      ],
+      side: { title: "whatsapp_sessions", detail: "Etapa e respostas de cada número", under: 2, link: "lê e grava" },
+    },
+    {
+      label: "Sistema da equipe",
+      nodes: [
+        { title: "core-api", detail: "NestJS + Prisma: protocolo e validação" },
+        { title: "PostgreSQL + PostGIS", detail: "Denúncias com coordenadas" },
+      ],
+      side: { title: "Painel web", detail: "React + Leaflet: mapa da fiscalização", under: 0, link: "JWT", dir: "up" },
+    },
   ]}
 />
 
+**A conversa é uma máquina de estados.** Cada número de telefone tem uma linha na tabela `whatsapp_sessions`, com a etapa atual e as respostas parciais.
+
+<Flow
+  caption="Etapas da denúncia, guardadas em current_step."
+  steps={[
+    { title: "Menu", detail: "1, 2 ou 3" },
+    { title: "Tipo", detail: "5 opções" },
+    { title: "Animal", detail: "Texto livre" },
+    { title: "Local", detail: "Pino ou endereço" },
+    { title: "Foto", detail: "Ou PULAR" },
+    { title: "Privacidade", detail: "Anônima ou com contato" },
+    { title: "Protocolo", detail: "POST /reports", accent: true },
+  ]}
+/>
+
+No banco, as etapas são `INICIO`, `MENU`, `DENUNCIA_TIPO`, `DENUNCIA_ANIMAL`, `DENUNCIA_LOCAL`, `DENUNCIA_FOTO` e `DENUNCIA_LGPD`. Pelo outro ramo do menu, `CONSULTA_PROTOCOLO`.
+
+- **Menu e saídas.** 1. Denunciar · 2. Consultar protocolo · 3. Orientações gerais. `menu`, `voltar` ou `cancelar` voltam ao menu a qualquer momento.
+- **Entrada normalizada.** O fluxo só trata mensagens recebidas (ignora grupos, status e as próprias mensagens) e extrai o texto, a legenda da foto, a localização e o telefone.
+- **Localização.** O cidadão compartilha o ponto pelo WhatsApp e as coordenadas vão na denúncia, que cai no mapa. Endereço digitado também é aceito.
+- **Tradução para o contrato da API.** Um nó de código monta o corpo do `POST /reports` a partir da sessão. As 5 opções do bot viram `ABUSE` ou `ABANDONMENT` (o detalhe vai na descrição), e o animal digitado ("cachorro caramelo", "coelho") vira a espécie por palavras-chave.
+- **Protocolo.** A API gera um código legível, como `DEN-2026-7K3QX9`, sem 0/O nem 1/I/L para o cidadão não confundir, e o bot o devolve na hora.
+- **Consulta.** O cidadão digita o protocolo (maiúsculas, espaços e traços não importam) e recebe o tipo, o status e a data da última atualização. Não recebe endereço, descrição nem contato.
+- **Erros.** Se a API falhar, o bot avisa, mantém as respostas guardadas e deixa tentar de novo.
+
 ## Stack
 
-- n8n. [CONFIRMAR] demais ferramentas.
+- **Meu trabalho:** n8n, Evolution API (WhatsApp), PostgreSQL, integração REST com chave de serviço e Docker.
+- **Sistema:** monorepo (pnpm + Turborepo), API em NestJS + Prisma + PostgreSQL/PostGIS, painel em React + Vite + Leaflet, Docker Compose e CI no GitHub Actions.
 
 ## Decisões e trade-offs
 
-<Decision title="[CONFIRMAR] Uma decisão importante do projeto" tradeoff="[CONFIRMAR] O que ela custou.">
-  [CONFIRMAR] Por que essa escolha.
+<Decision
+  title="O bot não grava no banco do sistema"
+  tradeoff="O fluxo do n8n fica fora do CI (lint e testes), então nenhuma regra importante pode morar nele."
+>
+  Só a API acessa o banco de negócio. O n8n usa os mesmos endpoints REST que um gateway oficial usaria, autenticado por uma chave de serviço. Assim, as regras importantes (protocolo, anonimato, validação) ficam na API, que é testada. O estado da conversa fica numa tabela separada.
+</Decision>
+
+<Decision
+  title="n8n e Evolution API no protótipo, registrados num ADR"
+  tradeoff="A Evolution usa uma conexão não oficial com o WhatsApp: só com chip de teste, nunca com o número da Prefeitura."
+>
+  O canal oficial (WhatsApp Business, da Meta) depende da Prefeitura. Para demonstrar o fluxo completo sem esperar a verificação da Meta, o n8n faz o papel do gateway. Como o contrato com a API é o mesmo, trocar o canal depois não muda o back-end nem o painel.
+</Decision>
+
+<Decision title="LGPD desde o desenho">
+  A denúncia é anônima por padrão: o contato só é guardado se o cidadão escolher a opção 2. A consulta de protocolo não expõe dados pessoais, a foto é guardada como referência (nunca em base64 na sessão) e há uma consulta pronta para apagar sessões abandonadas há mais de 30 dias, ainda a agendar.
 </Decision>
 
 ## Resultado
 
-[CONFIRMAR]
+Protótipo funcional, demonstrado ponta a ponta em 19/10/2026 (o vídeo no topo):
+
+- denúncia completa pelo WhatsApp (tipo, animal, localização, foto e privacidade);
+- protocolo gerado e enviado na hora;
+- ocorrência no mapa do painel, com a foto enviada pelo cidadão;
+- o andamento atualizado no painel aparece na consulta pelo WhatsApp.
+
+Próximos passos do projeto: o canal oficial (WhatsApp Business, da Meta), o servidor da Prefeitura e um aviso automático aos fiscais a cada nova denúncia. O nó desse aviso já existe no fluxo, mas está desativado.
 
 ## Aprendizados
 
-- [CONFIRMAR]
+- Integrar por contrato (API + chave de serviço) em vez de acessar o banco direto permite trocar o canal sem mexer no resto do sistema.
+- Um chatbot de serviço público precisa ser previsível: menu numerado, comandos de saída e mensagens de erro que não perdem o que o cidadão já respondeu.
+- Privacidade é decisão de arquitetura, não um detalhe de interface.
