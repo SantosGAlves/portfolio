@@ -85,6 +85,7 @@ A cor de status "ok" (ciano) é separada do destaque, para o verde não signific
 | `--danger` (atraso, erro) | `#f2857c` (7,7:1) | `#b3261e` (6,0:1) |
 
 Contraste medido contra `--bg`; todos os textos passam AA (≥ 4,5:1) também sobre `surface` e `surface-2`.
+Sobre `bg-brand-soft` (fundo verde de destaque) o `text-subtle` cai para ~4,2:1 no escuro: ali, use `text-muted-foreground`.
 Destaque chapado e usado com parcimônia (rótulos, links, foco, detalhes). Sem gradientes nem neon.
 
 ### Tipografia (`lib/fonts.ts`, via `next/font`)
@@ -198,9 +199,10 @@ Cada seção é uma marca da régua de progresso (`data-rail`, na ordem da pági
   (vídeo com menos de 1000 px de largura fica na largura da coluna de texto, sem esticar). `video.controls: true` =
   vídeo longo com controles nativos, sem tocar sozinho e com `preload="none"` (só baixa no play).
   `meta.privateCode` = nota de código privado no lugar do link do repositório, no topo do caso. `meta.draft` (padrão `true`) mostra o aviso de texto provisório.
-- Vídeos (`components/case-study/loop-video.tsx`): sem som, loop, `preload="none"` com poster; o arquivo
+- Vídeos (`components/case-study/loop-video.tsx`): sem som, loop, `preload="none"`; o arquivo
   só é baixado depois do load e quando entra na tela, pausa fora dela; botão Pausar/Reproduzir (WCAG 2.2.2);
-  com reduced motion não toca sozinho.
+  com reduced motion não toca sozinho. Nos casos, o poster é um `<img loading="lazy">` sobre o vídeo (`lazyPoster`),
+  que some no primeiro quadro: o atributo `poster` baixava na hora e disputava banda com fontes e CSS (LCP).
 - Mídia do agente: `public/agente-baterias/midia-agente-baterias/` (já censurada). Os `.png` originais ficam
   fora do git; o site usa só `.webp` e `.mp4`.
 - Mídia do LibrasFlow: `public/librasflow/` (vídeo e poster convertidos do GIF de demonstração do repositório,
@@ -350,6 +352,10 @@ de terceiros.
 - `buttonVariants` devolve as classes já mescladas (`cn`); sem isso a borda do `outline` perdia para o
   `border-transparent` da base.
 - Fontes pré-carregadas: três arquivos, ~95 KB no total.
+- `experimental.inlineCss` foi testado (04/11/2026) e descartado: o CSS vai duas vezes no HTML (tag `<style>` e
+  payload RSC), a home passou de 63 para 93 KB gzip e o Lighthouse piorou nas três páginas medidas.
+- `shadcn` fica em `devDependencies` (só o build usa o CSS dele). `npm audit --omit=dev` está zerado; os avisos que
+  restam (deepmerge, minimatch) vêm do shadcn e do ESLint e só teriam correção com `--force`, que quebra o projeto.
 
 ## Desenvolvimento e verificação
 
@@ -363,6 +369,10 @@ de terceiros.
   `Emulation.setTouchEmulationEnabled`; `Input.synthesizeScrollGesture` com toque não rola no headless.
 
 ### Verificação visual
+
+Revisão de 04/11/2026 (build de produção): home e 6 casos, PT/EN, escuro/claro, 360/768/1024/1440 px, sem erro no
+console, requisição falhando ou rolagem lateral. Lighthouse mobile: Performance 94–96, as outras três categorias 100.
+O LCP de laboratório (~3 s) vem da simulação de 4G lento com o JS do React/Next no caminho; o observado é bem menor.
 
 Headless Chrome não abre janela menor que 500px. Para 360px e para o tema claro, usar o
 Chrome DevTools Protocol (`Emulation.setDeviceMetricsOverride` + `localStorage.theme`).
