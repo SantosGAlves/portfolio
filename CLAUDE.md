@@ -132,7 +132,7 @@ Destaque chapado e usado com parcimônia (rótulos, links, foco, detalhes). Sem 
   1. Destaques (`tier: "featured"`), por `order`: o primeiro em largura total, os demais em duas colunas.
      Ordem atual: agente de baterias, LibrasFlow, plataforma de gestão de demandas.
   2. "Outros projetos" (`tier: "secondary"`): cards menores, sem imagem. Ajuda animal (com página),
-     Barbearia Premium App e VoiceSnap (sem página, link para o GitHub).
+     Barbú, app de barbearia (com página e demo) e VoiceSnap (sem página, link para o GitHub).
   3. "Mais no GitHub": lista compacta em `site.ts` → `projects.more` (API .NET 10, Streamlit + Azure,
      concorrência em Java) + link para todos os repositórios.
 - Sem versão EN: a página EN mostra o texto em português (`lang="pt-BR"`), com aviso,
@@ -169,7 +169,8 @@ Destaque chapado e usado com parcimônia (rótulos, links, foco, detalhes). Sem 
   (matriz de confusão e interface), com rótulos em português; a legenda avisa isso. O pipeline é um `<Flow>` de
   6 etapas traduzido (a figura do pipeline foi apagada).
 - Artes abstratas (`components/art/project-art.tsx`), composições HTML/SVG do servidor nas cores do tema,
-  decorativas: painel + agente, pontos da mão, fluxo de nós e Kanban com SLA (plataforma de demandas).
+  decorativas: painel + agente, pontos da mão, fluxo de nós, Kanban com SLA (plataforma de demandas) e celular
+  com a grade de horários (`booking`, Barbú).
   As telas do repositório da plataforma não são usadas: têm o logo da Gaudium e dados de teste.
 - JSON-LD `Person` na página inicial; links com `[CONFIRMAR]` ficam fora do `sameAs`.
 
@@ -187,6 +188,12 @@ Destaque chapado e usado com parcimônia (rótulos, links, foco, detalhes). Sem 
   imagem sai do seu computador". A página pública é só em português; o texto EN avisa. A versão nativa
   ("Experimente" com `@mediapipe/tasks-vision` e a MLP em JSON) depende do código em `docs/referencias/librasflow-web`,
   que ainda não existe.
+- Barbú (fonte: repositório barbu_barbearia, pasta `Tela_Home_Inicial/lib`, clonado em `docs/referencias/barbu`):
+  projeto em equipe de 4 (Carlos, Gustavo Alves, Henrique e Kendy) na disciplina de Dispositivos Móveis. Gustavo fez
+  grande parte do app: Firebase Auth e Firestore, telas iniciais, login, agendamento e integração com o n8n.
+  Substituiu o card do repositório Gest-o_Projetos_Barb-. O webhook do n8n aponta para localhost e o fluxo do n8n
+  não está no repositório (por isso o e-mail da demo é "prévia ilustrativa"). Limites citados no caso, tirados do
+  código: a consulta de horários não filtra o status e a gravação não usa transação.
 - Plataforma de demandas: o README fala em RLS, mas o código usa a chave de serviço e checa permissões
   no Flask. O caso descreve o que o código faz. Foi o "case técnico do processo seletivo em que fui aprovado"
   ("technical case from the hiring process I passed"), sem citar a empresa.
@@ -208,6 +215,17 @@ botão "Abrir demo" no estudo de caso (`meta.demo`) e nenhuma marca de terceiros
   de 48 h sem atividade como verificação agendada). Usuários fictícios Ana (RH), Carlos (Comercial) e Marina (TI,
   admin), e-mails `@example.com`. Eventos como no original: só a mudança de `status` (arrastar no Kanban, Concluir) dispara;
   os botões Assumir/Retomar/Pausar equivalem ao `status_execucao` e não disparam evento.
+- Demo do Barbú (`components/demos/barbu/`): protótipo navegável recriado em React a partir do app em Flutter,
+  com o selo "Protótipo web recriado a partir do app em Flutter". A partir de 640px fica numa moldura de celular;
+  abaixo disso ocupa a tela inteira sob o header e a faixa (`--demo-banner-h`, definida em `DemoPageShell`).
+  Cores do `app_theme.dart` (#0A0A0A, #1A1A1A, #121212, #D32F2F); texto vermelho em #EF5350 para passar AA.
+  Tudo em memória (volta ao início ao recarregar). Telas: splash, login com "Esqueceu a senha?", cadastro
+  (senha mínima de 6), início, agendamento em 3 etapas, sucesso, histórico com cancelamento, avisos, perfil e
+  Fidelidade/Produtos "em desenvolvimento". Ao confirmar, "Nos bastidores" mostra o documento em `bookings`,
+  o aviso em `notifications/{uid}/items`, o lembrete 1 h antes, o JSON do webhook e a prévia do e-mail: em folha
+  dentro do celular e, a partir de 1024px, num painel ao lado. Diferenças assumidas (nas notas da página): ocupados
+  aparecem riscados em vez de sumir e horários de hoje que já passaram ficam desativados.
+- `components/pages/demo-page-shell.tsx` monta as páginas de demo (faixa, voltar, título, GitHub, notas).
 - Teste da demo: pelo Chrome DevTools Protocol, clicando nos botões, preenchendo o formulário e simulando o
   arrastar com `DragEvent` + `DataTransfer` (ver "Verificação visual").
 
@@ -252,4 +270,4 @@ Chrome DevTools Protocol (`Emulation.setDeviceMetricsOverride` + `localStorage.t
   (`app/global-not-found.tsx`, ainda experimental no Next 16).
 - Imagem Open Graph: Fase 4.
 - Textos reais dos estudos de caso: agente, LibrasFlow e plataforma de demandas prontos (`draft: false`);
-  ajuda animal ainda tem `[CONFIRMAR]`.
+  Barbú pronto; ajuda animal ainda tem `[CONFIRMAR]`.
