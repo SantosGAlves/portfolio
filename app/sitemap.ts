@@ -1,4 +1,5 @@
 import type { MetadataRoute } from "next"
+import { demoPath, demos } from "@/lib/demos"
 import { homePath } from "@/lib/i18n"
 import { caseStudyPath, getCaseStudies } from "@/lib/projects"
 import { getSiteUrl } from "@/lib/site-url"
@@ -24,6 +25,11 @@ export default function sitemap(): MetadataRoute.Sitemap {
     } else {
       entries.push({ url: pt })
     }
+  }
+  // Demos: mesma rota nos dois idiomas.
+  for (const slug of Object.keys(demos)) {
+    const languages = { "pt-BR": url(demoPath("pt-BR", slug)), en: url(demoPath("en", slug)) }
+    entries.push({ url: languages["pt-BR"], alternates: { languages } }, { url: languages.en, alternates: { languages } })
   }
   return entries
 }

@@ -6,6 +6,7 @@ import { LoopVideo } from "@/components/case-study/loop-video"
 import { Signature } from "@/components/hero/signature"
 import { buttonVariants } from "@/components/ui/button"
 import { getContent, homePath, type Locale } from "@/lib/i18n"
+import { demoPath } from "@/lib/demos"
 import { caseStudyPath, getCaseStudy, getNextCaseStudy } from "@/lib/projects"
 
 // Template do estudo de caso. A ordem das seções do texto vem do .mdx:
@@ -67,9 +68,15 @@ export function CaseStudyPage({ locale, slug }: { locale: Locale; slug: string }
         <p className="eyebrow">{meta.kind}</p>
         <h1 className="text-title">{meta.title}</h1>
         <p className="max-w-[60ch] text-role font-normal text-muted-foreground">{meta.summary}</p>
-        {meta.live || meta.repo ? (
+        {meta.live || meta.demo || meta.repo ? (
           <div className="grid gap-3">
             <div className="flex flex-wrap items-center gap-x-6 gap-y-3">
+              {meta.demo ? (
+                <a href={demoPath(locale, meta.demo)} lang={fallback ? locale : undefined} className={buttonVariants()}>
+                  {projects.demoLink}
+                  <span aria-hidden="true">→</span>
+                </a>
+              ) : null}
               {meta.live ? (
                 <a
                   href={meta.live}
@@ -90,7 +97,7 @@ export function CaseStudyPage({ locale, slug }: { locale: Locale; slug: string }
                   rel="noopener noreferrer"
                   lang={fallback ? locale : undefined}
                   className={`inline-flex min-h-11 items-center gap-2 rounded-sm text-small font-semibold hover:underline hover:underline-offset-4 ${
-                    meta.live ? "text-foreground" : "text-brand"
+                    meta.live || meta.demo ? "text-foreground" : "text-brand"
                   }`}
                 >
                   {projects.repoLink}
@@ -99,7 +106,7 @@ export function CaseStudyPage({ locale, slug }: { locale: Locale; slug: string }
                 </a>
               ) : null}
             </div>
-            {meta.live && meta.liveNote ? <p className="max-w-[60ch] text-small text-subtle">{meta.liveNote}</p> : null}
+            {(meta.live || meta.demo) && meta.demoNote ? <p className="max-w-[60ch] text-small text-subtle">{meta.demoNote}</p> : null}
           </div>
         ) : null}
       </header>

@@ -101,6 +101,8 @@ export type SiteContent = {
     repoLink: string
     /** Botão da demonstração pública ao vivo, no estudo de caso. */
     liveLink: string
+    /** Botão da demo dentro do site (/demos/<slug>), no estudo de caso. */
+    demoLink: string
     /** Lista compacta de repositórios menores, sem card. */
     more: {
       title: string

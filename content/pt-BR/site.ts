@@ -115,6 +115,7 @@ export const site: SiteContent = {
     secondaryTitle: "Outros projetos",
     repoLink: "Código no GitHub",
     liveLink: "Testar ao vivo (usa a câmera)",
+    demoLink: "Abrir demo",
     more: {
       title: "Mais no GitHub",
       items: [
