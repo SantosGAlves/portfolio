@@ -28,8 +28,9 @@ Não é "só IA": desenvolvimento de produto e back-end tem o mesmo peso.
   "Desenvolvedor back-end com foco em IA aplicada". A linha só quebra depois do "·".
 - Frase de efeito do hero (`hero.tagline`, uma linha por item): "Agentes de IA, automações / e o back-end que
   mantém tudo de pé." / "AI agents, automations, / and the back-end that keeps it all running."
-- "O que eu faço": quatro áreas curtas, gerais, sem ligar a projetos: Agentes de IA e LLMs, Automação e
-  integrações, Back-end e dados, Machine learning e visão computacional (título, uma frase, palavras-chave).
+- "O que eu faço" não é mais uma seção: virou a linha de palavras-chave do hero (Agentes de IA · Automação ·
+  Back-end · Machine learning). As quatro áreas (`site.ts` → `build`: título, uma frase, palavras-chave) e o
+  parágrafo `hero.lede` ficam no "Ver mais" da seção "Agora".
 - Linguagens sem barras de nível nem porcentagens: Python marcado como principal; Java, C# e Go como
   "já trabalhei com" (seção "Tecnologias").
 - "Como eu trabalho" (em "Formação e competências"): cada qualidade com a prova e o link para o caso. Inclui a
@@ -86,7 +87,23 @@ A cor de status "ok" (ciano) é separada do destaque, para o verde não signific
 
 Contraste medido contra `--bg`; todos os textos passam AA (≥ 4,5:1) também sobre `surface` e `surface-2`.
 Sobre `bg-brand-soft` (fundo verde de destaque) o `text-subtle` cai para ~4,2:1 no escuro: ali, use `text-muted-foreground`.
-Destaque chapado e usado com parcimônia (rótulos, links, foco, detalhes). Sem gradientes nem neon.
+Destaque chapado e usado com parcimônia. Sem gradientes nem neon.
+
+**Papéis fixos das cores (regra 60-30-10: 60% fundos neutros, 30% superfícies e texto, 10% verde):**
+
+- **Verde (`--brand`) só no que é clicável:** botão de destaque (`--primary`, verde com texto escuro; um por
+  tela), links, "Ver projeto →", "▶ Testar demo", "Ver mais", foco e controles ativos (rádio marcado, interruptor,
+  coluna sob o arrasto). Nunca em rótulo, marcador, número de etapa, balão de conversa ou borda decorativa.
+- **Ciano (`--ok`, `ok-line`, `ok-soft`) só status e sucesso:** "entregue a cliente", indicador de disponibilidade,
+  etapa final dos diagramas (`accent`), ✓ e execução da assinatura, linha que mudou, saída mais rápida do simulador,
+  SLA no prazo.
+- **Âmbar (`--warn`) só atenção:** SLA em atenção, denúncia pendente, "aguardando" da assinatura.
+- **Cinza (`text-subtle`, `line-strong`) para notas, rótulos e selos informativos** (`eyebrow`, `chip-note`, anos).
+- Hierarquia por contraste: título no tom mais claro (`--text`), apoio em `text-muted-foreground`, notas em `text-subtle`.
+- O tema claro segue os mesmos papéis, com as variantes AA da tabela.
+
+**Tudo que é clicável parece clicável:** link em verde com seta (→ interno, ↗ nova aba) ou sublinhado verde;
+botão com borda; nada depende de hover (no celular não existe). Cards de projeto: ver "Seção de projetos".
 Selos de aviso ("exemplo ilustrativo", "dados fictícios" das demos): sempre cinza, com o utilitário `chip-note`
 (`app/globals.css`; a assinatura repete o mesmo estilo no CSS Module). Nunca verde.
 Foco: quem usa `outline-none` precisa de `focus-visible:outline-solid` junto com `focus-visible:outline-2`
@@ -102,25 +119,46 @@ Foco: quem usa `outline-none` precisa de `focus-visible:outline-solid` junto com
 
 ### Página inicial
 
-Ordem (`components/pages/home-page.tsx`): Hero → O que eu faço → Experiência → Tecnologias → Projetos → Outros
-projetos → Formação e competências → Contato. O menu do header (`site.ts` → `nav`) segue a mesma ordem, sem
-"Outros projetos"; entre 1024 e 1280 px o header usa o nome curto e um espaço menor entre os links, para caber.
-Cada seção é uma marca da régua de progresso (`data-rail`, na ordem da página).
+Objetivo: um recrutador entende quem é o Gustavo e o que ele faz em menos de 5 minutos e chega rápido às demos
+(roteiro do victrhugo.site). Ordem (`components/pages/home-page.tsx`): Hero → Experiência → Projetos → Agora →
+Tecnologias → Outros projetos → Formação e competências → Contato ("Vamos conversar?"). O menu do header (`site.ts` →
+`nav`) segue a mesma ordem, sem "Outros projetos"; entre 1024 e 1280 px o header usa o nome curto e um espaço menor
+entre os links, para caber. Cada seção é uma marca da régua de progresso (`data-rail`, na ordem da página).
+
+**Revelar aos poucos.** Nada é apagado: o que é detalhe vai para trás de "Ver mais" / "Show more"
+(`components/ui/more.tsx`: `<details>` nativo, fechado por padrão, acessível por teclado e sem JS; o rótulo troca
+para "Ver menos"). Não aninhar um "Ver mais" dentro de outro.
+
+- Experiência: cargo, empresa, período, selo (cinza) e no máximo 2 tópicos (`VISIBLE_HIGHLIGHTS`); o contexto,
+  os outros tópicos e os links dos casos ficam no "Ver mais" da entrada.
+- Agora (`components/sections/now.tsx`, `site.ts` → `now`): três linhas (trabalho, estudo, pesquisa); no "Ver mais",
+  o `hero.lede` e as quatro áreas de `build`.
+- Tecnologias: só a faixa e "Ver por categoria".
+- Formação e competências: uma linha para a formação (com o TCC), uma para os idiomas e uma para "Como eu
+  trabalho", cada uma com "Ver mais" para o detalhe.
+- Medidas de 04/11/2026 (PT, escuro): home de 12.589 → 9.374 px a 360 e de 8.346 → 6.567 px a 1440.
 
 ### Hero
 
-- Saudação pequena em mono ("olá, eu sou" / "hi, I'm"), depois o nome como `h1`:
-  "Gustavo" em Schibsted bold e "Alves dos Santos" em Newsreader itálico, em linhas separadas
-  (com `{" "}` entre os spans para o nome acessível ficar correto).
-- Logo abaixo do nome, a função em mono; depois a frase de efeito (`text-role`, segunda linha esmaecida), o parágrafo
-  de apoio e os CTAs numa coluna (máx. 46rem); os três fatos em linha a partir de 1024px.
-  O lado direito fica para o fundo "Fluxo". A assinatura saiu do hero (foi para o estudo de caso do agente).
+- Cabe numa tela: no celular (360 × 780) termina em ~700 px. Ordem: disponibilidade (ponto ciano) → foto redonda
+  ao lado do nome → função em mono → frase de efeito → palavras-chave → três fatos com prova → "Ver projetos ↓"
+  (destaque) e "Baixar CV" (contorno) → GitHub, LinkedIn e E-mail.
+- Nome como `h1`: "Gustavo" em Schibsted bold e "Alves dos Santos" em Newsreader itálico, em linhas separadas
+  (com `{" "}` entre os spans para o nome acessível ficar correto). `text-name` é menor desde a reestruturação
+  (`clamp(2.25rem, …, 5.5rem)`), porque divide a linha com a foto.
+- Foto: `public/foto/gustavo-avatar.webp` (384 × 384, ~8 KB, recortada do `Gustavo.jpeg` original, que fica fora
+  do git e sem o logo da camiseta), via `next/image` com `loading="eager"` + `fetchPriority="high"` e `sizes` de
+  80/112/144 px. No Next 16 `priority` está obsoleto. Alt em `hero.photoAlt`.
+- Fatos com prova (`hero.proof`): "Agente de IA entregue a cliente" → caso do agente, "Artigo científico em
+  preparação" → LibrasFlow, "Estágio em automação e IA" → `#experiencia`. ✓ ciano (status), texto com sublinhado
+  verde e seta (link).
+- A assinatura saiu do hero (está na seção "Experimente" do caso do agente).
 - O nome é o elemento do LCP; o fundo só começa depois do evento `load` (`lib/after-load.ts`).
 
 ## Assinatura "da mensagem à consulta"
 
-`components/hero/signature.tsx` + `signature.module.css` + `lib/signature-player.ts`. Fica na seção
-"Como funciona" do estudo de caso `agente-baterias`, como `<Signature />` no MDX (texto em `site.ts` → `signature`).
+`components/hero/signature.tsx` + `signature.module.css` + `lib/signature-player.ts`. É a seção "Experimente" do
+estudo de caso `agente-baterias` (`<TrySection>` + `<Signature />` no MDX; texto em `site.ts` → `signature`).
 
 - Sequência: mensagem digitada → entidades destacadas uma a uma → `buscar_bateria({...})` escrita linha a linha
   → etapas da execução ficam ✓ → resposta aparece. Duração total entre 6 e 7 s (limite: 8 s).
@@ -157,9 +195,12 @@ Cada seção é uma marca da régua de progresso (`data-rail`, na ordem da pági
      sem card gigante. Ordem: Agente de IA + sistema de gestão, LibrasFlow, Plataforma de demandas, Ajuda Animal,
      Barbú, Painel para carregadores de veículos elétricos. Cada card: arte, ano (trecho do `period` antes do " · "),
      título (`shortTitle` ou `title`), uma frase (`tagline` ou `summary`), até 4 tecnologias (as 4 primeiras de
-     `stack`) e os selos: "demo interativa" (automático com `demo` ou `liveEmbed`) e os de `meta.badges`
-     (`"demo"`, `"delivered"` = "entregue a cliente"; o agente tem os dois). Fotos, prints e vídeos reais ficam só dentro dos estudos de caso
-     (`media.cover` não existe mais).
+     `stack`) e o selo ciano "entregue a cliente" (`meta.badges: "delivered"`). Fotos, prints e vídeos reais ficam
+     só dentro dos estudos de caso (`media.cover` não existe mais).
+     **Card clicável:** o card inteiro é link (o `::after` do link do título cobre o card); borda forte, sombra leve,
+     sobe 2 px no hover e afunda no toque (`has-[a:active]`); rodapé com "Ver projeto →" sempre visível, em verde
+     (também no celular, sem hover); "▶ Testar demo" é um segundo link, por cima (`relative z-10`), direto para
+     `#experimente` / `#try-it`, nos casos com `demo`, `liveEmbed` ou `badges: "demo"` (o agente).
   2. "Outros projetos" (seção própria, `OtherProjects`): lista compacta com ano, título, uma linha e seta: projetos
      `tier: "secondary"` (VoiceSnap, sem página, link para o GitHub) + `site.ts` → `projects.more` (API .NET 10,
      Streamlit + Azure, concorrência em Java), e o link "Todos os repositórios".
@@ -174,9 +215,21 @@ Cada seção é uma marca da régua de progresso (`data-rail`, na ordem da pági
   nome, no mesmo selo.
 - Sem versão EN: a página EN mostra o texto em português (`lang="pt-BR"`), com aviso,
   canonical para a versão PT e fora do sitemap.
-- Template: cabeçalho com metadados em mono → vídeo ou arte → "Resumo em 30 segundos" (`tldr`) →
-  corpo MDX na ordem contexto e problema → minha função → (como funciona) → solução e arquitetura → stack →
-  decisões e trade-offs → resultado → (o mesmo padrão em outro nicho) → aprendizados → próximo caso.
+- Template (revelar aos poucos; a demo aparece já na primeira tela, a 360 e a 1440 px):
+  1. Topo (`case-study-page.tsx`): título, frase de impacto (`tagline`), linha de fatos `roleShort · ano · outcome`
+     (`meta.roleShort` ≤ 60 e `meta.outcome` ≤ 70 caracteres; o ano é o trecho do `period` antes do " · ") e os
+     botões "Testar agora ↓" (destaque, para `#experimente`) e "Código" (contorno, quando há `repo`) ou a nota
+     `privateCode`.
+  2. MDX, nesta ordem: `<Demo />` (ou `<TrySection intro="…"><Signature /></TrySection>` no agente) →
+     `## Resultado` (no máximo 3 tópicos e a nota de que não há métricas) → `## Como funciona` (um parágrafo curto,
+     o diagrama principal e `<CaseVideo />`, o vídeo de `meta.media.video`) → `<Details>`.
+  3. `<Details>`: "Ver detalhes técnicos" / "View technical details", fechado por padrão. Abre com o `summary`, os
+     metadados (função, período, status, stack) e o "Resumo em 30 segundos"; depois o texto longo, na ordem contexto
+     e problema → minha função → solução e arquitetura → stack → decisões e trade-offs → mais sobre o resultado →
+     aprendizados. Nada do texto antigo foi apagado.
+  Sem demo, `<Demo />` mostra o vídeo do caso na seção "Experimente". Títulos dentro do `<Details>` não podem
+  repetir os de cima (ids iguais): por isso "A conversa passo a passo" (Ajuda Animal) e "Conta, horários e
+  confirmação" (Barbú).
 - Blocos no MDX sem import (`mdx-components.tsx`): `<Flow>` (diagrama; `alt` = caminho
   alternativo, `altLabel` = "ou"/"or"; `accent: true` destaca a etapa final), `<Architecture>` (dois blocos,
   "minha parte" e "sistema da equipe", ligados por uma seta com rótulo; cada bloco tem uma fila de etapas e um item
@@ -278,8 +331,7 @@ a arquitetura, a demo funcionando e os resultados. Continuam valendo (`docs/cont
 Parte 2): selo que diz que os dados são fictícios, notas sobre o que é real e o que é simulado, nenhuma marca
 de terceiros.
 
-- Ligar uma demo: `meta.demo: "<slug>"` e `<Demo />` no MDX, no ponto do texto (padrão: logo depois da seção de
-  arquitetura ou "Como funciona", antes de Stack). O slug precisa estar em `lib/demos.ts` (conteúdo) e em
+- Ligar uma demo: `meta.demo: "<slug>"` e `<Demo />` como primeiro bloco do MDX (ver o template acima). O slug precisa estar em `lib/demos.ts` (conteúdo) e em
   `components/case-study/lazy-demo.tsx` (import); slug desconhecido quebra o build.
 - Versão pública hospedada em outro site (LibrasFlow): `meta.liveEmbed` + `<Demo />`, na mesma seção, dentro da
   moldura de navegador de `live-frame.tsx` (ver `meta.live` acima). Antes de usar, conferir com `curl -I` que o
@@ -298,8 +350,8 @@ de terceiros.
   celular, para a página continuar rolando (as áreas internas usam `overscroll-contain`).
 - As rotas antigas `/demos/<slug>` e `/en/demos/<slug>` redirecionam (308) para `/projetos/<caso>#experimente` e
   `/en/projects/<caso>#try-it` (mapa `movedDemos` no `next.config.ts`; demo nova não entra nele).
-- Card da home: selo discreto "demo interativa" / "interactive demo" nos projetos com `meta.demo` ou
-  `meta.liveEmbed` (LibrasFlow).
+- Card da home: link "▶ Testar demo" / "▶ Try the demo" no rodapé dos projetos com `meta.demo`, `meta.liveEmbed`
+  (LibrasFlow) ou `badges: "demo"` (agente).
 - Textos em `content/<idioma>/demos/<slug>.ts` (`section`: selo, intro e notas, tipo `DemoSectionText`),
   tipados em `content/demos/<slug>-types.ts`.
 - Títulos no fluxo das demos começam em h3 (a seção é h2); títulos de diálogo ficam em h2.
@@ -326,7 +378,7 @@ de terceiros.
   0 a 100% em cada saída dos 3 tipos de produto, com nomes fictícios: portátil com plugues de 10 A (≈ 2,2 kW), 16 A
   (≈ 3,5 kW), 20 A (≈ 4,4 kW) e 32 A (≈ 7 kW) em 220 V; portátil de 32 A com uma saída (≈ 7 kW); wallbox de 7,2 kW.
   Regra: `tempo (h) = bateria ÷ min(limite AC, potência da saída)`, com a conta e "limitado pelo carro/carregador".
-  Só AC. As saídas mais rápidas (pode haver empate) ficam em verde. Começa no sedã (AC de 7,4 kW): a wallbox ganha
+  Só AC. As saídas mais rápidas (pode haver empate) ficam em ciano (status). Começa no sedã (AC de 7,4 kW): a wallbox ganha
   por pouco do plugue de 32 A. Selo "Simulação com dados fictícios".
 - Demo do Ajuda Animal (`components/demos/ajuda-animal/`): simulador da conversa com o bot, numa tela de chat escura
   e neutra (sem a identidade do WhatsApp), com o selo "Simulação com dados fictícios · sem WhatsApp, sem banco".
