@@ -12,6 +12,8 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Material de referência fora do git (repositórios clonados para consulta).
+    "docs/**",
   ]),
 ]);
 
