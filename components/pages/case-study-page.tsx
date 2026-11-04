@@ -2,6 +2,7 @@ import type { ComponentProps } from "react"
 import { notFound } from "next/navigation"
 import { ProjectArt } from "@/components/art/project-art"
 import { MediaFigure } from "@/components/case-study/blocks"
+import { LiveDemo } from "@/components/case-study/live-demo"
 import { LoopVideo } from "@/components/case-study/loop-video"
 import { Signature } from "@/components/hero/signature"
 import { buttonVariants } from "@/components/ui/button"
@@ -77,7 +78,40 @@ export function CaseStudyPage({ locale, slug }: { locale: Locale; slug: string }
                   <span aria-hidden="true">→</span>
                 </a>
               ) : null}
-              {meta.live ? (
+              {meta.live && meta.liveEmbed ? (
+                <>
+                  <LiveDemo
+                    embed={meta.liveEmbed}
+                    href={meta.live}
+                    lang={fallback ? locale : undefined}
+                    triggerClassName={buttonVariants()}
+                    closeClassName={buttonVariants({ variant: "ghost", size: "icon-sm" })}
+                    text={{
+                      trigger: projects.liveDialog.trigger,
+                      eyebrow: projects.liveDialog.eyebrow,
+                      title: meta.title,
+                      intro: meta.liveIntro,
+                      loading: projects.liveDialog.loading,
+                      frameTitle: projects.liveDialog.frameTitle.replace("{titulo}", meta.title),
+                      close: projects.liveDialog.close,
+                      note: meta.demoNote,
+                      fallback: projects.liveDialog.fallback,
+                      external: meta.liveExternal ?? projects.liveDialog.external,
+                      opensInNewTab: ui.opensInNewTab,
+                    }}
+                  />
+                  <a
+                    href={meta.live}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex min-h-11 items-center gap-2 rounded-sm text-small font-semibold text-foreground hover:underline hover:underline-offset-4"
+                  >
+                    {meta.liveExternal ?? projects.liveDialog.external}
+                    <span aria-hidden="true">↗</span>
+                    <span className="sr-only">{ui.opensInNewTab}</span>
+                  </a>
+                </>
+              ) : meta.live ? (
                 <a
                   href={meta.live}
                   target="_blank"

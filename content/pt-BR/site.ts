@@ -115,6 +115,15 @@ export const site: SiteContent = {
     secondaryTitle: "Outros projetos",
     repoLink: "Código no GitHub",
     liveLink: "Testar ao vivo (usa a câmera)",
+    liveDialog: {
+      trigger: "Testar aqui (usa a câmera)",
+      eyebrow: "Demonstração ao vivo",
+      loading: "Carregando a versão pública…",
+      frameTitle: "{titulo}: demonstração ao vivo",
+      close: "Fechar",
+      fallback: "A câmera não abriu aqui dentro?",
+      external: "Abrir em nova aba",
+    },
     demoLink: "Abrir demo",
     more: {
       title: "Mais no GitHub",

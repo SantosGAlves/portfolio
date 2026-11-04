@@ -101,6 +101,17 @@ export type SiteContent = {
     repoLink: string
     /** Botão da demonstração pública ao vivo, no estudo de caso. */
     liveLink: string
+    /** Janela da demonstração ao vivo (meta.liveEmbed). {titulo} = título do projeto. */
+    liveDialog: {
+      trigger: string
+      eyebrow: string
+      loading: string
+      frameTitle: string
+      close: string
+      fallback: string
+      /** Link externo quando o projeto não define meta.liveExternal. */
+      external: string
+    }
     /** Botão da demo dentro do site (/demos/<slug>), no estudo de caso. */
     demoLink: string
     /** Lista compacta de repositórios menores, sem card. */

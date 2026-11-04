@@ -22,8 +22,17 @@ export const projectMetaSchema = z.object({
   page: z.boolean().default(true),
   /** Repositório público (link "Código no GitHub"). */
   repo: z.string().url().optional(),
-  /** Demonstração pública ao vivo (botão "Testar ao vivo" no estudo de caso, abre em nova aba). */
+  /** Demonstração pública ao vivo (link em nova aba no estudo de caso). */
   live: z.string().url().optional(),
+  /**
+   * Endereço da demonstração para abrir numa janela dentro do caso (iframe com câmera).
+   * Só use se o site permitir iframe (sem X-Frame-Options nem frame-ancestors).
+   */
+  liveEmbed: z.string().url().optional(),
+  /** Texto do link para a versão externa (ex.: "Abrir a versão do IFSP"). */
+  liveExternal: z.string().optional(),
+  /** Frases de abertura da janela da demonstração ao vivo. */
+  liveIntro: z.string().optional(),
   /** Demonstração dentro do site (slug de /demos/<slug>): botão "Abrir demo" no estudo de caso. */
   demo: z
     .string()
@@ -85,4 +94,4 @@ export type ProjectArt = (typeof projectArts)[number]
 export type ProjectTier = (typeof projectTiers)[number]
 
 /** Campos que precisam ser iguais nos dois idiomas. */
-export const sharedProjectFields = ["order", "tier", "page", "repo", "live", "demo", "status", "art", "stack"] as const
+export const sharedProjectFields = ["order", "tier", "page", "repo", "live", "liveEmbed", "demo", "status", "art", "stack"] as const

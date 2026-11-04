@@ -27,6 +27,10 @@ export const meta = {
   page: true,               // false = sem estudo de caso; o card leva ao repositório
   repo: "https://github.com/...", // opcional: link "Código no GitHub"
   live: "https://...",      // opcional: botão "Testar ao vivo" no topo do caso (nova aba)
+  liveEmbed: "https://...", // opcional: abre a demo numa janela dentro do caso (iframe com câmera);
+                            // só se o site permitir iframe (sem X-Frame-Options nem frame-ancestors)
+  liveExternal: "...",      // opcional: texto do link para a versão externa (ex.: "Abrir a versão do IFSP")
+  liveIntro: "...",         // opcional: frases de abertura da janela
   demo: "demandas",         // opcional: demo dentro do site (/demos/demandas), botão "Abrir demo"
   demoNote: "...",          // opcional: nota curta sob os botões de demo
   status: "shipped",        // "shipped" | "in-progress" | "planned" (card sem página)

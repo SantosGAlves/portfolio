@@ -146,7 +146,11 @@ Destaque chapado e usado com parcimônia (rótulos, links, foco, detalhes). Sem 
   `<Gallery>`/`<Shot>` (capturas com `next/image`; `<Shot layout="column|wide">` sozinha), `<PaperFigure>`
   (figura de artigo em cartão claro, legenda em mono, nota e link para o tamanho real em nova aba) e `<DataTable>`
   (o MDX não tem tabelas em Markdown). Nada de rolagem horizontal: diagrama com texto vira `<Flow>`.
-- `meta.live` = demonstração pública externa: botão "Testar ao vivo (usa a câmera)" no topo do caso, em nova aba;
+- `meta.live` = demonstração pública externa: botão "Testar ao vivo (usa a câmera)" no topo do caso, em nova aba.
+  Com `meta.liveEmbed`, o botão vira "Testar aqui (usa a câmera)" e abre uma janela (`components/case-study/live-demo.tsx`,
+  `<dialog>` nativo com iframe `allow="camera"`), e o link externo (`meta.liveExternal`) fica ao lado. O iframe só
+  existe com a janela aberta: fechar destrói a página e desliga a câmera. `meta.liveIntro` abre a janela;
+  `meta.demoNote` aparece no rodapé dela. No celular a janela ocupa a tela e o texto vai para o rodapé;
   `meta.demo` = slug de uma demo dentro do site (`/demos/<slug>`): botão "Abrir demo"; `meta.demoNote` = nota
   curta sob os botões.
 - Blocos que dependem do idioma (`<Video>`, `<Signature>`) são passados por `case-study-page.tsx`
@@ -178,6 +182,11 @@ Destaque chapado e usado com parcimônia (rótulos, links, foco, detalhes). Sem 
   divisão por grupos (DBSCAN ε 0,05, 6.270 grupos) → **71,2%** no teste externo (3.812 imagens; não 69%, que é a
   variante de 63 atributos, descartada). São 34.374 amostras, não "imagens". Demo pública: librasflow.ifsp.dev
   (MLP no navegador; os números do estudo são do Random Forest). Nunca escrever "100% de acurácia".
+  Em 04/11/2026 o librasflow.ifsp.dev não mandava `X-Frame-Options` nem CSP, então abre em iframe
+  (`/#demo`); o reconhecimento roda no navegador (o `demo.js` só busca o modelo), o que sustenta a frase "nenhuma
+  imagem sai do seu computador". A página pública é só em português; o texto EN avisa. A versão nativa
+  ("Experimente" com `@mediapipe/tasks-vision` e a MLP em JSON) depende do código em `docs/referencias/librasflow-web`,
+  que ainda não existe.
 - Plataforma de demandas: o README fala em RLS, mas o código usa a chave de serviço e checa permissões
   no Flask. O caso descreve o que o código faz. Foi o "case técnico do processo seletivo em que fui aprovado"
   ("technical case from the hiring process I passed"), sem citar a empresa.
