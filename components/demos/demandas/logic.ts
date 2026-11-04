@@ -234,8 +234,18 @@ export function minutesWithClock(ticket: Ticket, now: number): number {
   return ticket.minutesSpent + (ticket.startedAt ? Math.max(0, Math.floor((now - ticket.startedAt) / 60_000)) : 0)
 }
 
-/** Evento que o back-end envia ao n8n numa mudança de status (ou nenhum). */
-export function eventForMove(ticket: Ticket, status: Status): DemoEventName | null {
+/**
+ * Como a mudança chega ao back-end, igual ao sistema original:
+ * "status" = arrastar no Kanban ou Concluir; "execucao" = botões de play e pausa do detalhe.
+ */
+export type MoveVia = "status" | "execucao"
+
+/**
+ * Evento que o back-end envia ao n8n (ou nenhum). No original, só o PATCH com `status`
+ * dispara eventos; o PATCH com `status_execucao` (play e pausa) não dispara nenhum.
+ */
+export function eventForMove(ticket: Ticket, status: Status, via: MoveVia): DemoEventName | null {
+  if (via === "execucao") return null
   if (status === "andamento" && ticket.status !== "andamento") return "ticket_assumido"
   if (status === "concluido" && ticket.status !== "concluido") return "ticket_concluido"
   return null
@@ -251,7 +261,7 @@ export type TicketDraft = { title: string; description: string; target: SectorId
 
 export type Action =
   | { type: "create"; now: number; draft: TicketDraft }
-  | { type: "move"; now: number; id: string; status: Status }
+  | { type: "move"; now: number; id: string; status: Status; via: MoveVia }
   | { type: "remove"; id: string }
   | { type: "note"; now: number; id: string; text: string }
   | { type: "inactivityCheck"; now: number }
@@ -309,7 +319,7 @@ export function reducer(state: DemoState, action: Action): DemoState {
       if (!ticket || !canEdit(user, ticket) || ticket.status === action.status) return state
       const updated = moveTicket(ticket, action.status, action.now, user)
       const next = { ...state, tickets: state.tickets.map((t) => (t.id === ticket.id ? updated : t)) }
-      const event = eventForMove(ticket, action.status)
+      const event = eventForMove(ticket, action.status, action.via)
       return event ? withEvent(next, event, "webhook", updated, action.now) : next
     }
     case "remove": {

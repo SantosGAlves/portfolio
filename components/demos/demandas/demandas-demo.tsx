@@ -21,6 +21,7 @@ import {
   toCsv,
   visibleTickets,
   type Action,
+  type MoveVia,
   type Ticket,
   type User,
   type View,
@@ -97,13 +98,13 @@ export default function DemandasDemo({ content }: { content: DemandasDemoContent
     if (event) notify(fill(c.toasts.sent, { evento: event }), true)
   }
 
-  function move(ticket: Ticket, status: Status) {
+  function move(ticket: Ticket, status: Status, via: MoveVia) {
     if (ticket.status === status) return
     if (!canEdit(user, ticket)) {
       notify(c.ticket.forbidden)
       return
     }
-    act({ type: "move", now: readNow(), id: ticket.id, status }, eventForMove(ticket, status))
+    act({ type: "move", now: readNow(), id: ticket.id, status, via }, eventForMove(ticket, status, via))
   }
 
   function onDrop(e: DragEvent, status: Status) {
@@ -111,7 +112,7 @@ export default function DemandasDemo({ content }: { content: DemandasDemoContent
     setOverColumn(null)
     const id = e.dataTransfer.getData("text/plain") || dragId
     const ticket = state.tickets.find((t) => t.id === id)
-    if (ticket) move(ticket, status)
+    if (ticket) move(ticket, status, "status")
     setDragId(null)
   }
 
@@ -331,9 +332,9 @@ export default function DemandasDemo({ content }: { content: DemandasDemoContent
         now={now}
         content={c}
         onClose={() => setOpenId(null)}
-        onMove={(id, status) => {
+        onMove={(id, status, via) => {
           const ticket = state.tickets.find((t) => t.id === id)
-          if (ticket) move(ticket, status)
+          if (ticket) move(ticket, status, via)
         }}
         onRemove={(id) => {
           act({ type: "remove", id })

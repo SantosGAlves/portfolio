@@ -22,6 +22,7 @@ export const demandas: DemandasDemoContent = {
     notesTitle: "What matches the real system and what is simulated",
     notes: [
       "Same as the real system: the permission rules, the SLA calculation, the handling time and the format of the events sent to n8n.",
+      "As in the original system, the ticket_assumido event is sent when a card is dragged to In progress. The Pick up, Resume and Pause buttons in the detail view only control the timer and send no event.",
       "Simulated: the data is fictional and stays in your browser. No email is sent; the preview shows what n8n would send.",
       "Not in the demo: login, password recovery and the Supabase database.",
     ],
@@ -140,8 +141,8 @@ export const demandas: DemandasDemoContent = {
   automations: {
     title: "Automations (n8n)",
     intro:
-      "On every action, the back-end sends an event to the n8n webhook, which decides who gets which email. The inactivity alert runs inside n8n itself, as a scheduled check.",
-    empty: "No events yet. Open, pick up or finish a ticket.",
+      "When a ticket is opened, picked up or finished, the back-end sends an event to the n8n webhook, which decides who gets which email. The inactivity alert runs inside n8n itself, as a scheduled check.",
+    empty: "No events yet. Open a ticket, drag a card to In progress or finish one.",
     webhook: "webhook",
     schedule: "scheduled",
     payload: "JSON sent to the webhook",

@@ -163,7 +163,7 @@ Destaque chapado e usado com parcimônia (rótulos, links, foco, detalhes). Sem 
   sem a faixa do editor; `librasflow-card.webp` sem a barra de texto do topo). O banner do repositório não é usado
   (estética de "IA brilhante", contra as regras visuais). Figuras do artigo em `public/librasflow/midia-librasflow/`
   (matriz de confusão e interface), com rótulos em português; a legenda avisa isso. O pipeline é um `<Flow>` de
-  6 etapas traduzido; `fig-pipeline.webp` ficou sem uso.
+  6 etapas traduzido (a figura do pipeline foi apagada).
 - Artes abstratas (`components/art/project-art.tsx`), composições HTML/SVG do servidor nas cores do tema,
   decorativas: painel + agente, pontos da mão, fluxo de nós e Kanban com SLA (plataforma de demandas).
   As telas do repositório da plataforma não são usadas: têm o logo da Gaudium e dados de teste.
@@ -197,7 +197,8 @@ botão "Abrir demo" no estudo de caso (`meta.demo`) e nenhuma marca de terceiros
   colaborador vê só o próprio setor de destino e altera só esses), SLA do `script.js` (75/90%, atrasado,
   cumprido), tempo apontado e payloads do n8n (`novo_ticket`, `ticket_assumido`, `ticket_concluido`, mais o alerta
   de 48 h sem atividade como verificação agendada). Usuários fictícios Ana (RH), Carlos (Comercial) e Marina (TI,
-  admin), e-mails `@example.com`. Diferença assumida: `ticket_assumido` também dispara ao retomar um pausado.
+  admin), e-mails `@example.com`. Eventos como no original: só a mudança de `status` (arrastar no Kanban, Concluir) dispara;
+  os botões Assumir/Retomar/Pausar equivalem ao `status_execucao` e não disparam evento.
 - Teste da demo: pelo Chrome DevTools Protocol, clicando nos botões, preenchendo o formulário e simulando o
   arrastar com `DragEvent` + `DataTransfer` (ver "Verificação visual").
 

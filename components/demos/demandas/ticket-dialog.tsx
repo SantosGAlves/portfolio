@@ -12,6 +12,7 @@ import {
   formatDateTime,
   formatMinutes,
   minutesWithClock,
+  type MoveVia,
   type Ticket,
   type User,
 } from "./logic"
@@ -36,7 +37,7 @@ export function TicketDialog({
   now: number
   content: DemandasDemoContent
   onClose: () => void
-  onMove: (id: string, status: Status) => void
+  onMove: (id: string, status: Status, via: MoveVia) => void
   onRemove: (id: string) => void
   onNote: (id: string, text: string) => void
 }) {
@@ -77,7 +78,7 @@ function TicketBody({
   now: number
   content: DemandasDemoContent
   onClose: () => void
-  onMove: (id: string, status: Status) => void
+  onMove: (id: string, status: Status, via: MoveVia) => void
   onRemove: (id: string) => void
   onNote: (id: string, text: string) => void
 }) {
@@ -119,7 +120,7 @@ function TicketBody({
                 type="button"
                 className={buttonVariants({ size: "sm" })}
                 onClick={() => {
-                  if (pending === "finish") onMove(ticket.id, "concluido")
+                  if (pending === "finish") onMove(ticket.id, "concluido", "status")
                   else onRemove(ticket.id)
                   setPending(null)
                 }}
@@ -133,13 +134,13 @@ function TicketBody({
           ) : (
             <div className="flex flex-wrap gap-2">
               {ticket.status !== "andamento" && ticket.status !== "concluido" ? (
-                <button type="button" className={control} onClick={() => onMove(ticket.id, "andamento")}>
+                <button type="button" className={control} onClick={() => onMove(ticket.id, "andamento", "execucao")}>
                   <span aria-hidden="true">▶</span>
                   {ticket.status === "pausado" ? c.resume : c.assume}
                 </button>
               ) : null}
               {ticket.status === "andamento" ? (
-                <button type="button" className={control} onClick={() => onMove(ticket.id, "pausado")}>
+                <button type="button" className={control} onClick={() => onMove(ticket.id, "pausado", "execucao")}>
                   <span aria-hidden="true">❚❚</span>
                   {c.pause}
                 </button>

@@ -22,6 +22,7 @@ export const demandas: DemandasDemoContent = {
     notesTitle: "O que é igual ao sistema real e o que é simulado",
     notes: [
       "Igual: as regras de permissão, o cálculo do SLA, o tempo de atendimento e o formato dos eventos enviados ao n8n.",
+      "Como no sistema original, o evento ticket_assumido sai quando o card é arrastado para Atendendo. Os botões Assumir, Retomar e Pausar do detalhe só controlam o cronômetro e não enviam evento.",
       "Simulado: os dados são fictícios e ficam só no seu navegador. Nenhum e-mail é enviado; a prévia mostra o que o n8n mandaria.",
       "Fora da demo: login, recuperação de senha e o banco no Supabase.",
     ],
@@ -140,8 +141,8 @@ export const demandas: DemandasDemoContent = {
   automations: {
     title: "Automações (n8n)",
     intro:
-      "A cada ação, o back-end envia um evento ao webhook do n8n, que decide quem recebe qual e-mail. O alerta de inatividade roda no próprio n8n, numa verificação agendada.",
-    empty: "Nenhum evento ainda. Abra, assuma ou conclua um ticket.",
+      "Ao abrir, assumir ou concluir um ticket, o back-end envia um evento ao webhook do n8n, que decide quem recebe qual e-mail. O alerta de inatividade roda no próprio n8n, numa verificação agendada.",
+    empty: "Nenhum evento ainda. Abra um ticket, arraste um card para Atendendo ou conclua um.",
     webhook: "webhook",
     schedule: "agendado",
     payload: "JSON enviado ao webhook",
