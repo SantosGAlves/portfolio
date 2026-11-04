@@ -6,7 +6,7 @@ import { Slot } from "radix-ui"
 // Base: shadcn/ui (radix-nova), adaptado aos tokens da Direção A.
 // Alturas mínimas de 44px (padrão) e 36px (sm) para alvos de toque.
 const buttonVariantsBase = cva(
-  "group/button inline-flex shrink-0 items-center justify-center rounded-control border border-transparent bg-clip-padding font-sans font-semibold whitespace-nowrap transition-[background-color,border-color,color] duration-200 ease-out-soft outline-none select-none focus-visible:outline-2 focus-visible:outline-offset-3 focus-visible:outline-brand active:not-aria-[haspopup]:translate-y-px disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
+  "group/button inline-flex shrink-0 items-center justify-center rounded-control border border-transparent bg-clip-padding font-sans font-semibold whitespace-nowrap transition-[background-color,border-color,color] duration-200 ease-out-soft outline-none select-none focus-visible:outline-2 focus-visible:outline-solid focus-visible:outline-offset-3 focus-visible:outline-brand active:not-aria-[haspopup]:translate-y-px disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
   {
     variants: {
       variant: {

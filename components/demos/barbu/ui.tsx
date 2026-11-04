@@ -19,7 +19,7 @@ export const c = {
 }
 
 /** Foco visível dentro do app (o vermelho do app, com folga para não sumir no botão vermelho). */
-export const focus = "outline-none focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#EF5350]"
+export const focus = "outline-none focus-visible:outline-2 focus-visible:outline-solid focus-visible:outline-offset-2 focus-visible:outline-[#EF5350]"
 
 export function Logo({ size = "md" }: { size?: "sm" | "md" | "lg" }) {
   const icon = { sm: "size-9", md: "size-16", lg: "size-20" }[size]

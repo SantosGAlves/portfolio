@@ -36,7 +36,7 @@ const ui = {
   muted: "text-[#9aa3ab]",
   chip: "border border-white/15 bg-[#1a1d21] text-[#e9edef] hover:border-white/30",
 }
-const focus = "outline-none focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#7ee08f]"
+const focus = "outline-none focus-visible:outline-2 focus-visible:outline-solid focus-visible:outline-offset-2 focus-visible:outline-[#7ee08f]"
 
 type Msg = { id: number; at: number } & ({ from: "user"; input: Input } | { from: "bot"; text: string })
 
@@ -426,7 +426,7 @@ function Sheet({ title, intro, close, onClose, children }: { title: string; intr
           type="button"
           onClick={onClose}
           aria-label={close}
-          className="grid size-10 shrink-0 place-items-center rounded-full border border-line outline-none focus-visible:outline-2 focus-visible:outline-brand"
+          className="grid size-10 shrink-0 place-items-center rounded-full border border-line outline-none focus-visible:outline-2 focus-visible:outline-solid focus-visible:outline-brand"
         >
           <X aria-hidden="true" className="size-5" />
         </button>
