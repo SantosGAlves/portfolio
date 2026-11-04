@@ -1,8 +1,11 @@
 import type { Metadata } from "next"
+import type { AjudaAnimalDemoContent } from "@/content/demos/ajuda-animal-types"
 import type { BarbuDemoContent } from "@/content/demos/barbu-types"
 import type { DemandasDemoContent } from "@/content/demos/demandas-types"
+import { ajudaAnimal as ajudaAnimalEn } from "@/content/en/demos/ajuda-animal"
 import { barbu as barbuEn } from "@/content/en/demos/barbu"
 import { demandas as demandasEn } from "@/content/en/demos/demandas"
+import { ajudaAnimal as ajudaAnimalPt } from "@/content/pt-BR/demos/ajuda-animal"
 import { barbu as barbuPt } from "@/content/pt-BR/demos/barbu"
 import { demandas as demandasPt } from "@/content/pt-BR/demos/demandas"
 import { getContent, languageAlternates, localePrefix, type Locale } from "@/lib/i18n"
@@ -14,6 +17,7 @@ import { getContent, languageAlternates, localePrefix, type Locale } from "@/lib
 export const demos = {
   demandas: { project: "gestao-de-demandas" },
   barbu: { project: "barbu" },
+  "ajuda-animal": { project: "ajuda-animal" },
 } as const
 export type DemoSlug = keyof typeof demos
 
@@ -33,12 +37,22 @@ export function getBarbuContent(locale: Locale): BarbuDemoContent {
   return barbuContent[locale]
 }
 
+const ajudaAnimalContent: Record<Locale, AjudaAnimalDemoContent> = { "pt-BR": ajudaAnimalPt, en: ajudaAnimalEn }
+
+export function getAjudaAnimalContent(locale: Locale): AjudaAnimalDemoContent {
+  return ajudaAnimalContent[locale]
+}
+
 export function demandasDemoMetadata(locale: Locale): Metadata {
   return demoMetadata(locale, "demandas", getDemandasContent(locale).seo)
 }
 
 export function barbuDemoMetadata(locale: Locale): Metadata {
   return demoMetadata(locale, "barbu", getBarbuContent(locale).seo)
+}
+
+export function ajudaAnimalDemoMetadata(locale: Locale): Metadata {
+  return demoMetadata(locale, "ajuda-animal", getAjudaAnimalContent(locale).seo)
 }
 
 function demoMetadata(locale: Locale, slug: DemoSlug, seo: { title: string; description: string }): Metadata {
