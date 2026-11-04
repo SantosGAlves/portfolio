@@ -5,7 +5,6 @@ export const meta = {
   art: "booking",
   repo: "https://github.com/SantosGAlves/barbu_barbearia",
   demo: "barbu",
-  demoNote: "A demo recria as telas e o fluxo do app no navegador, com dados fictícios e sem Firebase.",
   title: "Barbú, app de barbearia",
   kind: "App mobile · Flutter",
   summary:
@@ -57,6 +56,8 @@ Fiz grande parte do app: a integração com o Firebase (Auth e Firestore), as te
 - **Horários em tempo real.** Ao escolher o dia, o app consulta em `bookings` os agendamentos daquele barbeiro na data e mostra só os horários livres.
 - **Ao confirmar.** O app grava o agendamento em `bookings`, cria um aviso em `notifications/{uid}/items` (aparece na aba Avisos), agenda o lembrete local e envia ao webhook do n8n o nome, o e-mail, a data, o horário, o barbeiro e o serviço.
 - **Depois.** O histórico permite cancelar (o status muda para "cancelado"), e agendamentos que já passaram aparecem como concluídos.
+
+<Demo />
 
 ## Limites e próximos passos
 

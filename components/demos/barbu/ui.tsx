@@ -40,7 +40,7 @@ export function AppBar({ title, back, onBack }: { title?: string; back?: string;
           <ChevronLeft aria-hidden="true" className="size-6" />
         </button>
       ) : null}
-      {title ? <h2 className="text-lg font-bold text-white">{title}</h2> : null}
+      {title ? <h3 className="text-lg font-bold text-white">{title}</h3> : null}
     </div>
   )
 }

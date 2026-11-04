@@ -3,20 +3,10 @@ import type { BarbuDemoContent } from "@/content/demos/barbu-types"
 // Demo do Barbú. Textos do app copiados de Tela_Home_Inicial/lib (sem os emojis).
 export const barbu: BarbuDemoContent = {
   dateLocale: "pt-BR",
-  seo: {
-    title: "Demo: Barbú, app de barbearia",
-    description:
-      "Protótipo web do app de agendamento em Flutter e Firebase: login, agendamento em 3 etapas, histórico, avisos e o webhook enviado ao n8n. Dados fictícios.",
-  },
-  page: {
-    banner: "Demonstração com dados fictícios · sem banco de dados",
-    back: "Voltar ao estudo de caso",
-    eyebrow: "Demo · Barbú, app de barbearia",
-    title: "Barbú",
+  section: {
     intro:
       "O app de agendamento que fizemos em Flutter e Firebase, recriado para o navegador. Entre como visitante, marque um horário e veja o que o app grava no Firestore, o lembrete que agenda e o webhook que manda para o n8n.",
-    repoLink: "Ver código no GitHub",
-    badge: "Protótipo web recriado a partir do app em Flutter",
+    badge: "Protótipo web recriado a partir do app em Flutter · dados fictícios",
     notesTitle: "O que é igual ao app e o que é simulado",
     notes: [
       "Igual ao app: as telas, as cores, os serviços, os barbeiros, os horários, o agendamento em 3 etapas e o formato do documento em bookings e do webhook do n8n.",

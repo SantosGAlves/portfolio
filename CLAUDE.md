@@ -156,15 +156,15 @@ Destaque chapado e usado com parcimônia (rótulos, links, foco, detalhes). Sem 
   `<dialog>` nativo com iframe `allow="camera"`), e o link externo (`meta.liveExternal`) fica ao lado. O iframe só
   existe com a janela aberta: fechar destrói a página e desliga a câmera. `meta.liveIntro` abre a janela;
   `meta.demoNote` aparece no rodapé dela. No celular a janela ocupa a tela e o texto vai para o rodapé;
-  `meta.demo` = slug de uma demo dentro do site (`/demos/<slug>`): botão "Abrir demo"; `meta.demoNote` = nota
-  curta sob os botões.
+  `meta.demo` = slug de uma demo do site, mostrada na seção "Experimente" do caso (ver "Demos dentro dos estudos
+  de caso"); não há botão "Abrir demo".
 - Blocos que dependem do idioma (`<Video>`, `<Signature>`) são passados por `case-study-page.tsx`
   em `<Body components={...}>`, com os rótulos do `site.ts` do idioma do texto.
 - `meta.media.cover` = imagem real do card (`fit: "frame"`: captura em moldura `surface-2`, cortada embaixo;
   `fit: "fill"`: foto ocupando a área); `meta.media.video` = vídeo no topo do caso no lugar da arte
   (vídeo com menos de 1000 px de largura fica na largura da coluna de texto, sem esticar). `video.controls: true` =
   vídeo longo com controles nativos, sem tocar sozinho e com `preload="none"` (só baixa no play).
-  `meta.privateCode` = nota de código privado no lugar do link do repositório, no caso e na página da demo. `meta.draft` (padrão `true`) mostra o aviso de texto provisório.
+  `meta.privateCode` = nota de código privado no lugar do link do repositório, no topo do caso. `meta.draft` (padrão `true`) mostra o aviso de texto provisório.
 - Vídeos (`components/case-study/loop-video.tsx`): sem som, loop, `preload="none"` com poster; o arquivo
   só é baixado depois do load e quando entra na tela, pausa fora dela; botão Pausar/Reproduzir (WCAG 2.2.2);
   com reduced motion não toca sozinho.
@@ -213,32 +213,51 @@ Destaque chapado e usado com parcimônia (rótulos, links, foco, detalhes). Sem 
   no Flask. O caso descreve o que o código faz. Foi o "case técnico do processo seletivo em que fui aprovado"
   ("technical case from the hiring process I passed"), sem citar a empresa.
 
-## Demos dentro do site
+## Demos dentro dos estudos de caso
 
-Regras (`docs/conteudo/conteudo-librasflow-e-demos.md`, Parte 2): faixa fixa "Demonstração com dados fictícios ·
-sem banco de dados", botão "Ver código no GitHub", rota própria em PT e EN que carrega só o próprio JS,
-botão "Abrir demo" no estudo de caso (`meta.demo`) e nenhuma marca de terceiros.
+**Regra: toda demo nova fica dentro do estudo de caso**, na seção "Experimente" / "Try it", como a assinatura
+do agente de baterias. Nada de página separada nem botão "Abrir demo": o visitante abre o projeto e vê o contexto,
+a arquitetura, a demo funcionando e os resultados. Continuam valendo (`docs/conteudo/conteudo-librasflow-e-demos.md`,
+Parte 2): selo que diz que os dados são fictícios, notas sobre o que é real e o que é simulado, nenhuma marca
+de terceiros.
 
-- `lib/demos.ts`: mapa demo → projeto, `demoPath`, conteúdo e metadata. Rotas `app/(pt)/demos/<slug>` e
-  `app/(en)/en/demos/<slug>` (o segmento `demos` é igual nos dois idiomas); entram no sitemap pelo mapa.
-- Textos em `content/<idioma>/demos/<slug>.ts`, tipados em `content/demos/<slug>-types.ts`.
+- Ligar uma demo: `meta.demo: "<slug>"` e `<Demo />` no MDX, no ponto do texto (padrão: logo depois da seção de
+  arquitetura ou "Como funciona", antes de Stack). O slug precisa estar em `lib/demos.ts` (conteúdo) e em
+  `components/case-study/lazy-demo.tsx` (import); slug desconhecido quebra o build.
+- `components/case-study/try-it.tsx` (servidor): título com âncora (`caseStudy.tryIt.id`: `#experimente` /
+  `#try-it`), intro, selo, a demo e as notas. O texto fica na coluna de leitura; a demo sai dela e usa a largura
+  do conteúdo (o `<article>` do caso é `@container`; margem `calc(50% - 50cqi)`) e, no celular, a da tela
+  (`-mx-4`), sem rolagem lateral.
+- Carregamento: `lazy-demo.tsx` (cliente) espera a seção chegar a 300 px da tela (IntersectionObserver) e só então
+  faz o `import()` da demo, que é um chunk próprio. Até lá fica o esqueleto vindo do servidor
+  (`components/demos/<slug>/skeleton.tsx`, mesma altura). O caso continua estático e o texto aparece primeiro.
+  A demo nunca é renderizada no servidor (usa o relógio e a memória do navegador).
+- `--demo-reserve` (3rem no celular, 0 a partir de 640px): altura que fica livre fora das demos em moldura de
+  celular, para a página continuar rolando (as áreas internas usam `overscroll-contain`).
+- As rotas antigas `/demos/<slug>` e `/en/demos/<slug>` redirecionam (308) para `/projetos/<caso>#experimente` e
+  `/en/projects/<caso>#try-it` (mapa `movedDemos` no `next.config.ts`; demo nova não entra nele).
+- Card da home: selo discreto "demo interativa" / "interactive demo" nos projetos com `meta.demo` ou
+  `meta.liveEmbed` (LibrasFlow).
+- Textos em `content/<idioma>/demos/<slug>.ts` (`section`: selo, intro e notas, tipo `DemoSectionText`),
+  tipados em `content/demos/<slug>-types.ts`.
+- Títulos no fluxo das demos começam em h3 (a seção é h2); títulos de diálogo ficam em h2.
 - Demo de demandas (`components/demos/demandas/`): "Painel de Demandas" / "Request Board", recriação do
-  repositório desafio-Gaudium sem a marca. `loader.tsx` usa `next/dynamic` com `ssr: false` (o estado vem do
-  `localStorage` e do relógio). `logic.ts` é puro: regras de permissão do Flask (admin vê e altera tudo;
+  repositório desafio-Gaudium sem a marca. Estado no `localStorage`; no celular o quadro vai de ponta a ponta.
+  `logic.ts` é puro: regras de permissão do Flask (admin vê e altera tudo;
   colaborador vê só o próprio setor de destino e altera só esses), SLA do `script.js` (75/90%, atrasado,
   cumprido), tempo apontado e payloads do n8n (`novo_ticket`, `ticket_assumido`, `ticket_concluido`, mais o alerta
   de 48 h sem atividade como verificação agendada). Usuários fictícios Ana (RH), Carlos (Comercial) e Marina (TI,
   admin), e-mails `@example.com`. Eventos como no original: só a mudança de `status` (arrastar no Kanban, Concluir) dispara;
   os botões Assumir/Retomar/Pausar equivalem ao `status_execucao` e não disparam evento.
 - Demo do Barbú (`components/demos/barbu/`): protótipo navegável recriado em React a partir do app em Flutter,
-  com o selo "Protótipo web recriado a partir do app em Flutter". A partir de 640px fica numa moldura de celular;
-  abaixo disso ocupa a tela inteira sob o header e a faixa (`--demo-banner-h`, definida em `DemoPageShell`).
+  com o selo "Protótipo web recriado a partir do app em Flutter · dados fictícios". A partir de 640px fica numa
+  moldura de celular; abaixo disso ocupa a largura da tela e a altura sob o header, menos `--demo-reserve`.
   Cores do `app_theme.dart` (#0A0A0A, #1A1A1A, #121212, #D32F2F); texto vermelho em #EF5350 para passar AA.
   Tudo em memória (volta ao início ao recarregar). Telas: splash, login com "Esqueceu a senha?", cadastro
   (senha mínima de 6), início, agendamento em 3 etapas, sucesso, histórico com cancelamento, avisos, perfil e
   Fidelidade/Produtos "em desenvolvimento". Ao confirmar, "Nos bastidores" mostra o documento em `bookings`,
   o aviso em `notifications/{uid}/items`, o lembrete 1 h antes, o JSON do webhook e a prévia do e-mail: em folha
-  dentro do celular e, a partir de 1024px, num painel ao lado. Diferenças assumidas (nas notas da página): ocupados
+  dentro do celular e, a partir de 1024px, num painel ao lado. Diferenças assumidas (nas notas da seção): ocupados
   aparecem riscados em vez de sumir e horários de hoje que já passaram ficam desativados.
 - Demo do Ajuda Animal (`components/demos/ajuda-animal/`): simulador da conversa com o bot, numa tela de chat escura
   e neutra (sem a identidade do WhatsApp), com o selo "Simulação com dados fictícios · sem WhatsApp, sem banco".
@@ -249,8 +268,6 @@ botão "Abrir demo" no estudo de caso (`meta.demo`) e nenhuma marca de terceiros
   a chamada ao core-api (`x-service-key: ••••`) e a miniatura do painel (mapa SVG fictício, "Avançar status").
   Caixa "Simular falha da API" mostra as mensagens de erro do fluxo. No EN, os textos, comandos e palavras de
   espécie são traduzidos. Sem botão do GitHub (código privado).
-- `components/pages/demo-page-shell.tsx` monta as páginas de demo (faixa, voltar, título, GitHub ou nota de código
-  privado, notas).
 - Teste da demo: pelo Chrome DevTools Protocol, clicando nos botões, preenchendo o formulário e simulando o
   arrastar com `DragEvent` + `DataTransfer` (ver "Verificação visual").
 
@@ -277,7 +294,7 @@ botão "Abrir demo" no estudo de caso (`meta.demo`) e nenhuma marca de terceiros
 - No `next.config.ts`, o loader do Tailwind ignora `*.module.css` (senão os CSS Modules perdem o escopo).
 - Componentes cliente não importam `Button`/`cn`: o servidor calcula `buttonVariants(...)` e passa a classe como string,
   para `tailwind-merge` e o Slot do Radix não irem ao bundle do cliente. Exceção: as demos, que ficam num chunk
-  próprio carregado só na rota delas.
+  próprio carregado só quando a seção "Experimente" chega perto da tela.
 - `buttonVariants` devolve as classes já mescladas (`cn`); sem isso a borda do `outline` perdia para o
   `border-transparent` da base.
 - Fontes pré-carregadas: três arquivos, ~95 KB no total.

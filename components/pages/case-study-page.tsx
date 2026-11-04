@@ -4,10 +4,11 @@ import { ProjectArt } from "@/components/art/project-art"
 import { MediaFigure } from "@/components/case-study/blocks"
 import { LiveDemo } from "@/components/case-study/live-demo"
 import { LoopVideo } from "@/components/case-study/loop-video"
+import { TryIt } from "@/components/case-study/try-it"
 import { Signature } from "@/components/hero/signature"
 import { buttonVariants } from "@/components/ui/button"
 import { getContent, homePath, type Locale } from "@/lib/i18n"
-import { demoPath } from "@/lib/demos"
+import { isDemoSlug } from "@/lib/demos"
 import { caseStudyPath, getCaseStudy, getNextCaseStudy } from "@/lib/projects"
 
 // Template do estudo de caso. A ordem das seções do texto vem do .mdx:
@@ -21,6 +22,8 @@ export function CaseStudyPage({ locale, slug }: { locale: Locale; slug: string }
   const { meta, Body, fallback, contentLocale } = project
   const next = getNextCaseStudy(locale, slug)
   const video = meta.media.video
+  const demo = meta.demo
+  if (demo && !isDemoSlug(demo)) throw new Error(`Demo desconhecida em ${slug}: ${demo} (veja lib/demos.ts)`)
 
   // Blocos do MDX que dependem do idioma do texto (rótulos de botão e conteúdo do site).
   const textCopy = getContent(contentLocale)
@@ -35,6 +38,8 @@ export function CaseStudyPage({ locale, slug }: { locale: Locale; slug: string }
         />
       </MediaFigure>
     ),
+    // Seção "Experimente": a demo do projeto (meta.demo), no ponto do texto em que o <Demo /> aparece.
+    Demo: () => (demo && isDemoSlug(demo) ? <TryIt slug={demo} locale={contentLocale} /> : null),
     Signature: () => (
       <div className="my-10">
         <Signature content={textCopy.signature} buttonClassName={buttonVariants({ variant: "outline", size: "sm" })} />
@@ -49,7 +54,8 @@ export function CaseStudyPage({ locale, slug }: { locale: Locale; slug: string }
   ]
 
   return (
-    <article lang={fallback ? contentLocale : undefined} className="container-site pt-8 pb-20 md:pt-12">
+    // @container: a seção "Experimente" sai da coluna de texto e usa a largura do conteúdo (50cqi).
+    <article lang={fallback ? contentLocale : undefined} className="@container container-site pt-8 pb-20 md:pt-12">
       <a
         href={`${homePath(locale)}#${sections.projects.id}`}
         lang={fallback ? locale : undefined}
@@ -69,15 +75,9 @@ export function CaseStudyPage({ locale, slug }: { locale: Locale; slug: string }
         <p className="eyebrow">{meta.kind}</p>
         <h1 className="text-title">{meta.title}</h1>
         <p className="max-w-[60ch] text-role font-normal text-muted-foreground">{meta.summary}</p>
-        {meta.live || meta.demo || meta.repo || meta.privateCode ? (
+        {meta.live || meta.repo || meta.privateCode ? (
           <div className="grid gap-3">
             <div className="flex flex-wrap items-center gap-x-6 gap-y-3">
-              {meta.demo ? (
-                <a href={demoPath(locale, meta.demo)} lang={fallback ? locale : undefined} className={buttonVariants()}>
-                  {projects.demoLink}
-                  <span aria-hidden="true">→</span>
-                </a>
-              ) : null}
               {meta.live && meta.liveEmbed ? (
                 <>
                   <LiveDemo
@@ -131,7 +131,7 @@ export function CaseStudyPage({ locale, slug }: { locale: Locale; slug: string }
                   rel="noopener noreferrer"
                   lang={fallback ? locale : undefined}
                   className={`inline-flex min-h-11 items-center gap-2 rounded-sm text-small font-semibold hover:underline hover:underline-offset-4 ${
-                    meta.live || meta.demo ? "text-foreground" : "text-brand"
+                    meta.live ? "text-foreground" : "text-brand"
                   }`}
                 >
                   {projects.repoLink}
@@ -140,7 +140,7 @@ export function CaseStudyPage({ locale, slug }: { locale: Locale; slug: string }
                 </a>
               ) : null}
             </div>
-            {(meta.live || meta.demo) && meta.demoNote ? <p className="max-w-[60ch] text-small text-subtle">{meta.demoNote}</p> : null}
+            {meta.live && meta.demoNote ? <p className="max-w-[60ch] text-small text-subtle">{meta.demoNote}</p> : null}
             {!meta.repo && meta.privateCode ? (
               <p className="max-w-[60ch] border-l-2 border-line-strong pl-3 text-small text-muted-foreground">{meta.privateCode}</p>
             ) : null}

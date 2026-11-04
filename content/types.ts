@@ -112,8 +112,8 @@ export type SiteContent = {
       /** Link externo quando o projeto não define meta.liveExternal. */
       external: string
     }
-    /** Botão da demo dentro do site (/demos/<slug>), no estudo de caso. */
-    demoLink: string
+    /** Selo discreto no card da home dos projetos com demo interativa. */
+    demoBadge: string
     /** Lista compacta de repositórios menores, sem card. */
     more: {
       title: string
@@ -159,6 +159,8 @@ export type SiteContent = {
     illustrativeNotice: string
     /** Botão dos vídeos em loop. */
     video: { play: string; pause: string }
+    /** Seção da demo dentro do caso (<Demo /> no MDX). `id` = âncora (/projetos/<slug>#experimente). */
+    tryIt: { id: string; title: string; loading: string }
   }
   /** Ordem dos links do header (seções da página inicial). */
   nav: SectionKey[]

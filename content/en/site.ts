@@ -130,7 +130,7 @@ export const site: SiteContent = {
       fallback: "Camera didn't open in here?",
       external: "Open in a new tab",
     },
-    demoLink: "Open demo",
+    demoBadge: "interactive demo",
     more: {
       title: "More on GitHub",
       items: [
@@ -257,6 +257,7 @@ export const site: SiteContent = {
     fallbackNotice: "This case study is only available in Portuguese for now.",
     illustrativeNotice: "Draft text. Parts marked [CONFIRMAR] are still under review; sample data is illustrative.",
     video: { play: "Play", pause: "Pause" },
+    tryIt: { id: "try-it", title: "Try it", loading: "Loading the demo…" },
   },
   nav: ["projects", "build", "experience", "contact"],
   ui: {

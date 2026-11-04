@@ -5,7 +5,6 @@ export const meta = {
   art: "kanban",
   repo: "https://github.com/SantosGAlves/desafio-Gaudium",
   demo: "demandas",
-  demoNote: "A demo recria a interface e as regras com dados fictícios, no seu navegador, sem banco de dados.",
   title: "Plataforma de gestão de demandas internas",
   kind: "Back-end · automação",
   summary:
@@ -59,6 +58,8 @@ Desenvolvi o sistema de ponta a ponta: a API em Flask, a autenticação e os per
 - **Eventos para o n8n.** A API dispara três eventos (`novo_ticket`, `ticket_assumido` e `ticket_concluido`) para um webhook do n8n, que manda os e-mails para quem pediu e para quem atende. O n8n também avisa gestores sobre demandas paradas.
 - **Relatórios.** Um botão exporta em CSV as demandas da tela.
 - **Deploy.** Gunicorn no Render, com as chaves em variáveis de ambiente.
+
+<Demo />
 
 ## Stack
 

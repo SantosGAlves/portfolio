@@ -1,4 +1,4 @@
-import type { DemoPageText } from "@/components/pages/demo-page-shell"
+import type { DemoSectionText } from "./section-types"
 
 // Textos da demo do Ajuda Animal (simulador da conversa do bot do WhatsApp).
 // As mensagens do bot vêm do fluxo do n8n (n8n/Fluxo_ajuda_animal_whatsapp.json), sem os emojis.
@@ -19,8 +19,7 @@ export type QuickReply = { send: string; label?: string }
 
 export type AjudaAnimalDemoContent = {
   dateLocale: string
-  seo: { title: string; description: string }
-  page: DemoPageText & { badge: string }
+  section: DemoSectionText
   frameLabel: string
   bot: {
     welcome: string

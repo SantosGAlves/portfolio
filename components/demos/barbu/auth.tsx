@@ -164,7 +164,7 @@ export function Register({
     <div className="flex h-full flex-col">
       <AppBar back={t.back} onBack={onBack} />
       <div className="flex-1 overflow-y-auto overscroll-contain px-7 pb-8">
-        <h2 className="text-[2rem] leading-tight font-bold text-white">{t.title}</h2>
+        <h3 className="text-[2rem] leading-tight font-bold text-white">{t.title}</h3>
         <p className={c.muted}>{t.subtitle}</p>
         <form
           noValidate

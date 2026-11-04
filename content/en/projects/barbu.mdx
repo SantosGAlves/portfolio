@@ -5,7 +5,6 @@ export const meta = {
   art: "booking",
   repo: "https://github.com/SantosGAlves/barbu_barbearia",
   demo: "barbu",
-  demoNote: "The demo recreates the app's screens and flow in the browser, with fictional data and no Firebase.",
   title: "Barbú, barbershop app",
   kind: "Mobile app · Flutter",
   summary:
@@ -57,6 +56,8 @@ I built most of the app: the Firebase integration (Auth and Firestore), the firs
 - **Real-time slots.** When a day is picked, the app queries `bookings` for that barber on that date and only shows free slots.
 - **On confirm.** The app writes the booking to `bookings`, creates a notice in `notifications/{uid}/items` (shown in the Notices tab), schedules the local reminder and sends the n8n webhook the name, email, date, time, barber and service.
 - **Afterwards.** The history lets you cancel (the status changes to "cancelado"), and past bookings show as done.
+
+<Demo />
 
 ## Limits and next steps
 

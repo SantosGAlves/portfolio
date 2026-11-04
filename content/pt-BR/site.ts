@@ -124,7 +124,7 @@ export const site: SiteContent = {
       fallback: "A câmera não abriu aqui dentro?",
       external: "Abrir em nova aba",
     },
-    demoLink: "Abrir demo",
+    demoBadge: "demo interativa",
     more: {
       title: "Mais no GitHub",
       items: [
@@ -259,6 +259,7 @@ export const site: SiteContent = {
     illustrativeNotice:
       "Texto provisório. Trechos marcados com [CONFIRMAR] ainda serão revisados; dados de exemplo são ilustrativos.",
     video: { play: "Reproduzir", pause: "Pausar" },
+    tryIt: { id: "experimente", title: "Experimente", loading: "Carregando a demo…" },
   },
   nav: ["projects", "build", "experience", "contact"],
   ui: {

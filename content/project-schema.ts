@@ -22,7 +22,7 @@ export const projectMetaSchema = z.object({
   page: z.boolean().default(true),
   /** Repositório público (link "Código no GitHub"). */
   repo: z.string().url().optional(),
-  /** Código privado: nota no lugar do link do repositório (no caso e na página da demo). */
+  /** Código privado: nota no lugar do link do repositório, no topo do caso. */
   privateCode: z.string().optional(),
   /** Demonstração pública ao vivo (link em nova aba no estudo de caso). */
   live: z.string().url().optional(),
@@ -35,12 +35,12 @@ export const projectMetaSchema = z.object({
   liveExternal: z.string().optional(),
   /** Frases de abertura da janela da demonstração ao vivo. */
   liveIntro: z.string().optional(),
-  /** Demonstração dentro do site (slug de /demos/<slug>): botão "Abrir demo" no estudo de caso. */
+  /** Demo dentro do caso (slug de lib/demos.ts): a seção "Experimente" aparece onde o MDX tem <Demo />. */
   demo: z
     .string()
     .regex(/^[a-z0-9-]+$/, "use o slug da demo, ex.: demandas")
     .optional(),
-  /** Nota curta sob os botões de demo (ex.: diferença entre a demo e o que o estudo mede). */
+  /** Nota curta sob o botão da demonstração ao vivo (meta.live), ex.: diferença entre a demo e o que o estudo mede. */
   demoNote: z.string().optional(),
   /** planned = card "em construção", sem página de estudo de caso. */
   status: z.enum(projectStatuses),

@@ -3,20 +3,10 @@ import type { BarbuDemoContent } from "@/content/demos/barbu-types"
 // Barbú demo. App copy translated from Tela_Home_Inicial/lib (the original app is in Portuguese).
 export const barbu: BarbuDemoContent = {
   dateLocale: "en-US",
-  seo: {
-    title: "Demo: Barbú, barbershop app",
-    description:
-      "Web prototype of the Flutter and Firebase booking app: login, 3-step booking, history, notices and the webhook sent to n8n. Fictional data.",
-  },
-  page: {
-    banner: "Demo with fictional data · no database",
-    back: "Back to the case study",
-    eyebrow: "Demo · Barbú, barbershop app",
-    title: "Barbú",
+  section: {
     intro:
       "The booking app we built with Flutter and Firebase, recreated for the browser. Sign in as a guest, book a slot and see what the app saves to Firestore, the reminder it schedules and the webhook it sends to n8n.",
-    repoLink: "View code on GitHub",
-    badge: "Web prototype recreated from the Flutter app",
+    badge: "Web prototype recreated from the Flutter app · fictional data",
     notesTitle: "What matches the app and what is simulated",
     notes: [
       "Same as the app: the screens, colors, services, barbers, time slots, the 3-step booking and the format of the bookings document and the n8n webhook.",

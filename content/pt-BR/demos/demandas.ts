@@ -6,19 +6,10 @@ import type { DemandasDemoContent } from "@/content/demos/demandas-types"
 
 export const demandas: DemandasDemoContent = {
   dateLocale: "pt-BR",
-  seo: {
-    title: "Demo: Painel de Demandas",
-    description:
-      "Recriação da interface da plataforma de demandas internas: Kanban com SLA, perfis com permissões e os eventos que o n8n transforma em e-mails. Dados fictícios, sem banco de dados.",
-  },
-  page: {
-    banner: "Demonstração com dados fictícios · sem banco de dados",
-    back: "Voltar ao estudo de caso",
-    eyebrow: "Demo · Plataforma de gestão de demandas",
-    title: "Painel de Demandas",
+  section: {
+    badge: "Demonstração com dados fictícios · sem banco de dados",
     intro:
       "Recriação da interface do sistema em Flask, Supabase e n8n. Abra um ticket, arraste os cards, troque de perfil e veja, no painel de automações, o evento que o sistema real enviaria ao n8n.",
-    repoLink: "Ver código no GitHub",
     notesTitle: "O que é igual ao sistema real e o que é simulado",
     notes: [
       "Igual: as regras de permissão, o cálculo do SLA, o tempo de atendimento e o formato dos eventos enviados ao n8n.",

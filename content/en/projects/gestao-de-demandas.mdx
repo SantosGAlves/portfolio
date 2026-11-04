@@ -5,7 +5,6 @@ export const meta = {
   art: "kanban",
   repo: "https://github.com/SantosGAlves/desafio-Gaudium",
   demo: "demandas",
-  demoNote: "The demo recreates the interface and the rules with fictional data, in your browser, with no database.",
   title: "Internal request management platform",
   kind: "Back-end · automation",
   summary:
@@ -59,6 +58,8 @@ I built the system end to end: the Flask API, authentication and roles in Supaba
 - **Events for n8n.** The API fires three events (`novo_ticket`, `ticket_assumido` and `ticket_concluido`, new, picked up and done) to an n8n webhook, which emails the requester and the assignee. n8n also alerts managers about idle requests.
 - **Reports.** A button exports the requests on screen as CSV.
 - **Deployment.** Gunicorn on Render, with keys in environment variables.
+
+<Demo />
 
 ## Stack
 

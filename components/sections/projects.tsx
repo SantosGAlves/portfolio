@@ -112,6 +112,13 @@ function ExternalLink({
   )
 }
 
+/** Selo discreto nos projetos com demo interativa (no próprio caso ou ao vivo). */
+function DemoBadge({ project, label }: { project: Project; label: string }) {
+  const { meta } = project
+  if (!meta.demo && !meta.liveEmbed) return null
+  return <span className="rounded-full border border-line-strong px-2 leading-5 text-muted-foreground">{label}</span>
+}
+
 const cardShell =
   "group/card relative overflow-hidden rounded-card border border-line bg-surface transition-colors duration-300 hover:border-line-strong has-[a:focus-visible]:outline-2 has-[a:focus-visible]:outline-offset-3 has-[a:focus-visible]:outline-brand"
 
@@ -152,9 +159,10 @@ function FeaturedCard({ project, locale, lead = false }: { project: Project; loc
       )}
       <div className={`grid content-start gap-3 border-t border-line ${lead ? "p-5 sm:p-7 lg:grid-cols-[1fr_auto] lg:gap-x-12" : "p-5 sm:p-6"}`}>
         <div className="grid gap-3">
-          <p className="flex flex-wrap gap-x-2 font-mono text-meta">
+          <p className="flex flex-wrap items-center gap-x-2 gap-y-1 font-mono text-meta">
             <span className="text-brand">{meta.kind}</span>
             <span className="text-subtle">· {copy.status[meta.status]}</span>
+            <DemoBadge project={project} label={copy.demoBadge} />
           </p>
           <h3 id={titleId} className={lead ? "text-h2" : "text-h3"}>
             {meta.title}
@@ -206,9 +214,10 @@ function SecondaryCard({ project, locale }: { project: Project; locale: Locale }
       lang={fallback ? contentLocale : undefined}
       className={`grid content-start gap-3 p-5 ${cardShell}`}
     >
-      <p className="flex flex-wrap gap-x-2 font-mono text-meta">
+      <p className="flex flex-wrap items-center gap-x-2 gap-y-1 font-mono text-meta">
         <span className="text-brand">{meta.kind}</span>
         <span className="text-subtle">· {copy.status[meta.status]}</span>
+        <DemoBadge project={project} label={copy.demoBadge} />
       </p>
       <h4 id={`projeto-${slug}`} className="text-body font-semibold">
         {meta.title}

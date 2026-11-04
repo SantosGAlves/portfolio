@@ -3,16 +3,7 @@ import type { AjudaAnimalDemoContent } from "@/content/demos/ajuda-animal-types"
 // Ajuda Animal demo. Bot messages translated from the n8n workflow (the original bot is in Portuguese), no emojis.
 export const ajudaAnimal: AjudaAnimalDemoContent = {
   dateLocale: "en-US",
-  seo: {
-    title: "Demo: Ajuda Animal, reporting bot",
-    description:
-      "Simulator of the WhatsApp bot for reporting animal abuse: the same n8n state machine, the session, the POST to the API and the dashboard. Fictional data.",
-  },
-  page: {
-    banner: "Demo with fictional data · no database",
-    back: "Back to the case study",
-    eyebrow: "Demo · Ajuda Animal",
-    title: "Reporting bot simulator",
+  section: {
     intro:
       "Chat with a replica of the bot I built in n8n: file a report, get the protocol and check its progress. Alongside, see each message's path through the workflow, the session in the database, the API call and the report on the city team's dashboard.",
     badge: "Simulation with fictional data · no WhatsApp, no database",

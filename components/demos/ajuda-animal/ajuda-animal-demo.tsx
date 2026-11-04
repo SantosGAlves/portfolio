@@ -154,11 +154,9 @@ export default function AjudaAnimalDemo({ content }: { content: AjudaAnimalDemoC
 
   return (
     <div className="grid gap-8 lg:grid-cols-[auto_minmax(0,1fr)] lg:items-start">
-      <div className="grid justify-items-center gap-4 lg:sticky lg:top-[calc(var(--header-h)+var(--demo-banner-h)+1.5rem)]">
-        <p className="rounded-full border border-brand-line bg-brand-soft px-3 py-1 text-center font-mono text-meta text-brand">{content.page.badge}</p>
-
+      <div className="grid justify-items-center gap-4 lg:sticky lg:top-[calc(var(--header-h)+var(--demo-reserve)+1.5rem)]">
         {/* No celular do visitante a conversa ocupa a tela abaixo do header; a partir de 640px, moldura de celular. */}
-        <div className="-mx-4 h-[calc(100svh-var(--header-h)-var(--demo-banner-h))] w-[calc(100%+2rem)] overflow-hidden sm:mx-0 sm:h-[min(52rem,calc(100svh-var(--header-h)-8rem))] sm:min-h-[38rem] sm:w-[24.5rem] sm:rounded-[3rem] sm:border-[10px] sm:border-[#1c1d21] sm:shadow-card">
+        <div className="-mx-4 h-[calc(100svh-var(--header-h)-var(--demo-reserve))] w-[calc(100%+2rem)] overflow-hidden sm:mx-0 sm:h-[min(52rem,calc(100svh-var(--header-h)-8rem))] sm:min-h-[38rem] sm:w-[24.5rem] sm:rounded-[3rem] sm:border-[10px] sm:border-[#1c1d21] sm:shadow-card">
           <div className={`flex h-full flex-col ${ui.screen}`}>
             <div aria-hidden="true" className={`hidden h-9 shrink-0 items-center justify-between px-7 pt-1 text-xs font-semibold text-white sm:flex ${ui.bar}`}>
               <span>{time(clock)}</span>
@@ -276,9 +274,9 @@ export default function AjudaAnimalDemo({ content }: { content: AjudaAnimalDemoC
 
       <section aria-labelledby="ajuda-backstage" className="hidden rounded-card border border-line bg-surface-2/40 p-5 lg:grid lg:gap-5 lg:p-6">
         <div className="grid gap-1">
-          <h2 id="ajuda-backstage" className="text-h3">
+          <h3 id="ajuda-backstage" className="text-h3">
             {content.backstage.title}
-          </h2>
+          </h3>
           <p className="text-small text-muted-foreground">{content.backstage.intro}</p>
         </div>
         {sheetOpen ? null : backstage}

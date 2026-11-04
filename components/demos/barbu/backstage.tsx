@@ -139,9 +139,9 @@ export function BackstagePanel({ events, content }: { events: BackstageEvent[]; 
   return (
     <section aria-labelledby="barbu-backstage" className="grid content-start gap-4 rounded-card border border-line bg-surface p-5">
       <div className="grid gap-1">
-        <h2 id="barbu-backstage" className="text-h3">
+        <h3 id="barbu-backstage" className="text-h3">
           {t.title}
-        </h2>
+        </h3>
         <p className="text-small text-muted-foreground">{t.intro}</p>
       </div>
       {events.length === 0 ? (

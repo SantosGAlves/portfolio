@@ -4,7 +4,6 @@ export const meta = {
   status: "in-progress",
   art: "automation",
   demo: "ajuda-animal",
-  demoNote: "The demo simulates the conversation in the browser, with the real workflow's messages and rules, and no WhatsApp or database.",
   privateCode: "Private code: university extension project in partnership with the city government. Happy to walk through it in an interview.",
   title: "Ajuda Animal: animal abuse reports over WhatsApp",
   kind: "WhatsApp chatbot · n8n",
@@ -104,6 +103,8 @@ In the database, the steps are `INICIO`, `MENU`, `DENUNCIA_TIPO`, `DENUNCIA_ANIM
 - **Protocol.** The API generates a readable code like `DEN-2026-7K3QX9`, with no 0/O or 1/I/L so citizens don't mix them up, and the bot sends it right away.
 - **Lookup.** The citizen types the protocol (case, spaces and dashes don't matter) and gets the type, status and last update date. No address, description or contact details.
 - **Errors.** If the API fails, the bot says so, keeps the answers and lets the citizen try again.
+
+<Demo />
 
 ## Stack
 

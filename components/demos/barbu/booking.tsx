@@ -231,7 +231,7 @@ export function Success({
     <div className="grid h-full place-items-center overflow-y-auto p-7">
       <div className={`grid w-full justify-items-center gap-4 rounded-[20px] ${c.card} p-7 text-center`}>
         <CircleCheckBig aria-hidden="true" className="size-20 text-[#D32F2F]" strokeWidth={1.5} />
-        <h2 className="text-[1.375rem] font-bold text-white">{t.title}</h2>
+        <h3 className="text-[1.375rem] font-bold text-white">{t.title}</h3>
         <p className={c.soft}>{fill(t.text, { barbeiro: barber })}</p>
         <button
           type="button"

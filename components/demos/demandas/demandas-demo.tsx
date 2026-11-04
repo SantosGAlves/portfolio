@@ -138,7 +138,8 @@ export default function DemandasDemo({ content }: { content: DemandasDemoContent
 
   return (
     <div className="grid gap-4">
-      <div className="overflow-hidden rounded-card border border-line bg-surface">
+      {/* No celular o quadro vai de ponta a ponta da tela; a partir de 640px, card com borda. */}
+      <div className="-mx-4 overflow-hidden border-y border-line bg-surface sm:mx-0 sm:rounded-card sm:border-x">
         {/* Barra do app: marca neutra e o seletor de perfil */}
         <div className="flex flex-wrap items-center justify-between gap-x-6 gap-y-3 border-b border-line px-4 py-3 sm:px-5">
           <p className="flex items-center gap-2.5 font-semibold text-foreground">

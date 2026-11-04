@@ -3,16 +3,7 @@ import type { AjudaAnimalDemoContent } from "@/content/demos/ajuda-animal-types"
 // Demo do Ajuda Animal. Mensagens do bot iguais às do fluxo do n8n, sem os emojis.
 export const ajudaAnimal: AjudaAnimalDemoContent = {
   dateLocale: "pt-BR",
-  seo: {
-    title: "Demo: Ajuda Animal, bot de denúncias",
-    description:
-      "Simulador da conversa do bot de denúncias de maus-tratos pelo WhatsApp: a mesma máquina de estados do n8n, a sessão, o POST para a API e o painel. Dados fictícios.",
-  },
-  page: {
-    banner: "Demonstração com dados fictícios · sem banco de dados",
-    back: "Voltar ao estudo de caso",
-    eyebrow: "Demo · Ajuda Animal",
-    title: "Simulador do bot de denúncias",
+  section: {
     intro:
       "Converse com uma réplica do bot que fiz no n8n: faça uma denúncia, receba o protocolo e consulte o andamento. Ao lado, veja o caminho de cada mensagem no fluxo, a sessão no banco, a chamada à API e a denúncia no painel da Secretaria.",
     badge: "Simulação com dados fictícios · sem WhatsApp, sem banco",

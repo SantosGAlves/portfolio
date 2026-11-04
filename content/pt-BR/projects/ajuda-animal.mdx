@@ -4,7 +4,6 @@ export const meta = {
   status: "in-progress",
   art: "automation",
   demo: "ajuda-animal",
-  demoNote: "A demo simula a conversa no navegador, com os textos e as regras do fluxo real, sem WhatsApp e sem banco.",
   privateCode: "Código privado: projeto de extensão em parceria com a Prefeitura. Posso mostrar os detalhes em entrevista.",
   title: "Ajuda Animal: denúncias de maus-tratos pelo WhatsApp",
   kind: "Chatbot no WhatsApp · n8n",
@@ -103,6 +102,8 @@ No banco, as etapas são `INICIO`, `MENU`, `DENUNCIA_TIPO`, `DENUNCIA_ANIMAL`, `
 - **Protocolo.** A API gera um código legível, como `DEN-2026-7K3QX9`, sem 0/O nem 1/I/L para o cidadão não confundir, e o bot o devolve na hora.
 - **Consulta.** O cidadão digita o protocolo (maiúsculas, espaços e traços não importam) e recebe o tipo, o status e a data da última atualização. Não recebe endereço, descrição nem contato.
 - **Erros.** Se a API falhar, o bot avisa, mantém as respostas guardadas e deixa tentar de novo.
+
+<Demo />
 
 ## Stack
 

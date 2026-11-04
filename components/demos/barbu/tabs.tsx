@@ -111,7 +111,7 @@ export function HomeTab({
           {t.promoCta}
         </button>
       </div>
-      <h2 className="px-6 pt-7 pb-4 text-lg font-bold text-white">{t.servicesTitle}</h2>
+      <h3 className="px-6 pt-7 pb-4 text-lg font-bold text-white">{t.servicesTitle}</h3>
       <ul className="grid grid-cols-2 gap-4 px-6">
         {tiles.map(({ label, icon: Icon, onClick }) => (
           <li key={label}>
@@ -218,7 +218,7 @@ export function NotificationsTab({
   return (
     <div className={scroll}>
       <div className="flex items-center justify-between gap-3 px-6 pt-6 pb-4">
-        <h2 className="text-2xl font-bold text-white">{t.title}</h2>
+        <h3 className="text-2xl font-bold text-white">{t.title}</h3>
         <button
           type="button"
           onClick={onTest}

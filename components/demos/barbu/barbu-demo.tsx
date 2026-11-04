@@ -221,10 +221,8 @@ export default function BarbuDemo({ content }: { content: BarbuDemoContent }) {
   return (
     <div className="grid gap-8 lg:grid-cols-[auto_minmax(0,1fr)] lg:items-start">
       <div className="grid justify-items-center gap-4">
-        <p className="rounded-full border border-brand-line bg-brand-soft px-3 py-1 text-center font-mono text-meta text-brand">{content.page.badge}</p>
-
         {/* No celular do visitante o app ocupa a tela abaixo do header; a partir de 640px, moldura de celular. */}
-        <div className="-mx-4 h-[calc(100svh-var(--header-h)-var(--demo-banner-h))] w-[calc(100%+2rem)] overflow-hidden sm:mx-0 sm:h-[min(52rem,calc(100svh-var(--header-h)-7rem))] sm:min-h-[40rem] sm:w-[24.5rem] sm:rounded-[3rem] sm:border-[10px] sm:border-[#1c1d21] sm:shadow-card">
+        <div className="-mx-4 h-[calc(100svh-var(--header-h)-var(--demo-reserve))] w-[calc(100%+2rem)] overflow-hidden sm:mx-0 sm:h-[min(52rem,calc(100svh-var(--header-h)-7rem))] sm:min-h-[40rem] sm:w-[24.5rem] sm:rounded-[3rem] sm:border-[10px] sm:border-[#1c1d21] sm:shadow-card">
           <div className={`flex h-full flex-col ${c.bg}`}>
             <div aria-hidden="true" className="hidden h-9 shrink-0 items-center justify-between px-7 pt-1 text-xs font-semibold text-white sm:flex">
               <span>{time}</span>

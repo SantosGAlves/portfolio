@@ -26,14 +26,14 @@ export const meta = {
   tier: "secondary",        // "featured" = destaque (o 1º em largura total) | "secondary" = card menor
   page: true,               // false = sem estudo de caso; o card leva ao repositório
   repo: "https://github.com/...", // opcional: link "Código no GitHub"
-  privateCode: "...",       // opcional: nota de código privado no lugar do link (caso e página da demo)
+  privateCode: "...",       // opcional: nota de código privado no lugar do link, no topo do caso
   live: "https://...",      // opcional: botão "Testar ao vivo" no topo do caso (nova aba)
   liveEmbed: "https://...", // opcional: abre a demo numa janela dentro do caso (iframe com câmera);
                             // só se o site permitir iframe (sem X-Frame-Options nem frame-ancestors)
   liveExternal: "...",      // opcional: texto do link para a versão externa (ex.: "Abrir a versão do IFSP")
   liveIntro: "...",         // opcional: frases de abertura da janela
-  demo: "demandas",         // opcional: demo dentro do site (/demos/demandas), botão "Abrir demo"
-  demoNote: "...",          // opcional: nota curta sob os botões de demo
+  demo: "demandas",         // opcional: demo do site; aparece onde o texto tiver <Demo /> (seção "Experimente")
+  demoNote: "...",          // opcional: nota curta sob o botão da demonstração ao vivo (live)
   status: "shipped",        // "shipped" | "in-progress" | "planned" (card sem página)
   art: "automation",        // "battery" | "librasflow" | "automation" | "kanban" | "booking" | "planned"
   title: "Nome do projeto",
@@ -112,6 +112,7 @@ Outros blocos disponíveis:
 <DataTable caption="Legenda" head={["Coluna", "Valor"]} rows={[["Linha", "1"]]} highlight={0} />
 
 <Signature />   {/* demonstração interativa do agente (texto em site.ts) */}
+<Demo />        {/* seção "Experimente" com a demo de meta.demo; padrão: depois da arquitetura, antes de Stack */}
 ```
 
 3. (Opcional) Crie `content/en/projects/<slug>.mdx` com o mesmo `order`, `tier`, `page`,

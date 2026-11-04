@@ -1,4 +1,6 @@
-// Tipos do conteúdo da demo da plataforma de demandas (/demos/demandas).
+import type { DemoSectionText } from "./section-types"
+
+// Tipos do conteúdo da demo da plataforma de demandas (seção "Experimente" do caso).
 // Os textos ficam em content/<idioma>/demos/demandas.ts; a lógica, em components/demos/demandas.
 
 export const sectorIds = ["ti", "rh", "financeiro", "comercial", "diretoria"] as const
@@ -58,18 +60,7 @@ export type EmailTemplate = {
 export type DemandasDemoContent = {
   /** Locale do Intl para datas. */
   dateLocale: string
-  seo: { title: string; description: string }
-  page: {
-    banner: string
-    back: string
-    eyebrow: string
-    title: string
-    intro: string
-    repoLink: string
-    /** O que é real e o que é simulado. */
-    notesTitle: string
-    notes: string[]
-  }
+  section: DemoSectionText
   brand: string
   sectors: Record<SectorId, string>
   priorities: Record<Priority, string>

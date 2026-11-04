@@ -6,19 +6,10 @@ import type { DemandasDemoContent } from "@/content/demos/demandas-types"
 
 export const demandas: DemandasDemoContent = {
   dateLocale: "en-US",
-  seo: {
-    title: "Demo: Request Board",
-    description:
-      "A recreation of the internal request platform's interface: Kanban with SLA, roles with permissions and the events n8n turns into emails. Fictional data, no database.",
-  },
-  page: {
-    banner: "Demo with fictional data · no database",
-    back: "Back to the case study",
-    eyebrow: "Demo · Request management platform",
-    title: "Request Board",
+  section: {
+    badge: "Demo with fictional data · no database",
     intro:
       "A recreation of the interface of the Flask, Supabase and n8n system. Open a ticket, drag the cards, switch roles and see, in the automations panel, the event the real system would send to n8n.",
-    repoLink: "View code on GitHub",
     notesTitle: "What matches the real system and what is simulated",
     notes: [
       "Same as the real system: the permission rules, the SLA calculation, the handling time and the format of the events sent to n8n.",

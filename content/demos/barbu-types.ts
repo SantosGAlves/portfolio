@@ -1,4 +1,6 @@
-// Tipos do conteúdo da demo do Barbú (/demos/barbu). Textos em content/<idioma>/demos/barbu.ts.
+import type { DemoSectionText } from "./section-types"
+
+// Tipos do conteúdo da demo do Barbú (seção "Experimente" do caso). Textos em content/<idioma>/demos/barbu.ts.
 // Dados iguais aos do app (Tela_Home_Inicial/lib/models/service_model.dart); pessoas e contatos fictícios.
 
 export const barbuServiceIds = ["corte", "barba", "combo"] as const
@@ -9,19 +11,7 @@ export type BarbuNoticeType = "booking" | "promo" | "info"
 export type BarbuDemoContent = {
   /** Locale do Intl para datas (pt-BR, en-US). */
   dateLocale: string
-  seo: { title: string; description: string }
-  page: {
-    banner: string
-    back: string
-    eyebrow: string
-    title: string
-    intro: string
-    repoLink: string
-    /** Selo ao lado do celular. */
-    badge: string
-    notesTitle: string
-    notes: string[]
-  }
+  section: DemoSectionText
   /** Rótulo da região do protótipo para leitores de tela. */
   frameLabel: string
   splash: { brand: string; loading: string }
