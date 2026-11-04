@@ -13,6 +13,10 @@ const nextConfig: NextConfig = {
   cacheComponents: true,
   partialPrefetching: true,
   poweredByHeader: false,
+  // Só no `next dev`: o servidor de desenvolvimento bloqueia o JavaScript de dev pedido por outra origem.
+  // Com `-H 0.0.0.0`, abrir pelo IP da máquina (ex.: no celular, na rede local) é outra origem, e a página
+  // fica sem JavaScript. 192.168.15.13 é o IP desta máquina; o curinga cobre a troca de IP pelo DHCP.
+  allowedDevOrigins: ["192.168.15.13", "192.168.*.*"],
   async redirects() {
     return Object.entries(movedDemos).flatMap(([demo, project]) => [
       { source: `/demos/${demo}`, destination: `/projetos/${project}#experimente`, permanent: true },

@@ -10,6 +10,8 @@ import { useEffect, useRef, useState, type ReactNode } from "react"
 
 export type LiveFrameText = {
   start: string
+  /** Dica sob o botão (o site embutido ainda pede um clique para ligar a câmera). */
+  hint?: string
   privacy: string
   stop: string
   open: string
@@ -26,6 +28,7 @@ export function LiveFrame({
   preview,
   startClassName,
   stopClassName,
+  cropClassName = "inset-y-0 h-full",
 }: {
   embed: string
   href: string
@@ -34,6 +37,11 @@ export function LiveFrame({
   preview: ReactNode
   startClassName: string
   stopClassName: string
+  /**
+   * Posição e altura do iframe: para esconder o cabeçalho fixo do site embutido, o iframe sobe pela altura
+   * dele e cresce na mesma medida (a caixa tem overflow hidden).
+   */
+  cropClassName?: string
 }) {
   const [on, setOn] = useState(false)
   const [loaded, setLoaded] = useState(false)
@@ -85,7 +93,8 @@ export function LiveFrame({
         </div>
 
         {/* No celular: a tela sob o header (menos --demo-reserve), para caber a câmera e a letra reconhecida. */}
-        <div className="relative h-[max(30rem,calc(100svh-var(--header-h)-var(--demo-reserve)-2.75rem))] bg-bg-deep sm:h-[min(44rem,calc(100svh-var(--header-h)-6rem))] sm:min-h-[34rem]">
+        {/* @container: o corte do cabeçalho do site embutido depende da largura do iframe, não da tela. */}
+        <div className="@container relative h-[max(30rem,calc(100svh-var(--header-h)-var(--demo-reserve)-2.75rem))] overflow-hidden bg-bg-deep sm:h-[min(44rem,calc(100svh-var(--header-h)-6rem))] sm:min-h-[34rem]">
           {on ? (
             <>
               {!loaded ? (
@@ -99,7 +108,7 @@ export function LiveFrame({
                 title={text.frameTitle}
                 allow="camera; fullscreen"
                 onLoad={() => setLoaded(true)}
-                className="absolute inset-0 size-full border-0"
+                className={`absolute inset-x-0 w-full border-0 ${cropClassName}`}
               />
             </>
           ) : (
@@ -112,6 +121,7 @@ export function LiveFrame({
                 </svg>
                 {text.start}
               </button>
+              {text.hint ? <p className="-mt-2 text-center text-small font-semibold text-foreground">{text.hint}</p> : null}
               <p className="max-w-[36ch] text-center text-small text-muted-foreground">{text.privacy}</p>
             </div>
           )}

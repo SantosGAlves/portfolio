@@ -248,9 +248,10 @@ export const site: SiteContent = {
     fallbackNotice: "This case study is only available in Portuguese for now.",
     illustrativeNotice: "Draft text. Parts marked [CONFIRMAR] are still under review; sample data is illustrative.",
     video: { play: "Play", pause: "Pause" },
-    tryIt: { id: "try-it", title: "Try it", loading: "Loading the demo…", link: "Try it live" },
+    tryIt: { id: "try-it", title: "Try it", loading: "Loading the demo…", load: "Load the demo", error: "The demo couldn't load.", retry: "Try again", link: "Try it live" },
     liveFrame: {
-      start: "Try it with your camera",
+      start: "Open live demo",
+      hint: "Then click Ativar câmera",
       privacy: "Runs in your browser: no image leaves your computer.",
       stop: "Stop",
       open: "Open in a new tab",

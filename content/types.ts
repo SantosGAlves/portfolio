@@ -150,9 +150,9 @@ export type SiteContent = {
     video: { play: string; pause: string }
     /** Seção da demo dentro do caso (<Demo /> no MDX). `id` = âncora (/projetos/<slug>#experimente). */
     /** `link` = atalho no topo do caso até a versão embutida (meta.liveEmbed). */
-    tryIt: { id: string; title: string; loading: string; link: string }
+    tryIt: { id: string; title: string; loading: string; load: string; error: string; retry: string; link: string }
     /** Moldura de navegador da versão pública (meta.liveEmbed). {titulo} = título do projeto. */
-    liveFrame: { start: string; privacy: string; stop: string; open: string; loading: string; frameTitle: string }
+    liveFrame: { start: string; hint: string; privacy: string; stop: string; open: string; loading: string; frameTitle: string }
   }
   /** Ordem dos links do header (seções da página inicial). */
   nav: SectionKey[]

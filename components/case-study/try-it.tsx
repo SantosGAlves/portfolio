@@ -78,15 +78,11 @@ export function TryIt({ slug, locale }: { slug: DemoSlug; locale: Locale }) {
       }
     >
       <LazyDemo
-        {...({ slug, content: demo } as Parameters<typeof LazyDemo>[0])}
-        fallback={
-          <>
-            <Skeleton />
-            <p role="status" className="sr-only">
-              {tryIt.loading}
-            </p>
-          </>
-        }
+        slug={slug}
+        content={demo}
+        fallback={<Skeleton />}
+        text={{ load: tryIt.load, loading: tryIt.loading, error: tryIt.error, retry: tryIt.retry }}
+        buttonClassName={buttonVariants({ variant: "outline" })}
       />
     </TryItShell>
   )
@@ -114,6 +110,10 @@ export function LiveTryIt({
   const text = caseStudy.liveFrame
 
   return (
+  // librasflow.ifsp.dev: cabeçalho fixo de 60 px até 880 px de largura e 75 px acima disso (menu e botão do
+  // GitHub aparecem); medido em 04/11/2026. O iframe sobe por essa altura e cresce na mesma medida.
+  const crop =
+    "-top-[60px] h-[calc(100%+60px)] @min-[881px]:-top-[75px] @min-[881px]:h-[calc(100%+75px)]"
     <TryItShell locale={locale} intro={intro} notes={note ? <p className="text-small text-subtle">{note}</p> : undefined}>
       <LiveFrame
         embed={embed}
@@ -123,6 +123,7 @@ export function LiveTryIt({
           start: text.start,
           privacy: text.privacy,
           stop: text.stop,
+          hint: text.hint,
           open: text.open,
           opensInNewTab: ui.opensInNewTab,
           loading: text.loading,
@@ -142,5 +143,6 @@ export function LiveTryIt({
         stopClassName={buttonVariants({ variant: "outline" })}
       />
     </TryItShell>
+        cropClassName={crop}
   )
 }

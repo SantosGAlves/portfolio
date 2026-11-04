@@ -250,9 +250,10 @@ export const site: SiteContent = {
     illustrativeNotice:
       "Texto provisório. Trechos marcados com [CONFIRMAR] ainda serão revisados; dados de exemplo são ilustrativos.",
     video: { play: "Reproduzir", pause: "Pausar" },
-    tryIt: { id: "experimente", title: "Experimente", loading: "Carregando a demo…", link: "Testar ao vivo" },
+    tryIt: { id: "experimente", title: "Experimente", loading: "Carregando a demo…", load: "Carregar a demo", error: "Não deu para carregar a demo.", retry: "Tentar de novo", link: "Testar ao vivo" },
     liveFrame: {
-      start: "Testar com a câmera",
+      start: "Abrir demo ao vivo",
+      hint: "Depois, clique em Ativar câmera",
       privacy: "Roda no seu navegador: nenhuma imagem sai do seu computador.",
       stop: "Encerrar",
       open: "Abrir em nova aba",
