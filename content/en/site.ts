@@ -1,7 +1,6 @@
 import type { SiteContent } from "@/content/types"
 
 // English mirror of content/pt-BR/site.ts (same types).
-// [REVISAR] marks lines where the translation needs Gustavo's review.
 // [CONFIRMAR] marks missing real data.
 export const site: SiteContent = {
   locale: "en",
@@ -34,7 +33,7 @@ export const site: SiteContent = {
     lede: "I build software, mostly back-end, and I like turning manual processes into systems that run on their own and call a person when they need one. Right now I build AI agents that query databases, n8n automations and the systems behind them: APIs, dashboards and authentication.",
     ctaProjects: "See projects",
     facts: [
-      { label: "Now", value: "Automation & Innovation Intern II · Gaudium" }, // [REVISAR] official title in English
+      { label: "Now", value: "Automation & Innovation Intern II · Gaudium" },
       {
         label: "Education",
         value: "Technology Degree (Tecnólogo) in Systems Analysis and Development · IFSP Jacareí · Dec 2026",
@@ -184,7 +183,7 @@ export const site: SiteContent = {
     items: [
       {
         company: "Gaudium",
-        role: "Automation & Innovation Intern II", // [REVISAR] official title in English
+        role: "Automation & Innovation Intern II",
         period: "Jul 2026 – present",
         tags: ["internship · under NDA"],
         // NDA: general descriptions only; no clients, partners or case study links.
@@ -198,7 +197,7 @@ export const site: SiteContent = {
       },
       {
         company: "Hunt Sales",
-        role: "Development & Automation Intern", // [REVISAR] official title in English
+        role: "Development & Automation Intern",
         period: "Aug 2025 – Jun 2026",
         tags: ["internship"],
         context:
@@ -293,7 +292,7 @@ export const site: SiteContent = {
     ],
   },
   contact: {
-    intro: "I'm open to new opportunities. Email is the fastest way to reach me.",
+    intro: "I'm open to new opportunities. I reply quickly by email or WhatsApp.",
     emailLabel: "Email",
     copyEmail: "Copy email",
     whatsapp: "Chat on WhatsApp",

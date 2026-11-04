@@ -287,7 +287,7 @@ export const site: SiteContent = {
     ],
   },
   contact: {
-    intro: "Estou aberto a novas oportunidades. O caminho mais rápido é o e-mail.",
+    intro: "Estou aberto a novas oportunidades. Respondo rápido por e-mail ou WhatsApp.",
     emailLabel: "E-mail",
     copyEmail: "Copiar e-mail",
     whatsapp: "Conversar no WhatsApp",
