@@ -67,18 +67,40 @@ export function CaseStudyPage({ locale, slug }: { locale: Locale; slug: string }
         <p className="eyebrow">{meta.kind}</p>
         <h1 className="text-title">{meta.title}</h1>
         <p className="max-w-[60ch] text-role font-normal text-muted-foreground">{meta.summary}</p>
-        {meta.repo ? (
-          <a
-            href={meta.repo}
-            target="_blank"
-            rel="noopener noreferrer"
-            lang={fallback ? locale : undefined}
-            className="inline-flex min-h-11 items-center gap-2 justify-self-start rounded-sm text-small font-semibold text-brand hover:underline hover:underline-offset-4"
-          >
-            {projects.repoLink}
-            <span aria-hidden="true">↗</span>
-            <span className="sr-only">{ui.opensInNewTab}</span>
-          </a>
+        {meta.live || meta.repo ? (
+          <div className="grid gap-3">
+            <div className="flex flex-wrap items-center gap-x-6 gap-y-3">
+              {meta.live ? (
+                <a
+                  href={meta.live}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  lang={fallback ? locale : undefined}
+                  className={buttonVariants()}
+                >
+                  {projects.liveLink}
+                  <span aria-hidden="true">↗</span>
+                  <span className="sr-only">{ui.opensInNewTab}</span>
+                </a>
+              ) : null}
+              {meta.repo ? (
+                <a
+                  href={meta.repo}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  lang={fallback ? locale : undefined}
+                  className={`inline-flex min-h-11 items-center gap-2 rounded-sm text-small font-semibold hover:underline hover:underline-offset-4 ${
+                    meta.live ? "text-foreground" : "text-brand"
+                  }`}
+                >
+                  {projects.repoLink}
+                  <span aria-hidden="true">↗</span>
+                  <span className="sr-only">{ui.opensInNewTab}</span>
+                </a>
+              ) : null}
+            </div>
+            {meta.live && meta.liveNote ? <p className="max-w-[60ch] text-small text-subtle">{meta.liveNote}</p> : null}
+          </div>
         ) : null}
       </header>
 

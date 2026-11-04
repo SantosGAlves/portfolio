@@ -99,6 +99,8 @@ export type SiteContent = {
     secondaryTitle: string
     /** Link para o repositório de um projeto. */
     repoLink: string
+    /** Botão da demonstração pública ao vivo, no estudo de caso. */
+    liveLink: string
     /** Lista compacta de repositórios menores, sem card. */
     more: {
       title: string

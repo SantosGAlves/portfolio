@@ -22,6 +22,10 @@ export const projectMetaSchema = z.object({
   page: z.boolean().default(true),
   /** Repositório público (link "Código no GitHub"). */
   repo: z.string().url().optional(),
+  /** Demonstração pública ao vivo (botão "Testar ao vivo" no estudo de caso, abre em nova aba). */
+  live: z.string().url().optional(),
+  /** Nota curta sob o botão ao vivo (ex.: diferença entre a demo e o que o estudo mede). */
+  liveNote: z.string().optional(),
   /** planned = card "em construção", sem página de estudo de caso. */
   status: z.enum(projectStatuses),
   /** Composição abstrata do card (components/art). */
@@ -76,4 +80,4 @@ export type ProjectArt = (typeof projectArts)[number]
 export type ProjectTier = (typeof projectTiers)[number]
 
 /** Campos que precisam ser iguais nos dois idiomas. */
-export const sharedProjectFields = ["order", "tier", "page", "repo", "status", "art", "stack"] as const
+export const sharedProjectFields = ["order", "tier", "page", "repo", "live", "status", "art", "stack"] as const

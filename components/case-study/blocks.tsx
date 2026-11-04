@@ -162,30 +162,109 @@ export function Gallery({ children }: { children: ReactNode }) {
   return <div className="my-10 grid gap-x-5 gap-y-7 sm:grid-cols-2 lg:-mx-24">{children}</div>
 }
 
+// gallery = dentro de <Gallery>; column = sozinha, na coluna de texto;
+// wide = sozinha, passando um pouco da coluna (diagramas largos).
+const shotLayouts = {
+  gallery: { figure: "", sizes: "(min-width: 1024px) 456px, (min-width: 640px) 50vw, 100vw" },
+  column: { figure: "my-10", sizes: "(min-width: 768px) 736px, 100vw" },
+  wide: { figure: "my-10 lg:-mx-24", sizes: "(min-width: 1024px) 928px, 100vw" },
+}
+
 export function Shot({
   src,
   alt,
   width,
   height,
   caption,
+  layout = "gallery",
+  minWidth,
 }: {
   src: string
   alt: string
   width: number
   height: number
   caption?: string
+  layout?: keyof typeof shotLayouts
+  /**
+   * Largura mínima em px para figuras com texto miúdo (diagramas, matrizes):
+   * abaixo dela, a figura rola na horizontal dentro do bloco, sem rolar a página.
+   */
+  minWidth?: number
+}) {
+  const image = (
+    <Image
+      src={src}
+      alt={alt}
+      width={width}
+      height={height}
+      sizes={shotLayouts[layout].sizes}
+      className="h-auto w-full rounded-lg border border-line"
+      style={minWidth ? { minWidth } : undefined}
+    />
+  )
+  return (
+    <figure className={`grid content-start gap-2.5 ${shotLayouts[layout].figure}`}>
+      {minWidth ? (
+        // Foco pelo teclado para poder rolar com as setas.
+        <div tabIndex={0} role="group" aria-label={caption ?? alt} className="overflow-x-auto rounded-lg">
+          {image}
+        </div>
+      ) : (
+        image
+      )}
+      {caption ? <figcaption className="text-small text-muted-foreground">{caption}</figcaption> : null}
+    </figure>
+  )
+}
+
+/**
+ * Tabela de dados pequena (o MDX daqui não tem tabelas em Markdown).
+ * `highlight` = índice da linha em destaque (ex.: o valor adotado).
+ */
+export function DataTable({
+  caption,
+  head,
+  rows,
+  highlight,
+}: {
+  caption?: string
+  head: string[]
+  rows: string[][]
+  highlight?: number
 }) {
   return (
-    <figure className="grid content-start gap-2.5">
-      <Image
-        src={src}
-        alt={alt}
-        width={width}
-        height={height}
-        sizes="(min-width: 1024px) 456px, (min-width: 640px) 50vw, 100vw"
-        className="h-auto w-full rounded-lg border border-line"
-      />
-      {caption ? <figcaption className="text-small text-muted-foreground">{caption}</figcaption> : null}
+    <figure className="my-8 grid gap-3">
+      <div className="overflow-x-auto rounded-xl border border-line">
+        <table className="w-full border-collapse text-left text-small">
+          <thead className="bg-surface-2">
+            <tr>
+              {head.map((cell) => (
+                <th key={cell} scope="col" className="px-4 py-2.5 font-mono text-meta font-normal text-subtle">
+                  {cell}
+                </th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {rows.map((row, i) => (
+              <tr key={row.join("|")} className={`border-t border-line ${i === highlight ? "bg-brand-soft" : ""}`}>
+                {row.map((cell, j) =>
+                  j === 0 ? (
+                    <th key={j} scope="row" className="px-4 py-2.5 font-semibold text-foreground">
+                      {cell}
+                    </th>
+                  ) : (
+                    <td key={j} className="px-4 py-2.5 text-muted-foreground">
+                      {cell}
+                    </td>
+                  )
+                )}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      {caption ? <figcaption className="font-mono text-meta text-subtle">{caption}</figcaption> : null}
     </figure>
   )
 }

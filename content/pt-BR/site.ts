@@ -114,6 +114,7 @@ export const site: SiteContent = {
     status: { shipped: "entregue", "in-progress": "em andamento", planned: "em construção" },
     secondaryTitle: "Outros projetos",
     repoLink: "Código no GitHub",
+    liveLink: "Testar ao vivo (usa a câmera)",
     more: {
       title: "Mais no GitHub",
       items: [

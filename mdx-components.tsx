@@ -1,6 +1,6 @@
 import type { MDXComponents } from "mdx/types"
 import type { ComponentProps } from "react"
-import { Chat, ChatNote, Decision, Flow, Gallery, Message, Metric, Metrics, Shot } from "@/components/case-study/blocks"
+import { Chat, ChatNote, DataTable, Decision, Flow, Gallery, Message, Metric, Metrics, Shot } from "@/components/case-study/blocks"
 
 // Estilo do texto dos estudos de caso (content/<idioma>/projects/*.mdx)
 // e os blocos que podem ser usados neles sem import.
@@ -52,6 +52,7 @@ const components: MDXComponents = {
   ChatNote,
   Gallery,
   Shot,
+  DataTable,
 }
 
 export function useMDXComponents(): MDXComponents {
