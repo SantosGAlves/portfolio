@@ -8,7 +8,7 @@ export const meta = {
   tagline: "A catalog of cars and chargers with a charging simulator, and an agent that does the same math in the conversation.",
   kind: "AI agent + management system",
   summary:
-    "The battery agent's pattern applied to another niche: a catalog of vehicles and multi-output chargers, a charging time simulator, a real-time multi-tenant dashboard and business rules in n8n.",
+    "For a company that sells EV chargers: the dashboard keeps the database of cars and products that the AI agent queries to tell, in the conversation, how long the customer's car takes to charge with each one.",
   role: "Owner of the system at Hunt Sales",
   period: "2026 · Hunt Sales",
   stack: ["Supabase", "n8n", "Node.js", "Express", "JavaScript"],
@@ -16,11 +16,11 @@ export const meta = {
   tldr: [
     {
       label: "Problem",
-      text: "A company selling electric vehicle charging solutions needed to answer how long each car takes to charge on each product, and that depends on technical data from both sides.",
+      text: "A company that sells electric vehicle chargers, mainly portable chargers with swappable plugs and a wallbox, needed to tell buyers how long their car takes to charge with each product. The answer depends on technical data from the car and the charger.",
     },
     {
       label: "Solution",
-      text: "The same pattern as the battery agent: a database of vehicles and chargers, a management dashboard with a charging simulator, and an agent that does the same calculation in the conversation.",
+      text: "The same pattern as the battery agent: a database of vehicles and chargers, a management dashboard with a charging simulator, and an AI agent that queries that database and does the same calculation in the conversation, which helps close the sale.",
     },
     {
       label: "Outcome",
@@ -33,9 +33,9 @@ export const meta = {
 
 ## Context and problem
 
-After the [sales agent for the battery store](/en/projects/agente-baterias), the model was replicated for a company that sells electric vehicle charging solutions, also a Hunt Sales client.
+After the [sales agent for the battery store](/en/projects/agente-baterias), the model was replicated for a company that sells electric vehicle chargers, also a Hunt Sales client. The catalog is mainly portable chargers with swappable plugs and a wallbox.
 
-The question the end customer asks before buying is how long their car takes to charge. The answer depends on both sides: the car's battery capacity and charging limit, and the power of each charger output. One charger can have several outputs with different power ratings.
+The question buyers ask before closing is how long their car takes to charge. The answer depends on both sides: the car's battery capacity and charging limit, and the power of each charger output. The dashboard feeds the database that the AI agent queries to answer this in the conversation, car by car and product by product, which helps close the sale.
 
 ## My role
 
@@ -54,8 +54,8 @@ After the battery agent's results, I became responsible for automations and simi
 />
 
 - **Vehicles** with battery capacity (kWh) and alternating current charging limit (kW).
-- **Products with several outputs:** one charger can have several plugs with different power ratings (a product → outputs relation, with cascading deletes).
-- **Charging simulator:** for the chosen vehicle, it calculates the time on each charger from the technical bottleneck, `time (h) = battery (kWh) ÷ min(car's AC limit, plug power)`. The agent does the same calculation in the conversation, using AC and DC charging data, so the customer gets an idea before buying.
+- **Products with several outputs:** one charger can have several outputs with different power ratings. The example is the portable charger with swappable 10 A, 16 A, 20 A and 32 A plugs: each plug is an output with its own power (a product → outputs relation, with cascading deletes).
+- **Charging simulator:** for the chosen vehicle, it calculates the time on each charger from the technical bottleneck, `time (h) = battery (kWh) ÷ min(car's AC limit, plug power)`. The agent does the same calculation in the conversation and also gave the DC fast-charging time, so the customer gets an idea before buying.
 - **Multi-tenant:** the dashboard checks that the company is active before loading data, and every query is filtered by company.
 - **Real time:** Supabase Realtime updates the screen when data changes, without reloading.
 - **Business rules in n8n:** writes go through an n8n webhook, which centralizes validation before reaching the database.
@@ -71,7 +71,7 @@ After the battery agent's results, I became responsible for automations and simi
 ## Decisions and trade-offs
 
 <Decision title="The bottleneck sets the time">
-  The power that actually charges the car is the lower of the car's AC limit and the charger output. That is why the simulator shows the time per output, not per product: on a charger with two outputs, the stronger one only helps if the car accepts that power.
+  The power that actually charges the car is the lower of the car's AC limit and the charger output. That is why the simulator shows the time per output, not per product: on the portable charger with swappable plugs, the 32 A plug (≈ 7 kW) only helps if the car accepts that power. On a car limited to 3.7 kW, the 20 A and 32 A plugs give the same time.
 </Decision>
 
 <Decision title="Business rules in one place">

@@ -5,7 +5,7 @@ import { evCars, evChargers, type CarregadoresDemoContent, type EvCarId } from "
 import { chargeTime, fill, splitHours } from "./logic"
 
 // Simulador de recarga: o visitante escolhe um carro e vê o tempo de 0 a 100% em cada saída de cada
-// carregador, pela regra do painel. As barras são proporcionais ao tempo (a mais longa ocupa tudo);
+// carregador (no portátil com plugues trocáveis, cada plugue é uma saída), pela regra do painel. As barras são proporcionais ao tempo (a mais longa ocupa tudo);
 // as saídas mais rápidas (pode haver empate, quando o limite é o do carro) ficam em verde.
 export default function CarregadoresDemo({ content: c }: { content: CarregadoresDemoContent }) {
   const [carId, setCarId] = useState<EvCarId>("seda")
@@ -15,7 +15,7 @@ export default function CarregadoresDemo({ content: c }: { content: Carregadores
 
   const rows = evChargers.map((charger) => ({
     charger,
-    outputs: charger.outputs.map((kw, i) => ({ n: i + 1, kw, ...chargeTime(car.batteryKwh, car.acLimitKw, kw) })),
+    outputs: charger.outputs.map((o, i) => ({ n: i + 1, ...o, ...chargeTime(car.batteryKwh, car.acLimitKw, o.kw) })),
   }))
   const allHours = rows.flatMap((r) => r.outputs.map((o) => o.hours))
   const longest = Math.max(...allHours)
@@ -69,13 +69,17 @@ export default function CarregadoresDemo({ content: c }: { content: Carregadores
             </p>
           </div>
 
+          {/* O portátil com plugues (4 saídas) ocupa a coluna da esquerda; os dois de uma saída ficam empilhados à direita. */}
           <ul className="grid gap-3 sm:grid-cols-2">
             {rows.map(({ charger, outputs }) => (
-              <li key={charger.id} className="grid content-start gap-3 rounded-xl border border-line bg-surface-2/40 p-4">
+              <li
+                key={charger.id}
+                className={`grid content-start gap-3 rounded-xl border border-line bg-surface-2/40 p-4 ${charger.plugs ? "sm:row-span-2" : ""}`}
+              >
                 <p className="flex items-baseline justify-between gap-3">
                   <span className="font-semibold text-foreground">{c.chargerNames[charger.id]}</span>
                   <span className="font-mono text-meta text-subtle">
-                    {outputs.length === 1 ? c.outputsCount.one : fill(c.outputsCount.other, { n: outputs.length })}
+                    {charger.plugs ? fill(c.outputsCount.plugs, { n: outputs.length }) : c.outputsCount.single}
                   </span>
                 </p>
                 <ul className="grid gap-3">
@@ -84,7 +88,12 @@ export default function CarregadoresDemo({ content: c }: { content: Carregadores
                     return (
                       <li key={o.n} className="grid gap-1.5">
                         <p className="flex flex-wrap items-baseline justify-between gap-x-3 gap-y-1">
-                          <span className="font-mono text-meta text-muted-foreground">{fill(c.output, { n: o.n, kw: nf.format(o.kw) })}</span>
+                          <span className="font-mono text-meta text-muted-foreground">
+                            {fill(o.amps ? (charger.plugs ? c.output.plug : c.output.amps) : c.output.power, {
+                              a: o.amps ?? "",
+                              kw: nf.format(o.kw),
+                            })}
+                          </span>
                           <span className={`font-semibold tabular-nums ${best ? "text-brand" : "text-foreground"}`}>
                             {duration(o.hours)}
                             {best ? <span className="sr-only"> ({c.fastest})</span> : null}

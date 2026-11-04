@@ -261,6 +261,11 @@ Cada seção é uma marca da régua de progresso (`data-rail`, na ordem da pági
   Sales" (confirmado). O conteúdo saiu do caso das baterias, que
   ficou com uma linha e o link. Só fatos da fonte: veículos (kWh, limite AC), produtos com várias saídas,
   simulador, multiempresa, Realtime, gravações pelo webhook do n8n; stack Node.js/Express, HTML/CSS/JS, Supabase, n8n.
+  Propósito (confirmado pelo Gustavo): o cliente vende carregadores para veículos elétricos, principalmente portáteis
+  com plugues trocáveis e uma wallbox; o painel alimenta a base que o agente consulta para dizer, na conversa, em quanto
+  tempo o carro do cliente carrega com cada produto, o que ajuda na venda. "Várias saídas" = o portátil com plugues de
+  10 A, 16 A, 20 A e 32 A (cada plugue é uma saída). O agente também informava a recarga rápida em DC (não simulada).
+  Sem nome do cliente, site ou nomes reais de produtos.
 - Plataforma de demandas: o README fala em RLS, mas o código usa a chave de serviço e checa permissões
   no Flask. O caso descreve o que o código faz. Foi o "case técnico do processo seletivo em que fui aprovado"
   ("technical case from the hiring process I passed"), sem citar a empresa.
@@ -317,10 +322,12 @@ de terceiros.
   dentro do celular e, a partir de 1024px, num painel ao lado. Diferenças assumidas (nas notas da seção): ocupados
   aparecem riscados em vez de sumir e horários de hoje que já passaram ficam desativados.
 - Simulador de recarga (`components/demos/carregadores/`, caso `carregadores-ev`): o visitante escolhe um de 5 carros
-  fictícios (kWh e limite AC em `content/demos/carregadores-types.ts`) e vê o tempo de 0 a 100% em cada saída de
-  4 carregadores fictícios (1 ou 2 saídas), por `tempo (h) = bateria ÷ min(limite AC, potência da saída)`, com a
-  conta e "limitado pelo carro/carregador". As saídas mais rápidas (pode haver empate) ficam em verde. Começa no
-  sedã (AC de 11 kW), que mostra o gargalo: a saída de 22 kW não ajuda. Selo "Simulação com dados fictícios".
+  fictícios (kWh e limite AC de 3,7, 6,6, 7,4 e 11 kW, em `content/demos/carregadores-types.ts`) e vê o tempo de
+  0 a 100% em cada saída dos 3 tipos de produto, com nomes fictícios: portátil com plugues de 10 A (≈ 2,2 kW), 16 A
+  (≈ 3,5 kW), 20 A (≈ 4,4 kW) e 32 A (≈ 7 kW) em 220 V; portátil de 32 A com uma saída (≈ 7 kW); wallbox de 7,2 kW.
+  Regra: `tempo (h) = bateria ÷ min(limite AC, potência da saída)`, com a conta e "limitado pelo carro/carregador".
+  Só AC. As saídas mais rápidas (pode haver empate) ficam em verde. Começa no sedã (AC de 7,4 kW): a wallbox ganha
+  por pouco do plugue de 32 A. Selo "Simulação com dados fictícios".
 - Demo do Ajuda Animal (`components/demos/ajuda-animal/`): simulador da conversa com o bot, numa tela de chat escura
   e neutra (sem a identidade do WhatsApp), com o selo "Simulação com dados fictícios · sem WhatsApp, sem banco".
   `logic.ts` replica o fluxo do n8n: mesmos textos (sem emojis), roteador de etapas (as etapas da denúncia não
@@ -393,7 +400,6 @@ Chrome DevTools Protocol (`Emulation.setDeviceMetricsOverride` + `localStorage.t
 - CV em PDF (PT e EN): `[CONFIRMAR]` (os botões "Baixar CV" dão 404 até existirem `public/cv/gustavo-alves-dos-santos-cv.pdf`
   e `-cv-en.pdf`). Contato confirmado: e-mail, LinkedIn, GitHub e WhatsApp (`profile.links.whatsapp`, link wa.me,
   só no botão da seção de contato; o número nunca aparece escrito e não há telefone).
-- Cargos em inglês marcados `[REVISAR]` em `content/en/site.ts`.
 - 404 personalizada: com vários layouts raiz, o 404 padrão sai sem `lang`; resolver na Fase 3/4
   (`app/global-not-found.tsx`, ainda experimental no Next 16).
 - Imagem Open Graph: Fase 4.

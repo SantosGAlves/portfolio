@@ -10,8 +10,12 @@ export function CarregadoresSkeleton() {
       <div className="grid content-start gap-4 p-4 sm:p-5">
         <div className="h-12" />
         <div className="grid gap-3 sm:grid-cols-2">
-          {[0, 1, 2, 3].map((i) => (
-            <div key={i} className="h-40 animate-pulse rounded-xl border border-line bg-surface-2/40 motion-reduce:animate-none" />
+          {/* Mesma grade do simulador: o portátil com 4 plugues à esquerda, dois carregadores de uma saída à direita. */}
+          {[0, 1, 2].map((i) => (
+            <div
+              key={i}
+              className={`animate-pulse rounded-xl border border-line bg-surface-2/40 motion-reduce:animate-none ${i === 0 ? "h-[30rem] sm:row-span-2 sm:h-auto" : "h-32 sm:h-52"}`}
+            />
           ))}
         </div>
       </div>
