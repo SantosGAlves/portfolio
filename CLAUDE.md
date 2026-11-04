@@ -2,7 +2,9 @@
 
 # Portfólio de Gustavo Alves dos Santos
 
-Site pessoal para a vaga de estágio em GenAI do iFood (trilha AI Builder).
+Portfólio geral: projetos, experiência, formação e contato. Não é voltado a nenhuma vaga, empresa ou programa
+específico; textos, metadados, Open Graph, JSON-LD e READMEs não citam vaga nem processo seletivo em andamento.
+Indicador de disponibilidade do hero: "Aberto a novas oportunidades" / "Open to new opportunities".
 O processo segue `docs/brief.md` em fases (o `docs/` fica fora do git). Este arquivo registra
 as decisões já tomadas; mudar qualquer uma delas exige pedido explícito do Gustavo.
 

@@ -9,7 +9,7 @@ export const site: SiteContent = {
     name: "Gustavo Alves dos Santos",
     shortName: "Gustavo Alves",
     location: "São José dos Campos/SP",
-    availability: "Aberto a estágio em GenAI",
+    availability: "Aberto a novas oportunidades",
     email: "[CONFIRMAR]@email.com",
     links: {
       github: "https://github.com/SantosGAlves",
@@ -245,7 +245,7 @@ export const site: SiteContent = {
     },
   },
   contact: {
-    intro: "Estou aberto a estágio em GenAI. O caminho mais rápido é o e-mail.",
+    intro: "Estou aberto a novas oportunidades. O caminho mais rápido é o e-mail.",
     emailLabel: "E-mail",
     copyEmail: "Copiar e-mail",
     copied: "E-mail copiado",
