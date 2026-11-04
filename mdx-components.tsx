@@ -1,5 +1,6 @@
 import type { MDXComponents } from "mdx/types"
 import type { ComponentProps } from "react"
+import { Architecture } from "@/components/case-study/architecture"
 import { Chat, ChatNote, DataTable, Decision, Flow, Gallery, Message, Metric, Metrics, PaperFigure, Shot } from "@/components/case-study/blocks"
 
 // Estilo do texto dos estudos de caso (content/<idioma>/projects/*.mdx)
@@ -44,6 +45,7 @@ const components: MDXComponents = {
   blockquote: (props) => <blockquote className="my-6 border-l-2 border-brand pl-4 text-foreground" {...props} />,
   hr: () => <hr className="my-12 border-line" />,
   Flow,
+  Architecture,
   Decision,
   Metrics,
   Metric,

@@ -26,6 +26,7 @@ export const meta = {
   tier: "secondary",        // "featured" = destaque (o 1º em largura total) | "secondary" = card menor
   page: true,               // false = sem estudo de caso; o card leva ao repositório
   repo: "https://github.com/...", // opcional: link "Código no GitHub"
+  privateCode: "...",       // opcional: nota de código privado no lugar do link (caso e página da demo)
   live: "https://...",      // opcional: botão "Testar ao vivo" no topo do caso (nova aba)
   liveEmbed: "https://...", // opcional: abre a demo numa janela dentro do caso (iframe com câmera);
                             // só se o site permitir iframe (sem X-Frame-Options nem frame-ancestors)
@@ -50,6 +51,7 @@ export const meta = {
   media: {                  // opcional; arquivos em public/
     cover: { src: "/pasta/imagem.webp", alt: "...", width: 1540, height: 824, fit: "frame" }, // "frame" (tela) | "fill" (foto)
     video: { src: "/pasta/video.mp4", poster: "/pasta/poster.webp", width: 1280, height: 720, label: "...", caption: "..." },
+    // controls: true = vídeo longo: controles nativos, sem tocar sozinho, só baixa no play
   },
 }
 
@@ -63,6 +65,14 @@ export const meta = {
     { title: "Entrada", detail: "..." },
     { title: "Processamento", detail: "..." },
     { title: "Caminho alternativo", detail: "...", alt: true },
+  ]}
+/>
+
+<Architecture
+  link="HTTP + chave"
+  groups={[
+    { label: "Minha parte", mine: true, nodes: [{ title: "A" }, { title: "B" }], side: { title: "banco", under: 1, link: "lê e grava" } },
+    { label: "Sistema da equipe", nodes: [{ title: "API" }, { title: "Banco" }], side: { title: "Painel", under: 0, link: "JWT", dir: "up" } },
   ]}
 />
 

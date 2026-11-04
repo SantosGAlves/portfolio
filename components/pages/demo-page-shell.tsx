@@ -11,13 +11,14 @@ export type DemoPageText = {
   eyebrow: string
   title: string
   intro: string
-  repoLink: string
+  /** Texto do botão do repositório (só se o projeto tiver `repo`). */
+  repoLink?: string
   notesTitle: string
   notes: string[]
 }
 
 // Moldura das páginas /demos/<slug>: faixa fixa, link de volta ao caso, título,
-// "Ver código no GitHub", a demo e as notas sobre o que é real e o que é simulado.
+// "Ver código no GitHub" (ou a nota de código privado), a demo e as notas sobre o que é real e o que é simulado.
 // A faixa tem altura fixa (--demo-banner-h), para a demo poder ocupar o resto da tela no celular.
 export function DemoPageShell({ locale, slug, page, children }: { locale: Locale; slug: DemoSlug; page: DemoPageText; children: ReactNode }) {
   const { ui } = getContent(locale)
@@ -54,6 +55,8 @@ export function DemoPageShell({ locale, slug, page, children }: { locale: Locale
               <span aria-hidden="true">↗</span>
               <span className="sr-only">{ui.opensInNewTab}</span>
             </a>
+          ) : project?.meta.privateCode ? (
+            <p className="border-l-2 border-line-strong pl-3 text-small text-muted-foreground">{project.meta.privateCode}</p>
           ) : null}
         </header>
 

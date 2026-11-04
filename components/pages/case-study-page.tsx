@@ -69,7 +69,7 @@ export function CaseStudyPage({ locale, slug }: { locale: Locale; slug: string }
         <p className="eyebrow">{meta.kind}</p>
         <h1 className="text-title">{meta.title}</h1>
         <p className="max-w-[60ch] text-role font-normal text-muted-foreground">{meta.summary}</p>
-        {meta.live || meta.demo || meta.repo ? (
+        {meta.live || meta.demo || meta.repo || meta.privateCode ? (
           <div className="grid gap-3">
             <div className="flex flex-wrap items-center gap-x-6 gap-y-3">
               {meta.demo ? (
@@ -141,6 +141,9 @@ export function CaseStudyPage({ locale, slug }: { locale: Locale; slug: string }
               ) : null}
             </div>
             {(meta.live || meta.demo) && meta.demoNote ? <p className="max-w-[60ch] text-small text-subtle">{meta.demoNote}</p> : null}
+            {!meta.repo && meta.privateCode ? (
+              <p className="max-w-[60ch] border-l-2 border-line-strong pl-3 text-small text-muted-foreground">{meta.privateCode}</p>
+            ) : null}
           </div>
         ) : null}
       </header>
@@ -157,12 +160,32 @@ export function CaseStudyPage({ locale, slug }: { locale: Locale; slug: string }
       {video ? (
         // Vídeo de origem estreita (ex.: gravação de webcam) fica na largura da coluna de texto, sem esticar.
         <figure className={`mt-10 grid gap-3 ${video.width < 1000 ? "mx-auto w-full max-w-[46rem]" : ""}`}>
-          <LoopVideo
-            {...video}
-            playLabel={copy.video.play}
-            pauseLabel={copy.video.pause}
-            className="rounded-card border border-line bg-surface"
-          />
+          {video.controls ? (
+            // Vídeo longo: controles nativos e nada é baixado antes do play (preload="none").
+            <video
+              controls
+              playsInline
+              preload="none"
+              poster={video.poster}
+              width={video.width}
+              height={video.height}
+              aria-label={video.label}
+              className="block h-auto w-full rounded-card border border-line bg-surface"
+            >
+              <source src={video.src} type="video/mp4" />
+            </video>
+          ) : (
+            <LoopVideo
+              src={video.src}
+              poster={video.poster}
+              width={video.width}
+              height={video.height}
+              label={video.label}
+              playLabel={copy.video.play}
+              pauseLabel={copy.video.pause}
+              className="rounded-card border border-line bg-surface"
+            />
+          )}
           {video.caption ? (
             <figcaption lang={fallback ? contentLocale : undefined} className="font-mono text-meta text-subtle">
               {video.caption}

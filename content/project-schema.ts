@@ -22,6 +22,8 @@ export const projectMetaSchema = z.object({
   page: z.boolean().default(true),
   /** Repositório público (link "Código no GitHub"). */
   repo: z.string().url().optional(),
+  /** Código privado: nota no lugar do link do repositório (no caso e na página da demo). */
+  privateCode: z.string().optional(),
   /** Demonstração pública ao vivo (link em nova aba no estudo de caso). */
   live: z.string().url().optional(),
   /**
@@ -82,6 +84,11 @@ export const projectMetaSchema = z.object({
           /** Descrição do vídeo para leitores de tela. */
           label: z.string().min(1),
           caption: z.string().optional(),
+          /**
+           * true = vídeo longo: controles nativos, não toca sozinho e só baixa quando a pessoa der play.
+           * false (padrão) = sem som, em loop, toca quando entra na tela.
+           */
+          controls: z.boolean().default(false),
         })
         .optional(),
     })
