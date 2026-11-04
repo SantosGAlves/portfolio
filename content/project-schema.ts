@@ -4,7 +4,8 @@ import { z } from "zod"
 // Validados no build por lib/projects.ts: campo faltando ou errado derruba o build.
 
 export const projectStatuses = ["shipped", "in-progress", "planned"] as const
-export const projectArts = ["battery", "librasflow", "automation", "kanban", "booking", "planned"] as const
+/** Ilustrações dos cards (components/art/project-art.tsx), todas no mesmo estilo. */
+export const projectArts = ["agent", "hand", "kanban", "phone", "map", "charger", "planned"] as const
 export const projectTiers = ["featured", "secondary"] as const
 
 /** Arquivo em public/ (caminho começando com "/"). */
@@ -14,8 +15,8 @@ export const projectMetaSchema = z.object({
   /** Ordem na página inicial (menor primeiro). */
   order: z.number().int(),
   /**
-   * featured = destaque (o primeiro em largura total, os outros em duas colunas);
-   * secondary = card menor, sem imagem.
+   * featured = card com arte na grade de destaques (2 colunas, todos com o mesmo peso);
+   * secondary = linha na lista compacta "Outros projetos" (ano, título, uma frase, link).
    */
   tier: z.enum(projectTiers),
   /** false = sem página de estudo de caso: o card leva ao repositório. */
@@ -46,12 +47,18 @@ export const projectMetaSchema = z.object({
   /** Composição abstrata do card (components/art). */
   art: z.enum(projectArts),
   title: z.string().min(1),
+  /** Título no card, quando o do estudo de caso é longo (ex.: "Agente de IA + sistema de gestão"). */
+  shortTitle: z.string().min(1).optional(),
+  /** Uma frase no card (e na lista "Outros projetos"). Sem ela, o card usa `summary`. */
+  tagline: z.string().min(1).max(140).optional(),
   /** Rótulo curto em mono acima do título (ex.: "Agente de IA + sistema de gestão"). */
   kind: z.string().min(1),
-  /** Descrição do card: até duas linhas. */
+  /** Subtítulo do estudo de caso e descrição para buscadores e redes. */
   summary: z.string().min(1).max(220),
   role: z.string().min(1),
+  /** Começa pelo ano ("2026 · ...", "2025–2026 · ..."): o card mostra o trecho antes do " · ". */
   period: z.string().min(1),
+  /** Os 4 primeiros aparecem no card: ponha os mais representativos antes. */
   stack: z.array(z.string().min(1)),
   /** "Resumo em 30 s" no topo do estudo de caso. */
   tldr: z
@@ -59,20 +66,9 @@ export const projectMetaSchema = z.object({
     .default([]),
   /** Texto ainda provisório: mostra o aviso de "[CONFIRMAR]" no topo do estudo de caso. */
   draft: z.boolean().default(true),
-  /** Mídia real. Sem ela, card e estudo de caso usam a composição de `art`. */
+  /** Mídia real, só no estudo de caso (os cards usam sempre a arte de `art`). Sem vídeo, o caso usa a arte. */
   media: z
     .object({
-      /** Imagem do card na página inicial. */
-      cover: z
-        .object({
-          src: publicPath,
-          alt: z.string().min(1),
-          width: z.number().int(),
-          height: z.number().int(),
-          /** frame = captura de tela em moldura, cortada embaixo; fill = foto ocupando o card. */
-          fit: z.enum(["frame", "fill"]).default("frame"),
-        })
-        .optional(),
       /** Vídeo no topo do estudo de caso: sem som, em loop, carregado depois da página. */
       video: z
         .object({

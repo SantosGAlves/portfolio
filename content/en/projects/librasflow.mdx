@@ -2,7 +2,7 @@ export const meta = {
   order: 2,
   tier: "featured",
   status: "in-progress",
-  art: "librasflow",
+  art: "hand",
   repo: "https://github.com/SantosGAlves/LibrasFlow",
   live: "https://librasflow.ifsp.dev",
   liveEmbed: "https://librasflow.ifsp.dev/#palco-demo",
@@ -10,6 +10,7 @@ export const meta = {
     "The project's public version (in Portuguese), embedded here. Turn on the camera, show one hand and sign a letter of the manual alphabet: the ring around the letter closes when the recognition settles.",
   demoNote: "The public version runs in the browser with an MLP network; the numbers in this case study come from the Random Forest.",
   title: "LibrasFlow",
+  tagline: "Recognizes Libras manual alphabet letters through a webcam, with an evaluation that fixed a data leak.",
   kind: "Capstone project · computer vision",
   summary:
     "Recognizes 21 letters of the Libras manual alphabet through a webcam. The core of the project was evaluation: a 99.96% that hid a data leak became 97.0% and, on images from another source, 71.2%.",
@@ -32,13 +33,6 @@ export const meta = {
     },
   ],
   media: {
-    cover: {
-      src: "/librasflow/librasflow-card.webp",
-      alt: "Webcam frame with the hand's 21 landmarks drawn over the sign for the letter A; at the top, the phrase spelled so far: LIBR.",
-      width: 588,
-      height: 384,
-      fit: "fill",
-    },
     video: {
       src: "/librasflow/demo-librasflow.mp4",
       poster: "/librasflow/demo-librasflow-poster.webp",

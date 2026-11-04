@@ -107,9 +107,7 @@ export const site: SiteContent = {
     contact: { id: "contato", eyebrow: "Contato", title: "Vamos conversar", nav: "Contato" },
   },
   projects: {
-    intro: "Do problema ao sistema em produção. O principal é um agente de IA com o sistema de gestão por trás dele.",
-    caseStudyLink: "Ver estudo de caso",
-    caseStudyFallbackLink: "Ver estudo de caso",
+    intro: "Do problema ao sistema em produção: agentes de IA, automações e os sistemas por trás deles.",
     plannedLabel: "Próximo projeto",
     status: { shipped: "entregue", "in-progress": "em andamento", planned: "em construção" },
     secondaryTitle: "Outros projetos",
@@ -117,24 +115,23 @@ export const site: SiteContent = {
     liveLink: "Testar ao vivo (usa a câmera)",
     demoBadge: "demo interativa",
     more: {
-      title: "Mais no GitHub",
       items: [
         {
           title: "API de produtos em .NET 10",
+          year: "2026",
           text: "Web API de catálogo com Entity Framework Core, migrações, injeção de dependência e Swagger.",
-          stack: "C# · .NET 10 · EF Core · MySQL",
           href: "https://github.com/SantosGAlves/api-produtos-dotnet",
         },
         {
           title: "Cadastro com Streamlit e Azure",
+          year: "2025",
           text: "Cadastro de produtos com imagens no Azure Blob Storage e dados no Azure SQL.",
-          stack: "Python · Streamlit · Azure",
           href: "https://github.com/SantosGAlves/cadastro-produtos-streamlit-azure",
         },
         {
           title: "Concorrência em Java",
+          year: "2025",
           text: "O jantar dos filósofos em quatro versões: deadlock, hierarquia de recursos, semáforos e monitores.",
-          stack: "Java · threads",
           href: "https://github.com/SantosGAlves/prova-jantar-filosofos",
         },
       ],

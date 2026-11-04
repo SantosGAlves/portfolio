@@ -112,10 +112,7 @@ export const site: SiteContent = {
     contact: { id: "contact", eyebrow: "Contact", title: "Let's talk", nav: "Contact" },
   },
   projects: {
-    intro:
-      "From the problem to a system in production. The main one is an AI agent with the management system behind it.",
-    caseStudyLink: "Read the case study",
-    caseStudyFallbackLink: "Read the case study (in Portuguese)",
+    intro: "From the problem to a system in production: AI agents, automations and the systems behind them.",
     plannedLabel: "Next project",
     status: { shipped: "shipped", "in-progress": "in progress", planned: "coming soon" },
     secondaryTitle: "Other projects",
@@ -123,24 +120,23 @@ export const site: SiteContent = {
     liveLink: "Try it live (uses your camera)",
     demoBadge: "interactive demo",
     more: {
-      title: "More on GitHub",
       items: [
         {
           title: "Product API in .NET 10",
+          year: "2026",
           text: "Catalog Web API with Entity Framework Core, migrations, dependency injection and Swagger.",
-          stack: "C# · .NET 10 · EF Core · MySQL",
           href: "https://github.com/SantosGAlves/api-produtos-dotnet",
         },
         {
           title: "Streamlit and Azure catalog",
+          year: "2025",
           text: "Product catalog with images in Azure Blob Storage and data in Azure SQL.",
-          stack: "Python · Streamlit · Azure",
           href: "https://github.com/SantosGAlves/cadastro-produtos-streamlit-azure",
         },
         {
           title: "Concurrency in Java",
+          year: "2025",
           text: "The dining philosophers in four versions: deadlock, resource ordering, semaphores and monitors.",
-          stack: "Java · threads",
           href: "https://github.com/SantosGAlves/prova-jantar-filosofos",
         },
       ],

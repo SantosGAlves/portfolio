@@ -90,9 +90,7 @@ export type SiteContent = {
   sections: Record<SectionKey, SectionHeading>
   projects: {
     intro: string
-    caseStudyLink: string
     /** Link de um caso que só existe em português (versão EN). */
-    caseStudyFallbackLink: string
     plannedLabel: string
     status: Record<"shipped" | "in-progress" | "planned", string>
     /** Título do grupo de cards menores. */
@@ -104,9 +102,9 @@ export type SiteContent = {
     /** Selo discreto no card da home dos projetos com demo interativa. */
     demoBadge: string
     /** Lista compacta de repositórios menores, sem card. */
+    /** Repositórios menores na lista "Outros projetos" (depois dos projetos `secondary`). */
     more: {
-      title: string
-      items: Array<{ title: string; text: string; stack: string; href: string }>
+      items: Array<{ title: string; year: string; text: string; href: string }>
       allLink: string
     }
   }

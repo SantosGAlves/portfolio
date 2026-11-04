@@ -2,7 +2,7 @@ export const meta = {
   order: 2,
   tier: "featured",
   status: "in-progress",
-  art: "librasflow",
+  art: "hand",
   repo: "https://github.com/SantosGAlves/LibrasFlow",
   live: "https://librasflow.ifsp.dev",
   liveEmbed: "https://librasflow.ifsp.dev/#palco-demo",
@@ -10,6 +10,7 @@ export const meta = {
     "A versão pública do projeto, embutida aqui. Ative a câmera, mostre uma das mãos e faça uma letra do alfabeto manual: o anel em volta da letra fecha quando o reconhecimento se firma.",
   demoNote: "A versão pública roda no navegador, com uma rede MLP; os números deste estudo são do Random Forest.",
   title: "LibrasFlow",
+  tagline: "Reconhece letras do alfabeto manual de Libras pela webcam, com uma avaliação que corrigiu vazamento de dados.",
   kind: "TCC · visão computacional",
   summary:
     "Reconhece 21 letras do alfabeto manual de Libras pela webcam. O centro do TCC foi a avaliação: um 99,96% que escondia vazamento de dados virou 97,0% e, com imagens de outra fonte, 71,2%.",
@@ -32,13 +33,6 @@ export const meta = {
     },
   ],
   media: {
-    cover: {
-      src: "/librasflow/librasflow-card.webp",
-      alt: "Imagem da webcam com os 21 pontos da mão desenhados sobre o sinal da letra A; no topo, a frase formada até aqui: LIBR.",
-      width: 588,
-      height: 384,
-      fit: "fill",
-    },
     video: {
       src: "/librasflow/demo-librasflow.mp4",
       poster: "/librasflow/demo-librasflow-poster.webp",
