@@ -48,7 +48,8 @@ export default function CarregadoresDemo({ content: c }: { content: Carregadores
                     className="sr-only"
                   />
                   <span className={`text-small font-semibold ${checked ? "text-foreground" : "text-muted-foreground"}`}>{c.carNames[option.id]}</span>
-                  <span className="font-mono text-[0.75rem] text-subtle">
+                  {/* Sobre o fundo verde do carro escolhido, o cinza "subtle" não passa no AA. */}
+                  <span className={`font-mono text-[0.75rem] ${checked ? "text-muted-foreground" : "text-subtle"}`}>
                     {fill(c.carSpec, { bateria: nf.format(option.batteryKwh), ac: nf.format(option.acLimitKw) })}
                   </span>
                 </label>

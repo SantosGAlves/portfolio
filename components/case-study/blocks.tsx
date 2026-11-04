@@ -27,7 +27,10 @@ export function Flow({ steps, caption, altLabel = "/" }: { steps: FlowStep[]; ca
                     : "border-line bg-surface"
               }`}
             >
-              <span className="font-mono text-meta text-subtle">{String(i + 1).padStart(2, "0")}</span>
+              {/* Na etapa em destaque o fundo é verde: o cinza "subtle" ficava em 4,2:1 (abaixo do AA). */}
+              <span className={`font-mono text-meta ${step.accent ? "text-muted-foreground" : "text-subtle"}`}>
+                {String(i + 1).padStart(2, "0")}
+              </span>
               <span className={`text-small font-semibold ${step.accent ? "text-brand" : "text-foreground"}`}>{step.title}</span>
               {step.detail ? <span className="text-[0.8125rem] leading-snug text-muted-foreground">{step.detail}</span> : null}
             </div>

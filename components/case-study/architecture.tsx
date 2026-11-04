@@ -66,7 +66,7 @@ function Group({ group }: { group: ArchGroup }) {
               <>
                 <div
                   style={at(2 * i + 1, 2)}
-                  className={`flex items-center gap-2 pl-4 font-mono text-meta text-subtle lg:grid lg:justify-items-center lg:gap-0 lg:py-1 lg:pl-0 ${place}`}
+                  className={`flex items-center gap-2 pl-4 font-mono text-meta ${group.mine ? "text-muted-foreground" : "text-subtle"} lg:grid lg:justify-items-center lg:gap-0 lg:py-1 lg:pl-0 ${place}`}
                 >
                   <span aria-hidden="true">{side.dir === "up" ? "↑" : "↕"}</span>
                   <span>{side.link}</span>

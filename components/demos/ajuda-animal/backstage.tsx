@@ -130,7 +130,7 @@ function SessionTable({ before, after, changed }: { before: Session | null; afte
               {field}
               {isChanged ? <span className="sr-only"> ({changed})</span> : null}
             </dt>
-            <dd className={`break-words ${value === null ? "text-subtle" : "text-foreground"}`}>{value === null ? "null" : value}</dd>
+            <dd className={`break-words ${value === null ? (isChanged ? "text-muted-foreground" : "text-subtle") : "text-foreground"}`}>{value === null ? "null" : value}</dd>
           </div>
         )
       })}
