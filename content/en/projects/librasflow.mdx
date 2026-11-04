@@ -4,26 +4,28 @@ export const meta = {
   status: "in-progress",
   art: "librasflow",
   repo: "https://github.com/SantosGAlves/LibrasFlow",
+  live: "https://librasflow.ifsp.dev",
+  liveNote: "The public version runs in the browser with an MLP network; the numbers in this case study come from the Random Forest.",
   title: "LibrasFlow",
   kind: "Capstone project · computer vision",
   summary:
-    "Recognizes the Brazilian Sign Language (Libras) manual alphabet through a webcam. The core work was finding that 34k samples were ~6.3k distinct poses, fixing the leak and testing on real images.",
-  role: "Data, model, evaluation and app",
-  period: "2026 · capstone, due Dec 2026",
-  stack: ["Python", "MediaPipe", "OpenCV", "scikit-learn", "pandas", "Flask"],
+    "Recognizes 21 letters of the Libras manual alphabet through a webcam. The core of the project was evaluation: a 99.96% that hid a data leak became 97.0% and, on images from another source, 71.2%.",
+  role: "Lead developer (data, training, evaluation and web app), in a team of two",
+  period: "2026 · capstone, IFSP Jacareí",
+  stack: ["Python", "MediaPipe", "OpenCV", "scikit-learn", "NumPy", "pandas", "SciPy", "Flask"],
   draft: false,
   tldr: [
     {
       label: "Problem",
-      text: "The first model got practically everything right on the test set. Too good: the 34,374 samples were bursts of near-identical frames, and the same gesture ended up in both training and test.",
+      text: "The first evaluation reported 99.96% accuracy. Too good: 83.7% of the test samples had a near-copy in the training set, taken from consecutive frames of the same recording.",
     },
     {
       label: "Solution",
-      text: "I grouped near-identical samples with DBSCAN (~6,270 distinct poses), redid the train/test split by group and validated the model on real images it had never seen.",
+      text: "We grouped near-identical samples with DBSCAN (6,270 groups) and split training and test by group. Then we tested the model on 3,812 images from another source.",
     },
     {
       label: "Outcome",
-      text: "An honest measure: 69% accuracy on 3,812 real images. Letters like B, W and I are almost always right; E, M, N, S and U still fail. That is where the rest of the capstone starts.",
+      text: "97.0% with the corrected protocol and 71.2% on the external test, with an explanation of where and why the model fails instead of the prettiest number.",
     },
   ],
   media: {
@@ -48,94 +50,155 @@ export const meta = {
 
 ## Context and problem
 
-The Libras manual alphabet is used to spell names and words that have no sign of their own. LibrasFlow, my capstone project, recognizes those letters through a webcam, in real time, on an ordinary computer, and spells words on screen.
+Communication between deaf and hearing people still runs into barriers when there is no interpreter, and many recognition tools need powerful hardware or a software install. LibrasFlow is our capstone project for the Systems Analysis and Development degree at IFSP Jacareí: a lightweight recognizer for the manual alphabet of Libras (Brazilian Sign Language) that works with an ordinary webcam, on a modest computer, in the browser.
 
-The first model looked done: on the test set, it got practically every letter right. That too-perfect result was the problem. A classifier that never fails at a hard visual task is usually being tested on data it has already seen.
+The scope is the 21 static letters. H, J, K, X and Z involve movement and were left out. The work was written as a scientific paper, currently being prepared for submission.
 
 ## My role
 
-I built the whole pipeline: extracting hand landmarks from the images, training the classifier, auditing and fixing the evaluation, validating on real images and the app that spells words through the camera.
+The project was done in a team of two with Carlos Henrique Moreira Gonçalves, advised by Prof. Tardelli Ronan Coelho Stekel, PhD, and Prof. Ana Paula Abrantes de Castro e Shiguemori, PhD. I was the lead developer: data preparation, training, the evaluation protocol (including the leak investigation) and the web app.
 
-## How it works
+## Solution and architecture
 
-The model doesn't look at the raw image. MediaPipe finds 21 hand landmarks, and the classifier works only with their geometry. That keeps the system light and less sensitive to background and lighting.
+The model doesn't look at the raw image. MediaPipe finds 21 hand landmarks in each frame, and the classifier works only with their geometry.
 
-<Flow
-  caption="From webcam frame to letter on screen."
-  steps={[
-    { title: "Webcam", detail: "One frame at a time" },
-    { title: "MediaPipe Hands", detail: "21 hand landmarks, with x, y and z" },
-    { title: "Normalization", detail: "Coordinates relative to the wrist, same scale: 63 values" },
-    { title: "Random Forest", detail: "One of the 21 static letters" },
-    { title: "Stability filter", detail: "A letter only counts after 30 frames in a row" },
-  ]}
+<Shot
+  layout="wide"
+  src="/librasflow/midia-librasflow/fig-pipeline.webp"
+  width={1190}
+  height={240}
+  minWidth={720}
+  alt="Six-step flow, labeled in Portuguese: camera (webcam frame), MediaPipe Hands (21 hand landmarks), normalization (centered on the wrist and rescaled), classifier (coordinates to letter), stability filter (confirms after 30 frames) and letter on screen (real-time text)."
+  caption="From webcam frame to letter on screen. Figure from the paper, labels in Portuguese."
 />
 
-Feature extraction lives in a single module used by data collection, training, validation and the app. That way the normalization never differs between what the model saw in training and what it gets live. The interface runs in the browser (Flask streaming the camera feed) and has a virtual "Clear" button, triggered by holding a hand over it.
+- **Features:** the x and y coordinates of the 21 landmarks (42 values), centered on the wrist and divided by the largest absolute value. That reduces the effect of the hand's position and size in the image.
+- **Model:** Random Forest with 100 trees, maximum depth 15 and at least 2 samples per leaf.
+- **Data:** the public "Libras" dataset (Kaggle, Oliveira, 2022), with 34,374 samples across 21 classes. Each sample is a vector of hand landmarks, not a photo.
+- **Temporal confirmation:** a letter only enters the text after 30 consecutive frames with the same prediction, which reduces flickering between similar letters.
+- **Virtual "LIMPAR" (clear) button:** triggered by a gesture, when the index fingertip stays over the button area for 25 frames.
+
+There are two versions. In the capstone version, Flask processes the video on the server and streams the result to the browser. In the public version, everything happens in the browser itself: MediaPipe runs in WebAssembly and classification uses an MLP network (63 → 128 → 64 → 21) exported as JSON, with 12-frame confirmation and a minimum confidence of 0.75. No image leaves the device.
+
+<Shot
+  layout="column"
+  src="/librasflow/midia-librasflow/fig-interface.webp"
+  width={860}
+  height={520}
+  alt="Interface of the server version: webcam image with the 21 landmarks drawn over the hand signing the letter B, the LIMPAR button in the corner, the phrase AB below and, on the side, a guide with the alphabet signs."
+  caption="The server version: the letter being confirmed, the phrase so far and the alphabet guide. Interface in Portuguese."
+/>
 
 ## The data leak
 
-The training images came from bursts: dozens of near-identical frames of the same gesture. With a random split, one frame went to training and its almost identical neighbor went to test. The model wasn't generalizing; it was recognizing again.
+The first evaluation used a random 80/20 split, repeated 10 times, and reported **99.96% ± 0.02%** accuracy. For a hard visual problem, that was too good, so we investigated.
 
-To confirm it, I measured the distance from each test sample to the closest one in training, within the same letter. Many had a near-clone on the other side.
+For each test sample, we measured the distance to the closest training sample of the same class. **83.7%** had a near-copy less than 0.05 away: consecutive frames from the same recordings. In part, the model was recognizing samples it had already seen.
 
 <Flow
-  caption="The fix: split by pose, not by row."
+  caption="The fix: split by group of near-identical poses, not by sample."
   steps={[
-    { title: "34,374 rows", detail: "The original set, as normalized landmarks" },
-    { title: "DBSCAN per letter", detail: "Joins samples less than 0.05 apart" },
-    { title: "~6,270 groups", detail: "The truly distinct poses" },
-    { title: "80/20 split by group", detail: "Each pose stays whole on one side" },
+    { title: "34,374 samples", detail: "Vectors of hand landmarks" },
+    { title: "DBSCAN (ε = 0.05)", detail: "Joins near-identical samples" },
+    { title: "6,270 groups", detail: "5.5 samples per group on average" },
+    { title: "Split by group", detail: "Each group goes whole to training or to test" },
   ]}
 />
 
+With the group split, the share of near-duplicate pairs between training and test dropped to 0%, and the typical distance between the two sets grew about 2.7 times. Accuracy settled at **97.01% ± 2.59%** (minimum 92.7%, maximum 99.9%), with a macro F1 of 96.7%.
+
 <Metrics>
-  <Metric value="34,374" label="samples in the original set" />
-  <Metric value="~6,270" label="truly distinct poses" />
-  <Metric value="69%" label="accuracy on 3,812 real images" />
+  <Metric value="99.96%" label="in the first evaluation, with the leak" />
+  <Metric value="97.0%" label="with training and test split by group" />
+  <Metric value="71.2%" label="on 3,812 images from another source" />
 </Metrics>
 
-The script checks that no group appears on both sides before training. The first version of the split picked 20% of each letter's groups, which broke when groups had very different sizes: with a larger radius (0.10), a single group of the letter G held 900 of its 1,650 samples. The current version picks test groups to get close to 20% of the samples, not of the groups.
+The result depends on the grouping radius ε, so we ran a sensitivity analysis from 0.02 to 0.15. 0.05 is the largest value that keeps at least 10 groups per class and the planned 20% test share.
 
-Even so, accuracy on the new test stayed very high. With no leak between training and test, both parts still come from the same set of images. To know how the model behaves outside it, I needed a test on images it had never seen.
+<DataTable
+  caption="Sensitivity to the grouping radius."
+  head={["ε", "Groups", "Accuracy"]}
+  rows={[
+    ["0.02", "30,266", "99.97%"],
+    ["0.05 (adopted)", "6,270", "97.01%"],
+    ["0.10", "961", "88.13%"],
+    ["0.15", "347", "58.22% (unstable split)"],
+  ]}
+  highlight={1}
+/>
 
-## Validation on real images
+## Testing on images from another source
 
-I ran the final model on a separate folder of real images. The hand was detected in 3,812 of them, covering 15 of the 21 letters, and overall accuracy was **69%**.
+A leak-free protocol still tests on images from the same dataset. To measure generalization, we used the "Brazilian Sign Language Alphabet" dataset (Passos; Fernandes; Comunello, 2020): 4,411 images of 15 letters, from other authors and under other capture conditions, including worse lighting. This set was not used for training or for choosing hyperparameters.
 
-- **Almost always right:** B, V, A, I, W and D, with recall above 95%. C and O are close to 90%.
-- **Almost always wrong:** E, M and N were never recognized; S and U got about 5% right, and R, 10%. L reached 44%.
-- **Where the errors go:** many land on V, which has 100% recall but 40% precision.
+MediaPipe didn't find the hand in 599 images (13.6%). On the remaining 3,812, accuracy was **71.2%** (95% CI: 69.8%–72.6%), and balanced accuracy was 58.9%.
 
-The letters that fail most depend on bent or crossed fingers, where the difference is which finger is in front. That is why the z coordinate went into the features, and it is where the capstone continues. A diagnostic script saves the misclassified images with the landmarks drawn, to tell whether the problem is hand detection or classification.
+<Shot
+  layout="column"
+  src="/librasflow/midia-librasflow/fig-matriz-confusao.webp"
+  width={800}
+  height={720}
+  minWidth={560}
+  alt="Confusion matrix of the external test, with true classes in rows and predicted classes in columns, labeled in Portuguese. The diagonal is strong for A, B, C, D, I, O and W. The largest errors: E predicted as S in 510 images, R as V in 117, S as A in 99, U as V in 89 and L as D in 50."
+  caption="Confusion matrix of the external test, 3,812 images. Figure from the paper, labels in Portuguese."
+/>
+
+- **M, N and E follow another sign language.** In this dataset, those letters appear in their American Sign Language (ASL) form, which differs from the Libras form used in training. E was classified as S in 510 of 552 images. Without M and N, accuracy rises to 72.6%; without M, N and E, to **85.3%** (95% CI: 84.0%–86.4%).
+- **The remaining errors are in fine details:** pairs that differ only slightly, such as S/A, R/V, U/V and L/D.
+- **Depth (z) didn't help.** With 63 features, internal accuracy didn't change significantly (97.84%; Wilcoxon test, p = 0.85), and the external test got worse (69.4%; McNemar test, p &lt; 0.001). That is why the adopted model uses 42 features.
+- **The public version's MLP** ties with the Random Forest on the internal test (96.4%) but drops to 59.4% on the external one. It is the working demo, not the validated model.
+
+## Real-time performance
+
+Measured over 300 frames on a laptop with an i5-13420H, no dedicated GPU, and a 720p webcam:
+
+<DataTable
+  caption="Average latency per step."
+  head={["Step", "Average latency"]}
+  rows={[
+    ["Detection (MediaPipe)", "16.7 ms"],
+    ["Classification (Random Forest)", "25.6 ms"],
+    ["Full pipeline", "40.4 ms (≈ 24.8 FPS)"],
+  ]}
+/>
+
+With on-screen display, the observed end-to-end rate was 19.5 FPS.
 
 ## Stack
 
 - **Computer vision:** MediaPipe Hands and OpenCV.
-- **Model and data:** scikit-learn (Random Forest and DBSCAN), pandas and NumPy.
-- **App:** Flask, with the webcam feed processed on the server.
+- **Model and evaluation:** scikit-learn (Random Forest, MLP and DBSCAN), NumPy, pandas and SciPy.
+- **Capstone app:** Flask, HTML5 and Tailwind CSS.
+- **Public version:** MediaPipe Hand Landmarker in WebAssembly and the MLP exported as JSON, all in the browser.
 
 ## Decisions and trade-offs
 
 <Decision
   title="Hand landmarks instead of the image"
-  tradeoff="If MediaPipe doesn't detect the hand, there is no prediction. Some real-world errors may come from there, not from the classifier."
+  tradeoff="If MediaPipe doesn't detect the hand, there is no prediction. On the external test, that happened in 13.6% of the images."
 >
-  With 63 numbers per frame, the model is small, runs in real time on an ordinary computer and doesn't depend on the image background.
+  With 42 numbers per frame, the model is small, runs in real time on a computer with no dedicated GPU and depends less on background and lighting.
 </Decision>
 
 <Decision
   title="Group before splitting"
-  tradeoff="The result depends on the grouping radius. At 0.05, every letter has enough groups; larger radii leave some letters with few groups and an unstable test."
+  tradeoff="The number looks less impressive and now depends on the grouping radius, which is why choosing ε needed a sensitivity analysis."
 >
-  Splitting by row measures memory. Splitting by pose measures whether the model recognizes a gesture it has never seen.
+  Splitting by sample measures memory. Splitting by group measures whether the model recognizes a pose it has never seen.
 </Decision>
 
 <Decision
-  title="Measure and train in separate scripts"
-  tradeoff="The app's model has no test number of its own; its reference is the group split and the real-image validation."
+  title="42 features, without depth"
+  tradeoff="Pairs that differ by fine details, such as R/V and U/V, are still the largest source of error."
 >
-  One script holds data out to measure accuracy. After that, the model that goes into the app trains on 100% of the data.
+  The z coordinate didn't improve the internal test and worsened the external one. Keeping x and y makes the model simpler and better outside its training data.
+</Decision>
+
+<Decision
+  title="Random Forest in the study, MLP in the demo"
+  tradeoff="On the external test, the MLP reaches 59.4%, against 71.2% for the Random Forest. So the study's numbers come from the Random Forest, and the public version is presented as a demo."
+>
+  In the public version, inference happens in the browser with an MLP exported as JSON, and no image leaves the device.
 </Decision>
 
 <Decision
@@ -147,14 +210,15 @@ The letters that fail most depend on bent or crossed fingers, where the differen
 
 ## Outcome
 
-- The app works in real time and spells words through the webcam.
-- The evaluation no longer relies on repeated frames: it now splits data by pose and goes through real images.
-- It is clear where the model fails (E, M, N, R, S and U) and why. That guides the next stage of the capstone.
+- A recognizer that runs in real time with an ordinary webcam and no dedicated GPU: 19.5 FPS end to end.
+- A three-level evaluation: 99.96% with the leak, 97.0% with the group split and 71.2% on images from another source.
+- An explanation for the drop: letters that follow another sign language and pairs that differ by fine details.
+- A public version anyone can try in the browser.
 
-Next steps: more varied images for the letters that fail, the letters that involve movement (such as J, K, X and Z) and recognition with both hands.
+Next steps named in the paper: evaluation across different users, Libras images with identified signers and dynamic signs with temporal models (LSTM or Transformers).
 
 ## What I learned
 
-- Perfect accuracy is a warning sign, not a success.
-- How the data is split matters as much as the model.
-- The test that counts is the one with data that looks like real use.
+- Accuracy close to 100% is a reason to investigate, not to celebrate.
+- How training and test are split changed the result more than switching models: 99.96%, 97.0% or 71.2%, as the test samples get more "new".
+- Generalizing takes varied data: other people, lighting, distance and angle. That is the main future work.

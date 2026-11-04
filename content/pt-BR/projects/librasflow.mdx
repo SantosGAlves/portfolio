@@ -4,26 +4,28 @@ export const meta = {
   status: "in-progress",
   art: "librasflow",
   repo: "https://github.com/SantosGAlves/LibrasFlow",
+  live: "https://librasflow.ifsp.dev",
+  liveNote: "A versão pública roda no navegador, com uma rede MLP; os números deste estudo são do Random Forest.",
   title: "LibrasFlow",
   kind: "TCC · visão computacional",
   summary:
-    "Reconhece o alfabeto manual de Libras pela webcam. O trabalho principal foi descobrir que 34 mil amostras eram ~6,3 mil poses distintas, corrigir o vazamento e medir com imagens reais.",
-  role: "Dados, modelo, avaliação e aplicação",
-  period: "2026 · TCC, conclusão em dez/2026",
-  stack: ["Python", "MediaPipe", "OpenCV", "scikit-learn", "pandas", "Flask"],
+    "Reconhece 21 letras do alfabeto manual de Libras pela webcam. O centro do TCC foi a avaliação: um 99,96% que escondia vazamento de dados virou 97,0% e, com imagens de outra fonte, 71,2%.",
+  role: "Desenvolvimento principal (dados, treino, avaliação e aplicação web), em dupla",
+  period: "2026 · TCC de ADS, IFSP Jacareí",
+  stack: ["Python", "MediaPipe", "OpenCV", "scikit-learn", "NumPy", "pandas", "SciPy", "Flask"],
   draft: false,
   tldr: [
     {
       label: "Problema",
-      text: "O primeiro modelo acertava praticamente tudo no teste. Bom demais: as 34.374 amostras eram rajadas de quadros quase idênticos, e o mesmo gesto caía no treino e no teste.",
+      text: "A primeira avaliação dava 99,96% de acurácia. Bom demais: 83,7% das amostras de teste tinham uma quase cópia no treino, vinda de quadros seguidos da mesma captura.",
     },
     {
       label: "Solução",
-      text: "Agrupei as amostras quase iguais com DBSCAN (~6.270 poses distintas), refiz a divisão treino/teste por grupo e validei o modelo em imagens reais que ele nunca tinha visto.",
+      text: "Agrupamos as amostras quase idênticas com DBSCAN (6.270 grupos) e dividimos treino e teste por grupo. Depois, testamos o modelo em 3.812 imagens de outra fonte.",
     },
     {
       label: "Resultado",
-      text: "Uma medida honesta: 69% de acerto em 3.812 imagens reais. Letras como B, W e I quase sempre acertam; E, M, N, S e U ainda erram. É o ponto de partida do resto do TCC.",
+      text: "97,0% no protocolo corrigido e 71,2% no teste externo, com a explicação de onde e por que o modelo erra, em vez do número mais bonito.",
     },
   ],
   media: {
@@ -48,94 +50,155 @@ export const meta = {
 
 ## Contexto e problema
 
-O alfabeto manual de Libras é usado para soletrar nomes e palavras que não têm sinal próprio. O LibrasFlow, meu TCC, reconhece essas letras pela webcam, em tempo real, num computador comum, e forma palavras na tela.
+A comunicação entre pessoas surdas e ouvintes ainda esbarra em barreiras quando não há intérprete, e muitas soluções de reconhecimento exigem hardware forte ou a instalação de um programa. O LibrasFlow é o nosso TCC do curso de Análise e Desenvolvimento de Sistemas do IFSP Jacareí: um reconhecedor leve do alfabeto manual da Libras, que funciona com uma webcam comum, num computador modesto, pelo navegador.
 
-O primeiro modelo parecia pronto: no teste, acertava praticamente todas as letras. Esse resultado perfeito demais foi o problema. Um classificador que nunca erra num problema visual difícil costuma estar sendo testado com dados que já viu.
+O escopo são as 21 letras estáticas. H, J, K, X e Z envolvem movimento e ficaram de fora. O trabalho foi escrito como artigo científico, em preparação para submissão.
 
 ## Minha função
 
-Construí o pipeline inteiro: a extração dos pontos da mão a partir das imagens, o treino do classificador, a auditoria e a correção da avaliação, a validação com imagens reais e a aplicação que forma palavras pela câmera.
+O TCC foi feito em dupla com Carlos Henrique Moreira Gonçalves, com orientação do Prof. Dr. Tardelli Ronan Coelho Stekel e da Profa. Dra. Ana Paula Abrantes de Castro e Shiguemori. Fiquei com o desenvolvimento principal: a preparação dos dados, o treinamento, o protocolo de avaliação (incluindo a investigação do vazamento) e a aplicação web.
 
-## Como funciona
+## Solução e arquitetura
 
-O modelo não olha a imagem bruta. O MediaPipe encontra 21 pontos da mão, e o classificador trabalha só com a geometria deles. Isso deixa o sistema leve e menos sensível a fundo e iluminação.
+O modelo não olha a imagem bruta. O MediaPipe encontra 21 pontos da mão em cada quadro, e o classificador trabalha só com a geometria deles.
 
-<Flow
-  caption="Do quadro da webcam à letra na tela."
-  steps={[
-    { title: "Webcam", detail: "Um quadro por vez" },
-    { title: "MediaPipe Hands", detail: "21 pontos da mão, com x, y e z" },
-    { title: "Normalização", detail: "Coordenadas relativas ao pulso e na mesma escala: 63 valores" },
-    { title: "Random Forest", detail: "Uma das 21 letras estáticas" },
-    { title: "Filtro de estabilidade", detail: "A letra só entra depois de 30 quadros seguidos" },
-  ]}
+<Shot
+  layout="wide"
+  src="/librasflow/midia-librasflow/fig-pipeline.webp"
+  width={1190}
+  height={240}
+  minWidth={720}
+  alt="Fluxo em seis etapas: câmera (quadro da webcam), MediaPipe Hands (21 pontos da mão), normalização (centra no pulso e ajusta a escala), classificador (coordenadas para letra), filtro de estabilidade (confirma após 30 quadros) e letra na tela (texto em tempo real)."
+  caption="Do quadro da webcam à letra na tela. Figura do artigo."
 />
 
-A extração de features fica num único módulo, usado pela coleta, pelo treino, pela validação e pela aplicação. Assim a normalização nunca fica diferente entre o que o modelo viu no treino e o que ele recebe ao vivo. A interface roda no navegador (Flask com o vídeo da câmera) e tem um botão virtual "Limpar", acionado mantendo a mão sobre ele.
+- **Atributos:** as coordenadas x e y dos 21 pontos (42 valores), centradas no punho e divididas pelo maior valor absoluto. Isso reduz o efeito da posição e do tamanho da mão na imagem.
+- **Modelo:** Random Forest com 100 árvores, profundidade máxima 15 e mínimo de 2 amostras por folha.
+- **Dados:** o conjunto público "Libras" (Kaggle, Oliveira, 2022), com 34.374 amostras em 21 classes. Cada amostra é um vetor de pontos da mão, não uma foto.
+- **Confirmação temporal:** uma letra só entra no texto depois de 30 quadros seguidos com a mesma previsão, o que reduz a oscilação entre letras parecidas.
+- **Botão virtual "LIMPAR":** acionado por gesto, quando a ponta do indicador fica 25 quadros sobre a área do botão.
+
+Existem duas versões. Na do TCC, o Flask processa o vídeo no servidor e transmite o resultado para o navegador. Na versão pública, tudo acontece no próprio navegador: o MediaPipe roda em WebAssembly e a classificação usa uma rede MLP (63 → 128 → 64 → 21) exportada em JSON, com confirmação de 12 quadros e confiança mínima de 0,75. Nenhuma imagem sai do dispositivo.
+
+<Shot
+  layout="column"
+  src="/librasflow/midia-librasflow/fig-interface.webp"
+  width={860}
+  height={520}
+  alt="Interface da versão com servidor: imagem da webcam com os 21 pontos desenhados sobre a mão no sinal da letra B, o botão LIMPAR no canto, a frase AB embaixo e, ao lado, um guia com os sinais do alfabeto."
+  caption="A versão com servidor: a letra em confirmação, a frase formada e o guia do alfabeto."
+/>
 
 ## O vazamento de dados
 
-As imagens de treino vinham de rajadas: dezenas de quadros quase idênticos do mesmo gesto. Com uma divisão aleatória, um quadro ia para o treino e o vizinho, praticamente igual, ia para o teste. O modelo não estava generalizando; estava reconhecendo de novo.
+A primeira avaliação usou uma divisão aleatória 80/20, repetida 10 vezes, e deu **99,96% ± 0,02%** de acurácia. Para um problema visual difícil, era bom demais, então fomos investigar.
 
-Para confirmar, medi a distância de cada amostra de teste até a mais próxima no treino, dentro da mesma letra. Muitas tinham um quase-clone do outro lado.
+Para cada amostra de teste, medimos a distância até a amostra mais próxima da mesma classe no treino. **83,7%** tinham uma quase cópia a menos de 0,05 de distância: eram quadros consecutivos das mesmas capturas. Em parte, o modelo estava reconhecendo amostras que já tinha visto.
 
 <Flow
-  caption="A correção: dividir por pose, não por linha."
+  caption="A correção: dividir por grupo de poses quase idênticas, não por amostra."
   steps={[
-    { title: "34.374 linhas", detail: "O conjunto original, em pontos normalizados" },
-    { title: "DBSCAN por letra", detail: "Junta amostras a menos de 0,05 de distância" },
-    { title: "~6.270 grupos", detail: "As poses realmente distintas" },
-    { title: "Split 80/20 por grupo", detail: "Cada pose fica inteira de um lado só" },
+    { title: "34.374 amostras", detail: "Vetores com os pontos da mão" },
+    { title: "DBSCAN (ε = 0,05)", detail: "Junta as amostras quase idênticas" },
+    { title: "6.270 grupos", detail: "Média de 5,5 amostras por grupo" },
+    { title: "Divisão por grupo", detail: "Cada grupo vai inteiro para o treino ou para o teste" },
   ]}
 />
 
+Com a divisão por grupo, a fração de pares quase duplicados entre treino e teste caiu para 0%, e a distância típica entre os dois conjuntos aumentou cerca de 2,7 vezes. A acurácia ficou em **97,01% ± 2,59%** (mínimo de 92,7%, máximo de 99,9%), com F1 macro de 96,7%.
+
 <Metrics>
-  <Metric value="34.374" label="amostras no conjunto original" />
-  <Metric value="~6.270" label="poses realmente distintas" />
-  <Metric value="69%" label="de acerto em 3.812 imagens reais" />
+  <Metric value="99,96%" label="na primeira avaliação, com vazamento" />
+  <Metric value="97,0%" label="com treino e teste divididos por grupo" />
+  <Metric value="71,2%" label="em 3.812 imagens de outra fonte" />
 </Metrics>
 
-O script verifica que nenhum grupo aparece nos dois lados antes de treinar. A primeira versão do split escolhia 20% dos grupos de cada letra, o que quebrava quando os grupos tinham tamanhos muito diferentes: com um raio maior (0,10), um único grupo da letra G concentrava 900 das 1.650 amostras. A versão atual escolhe os grupos de teste para chegar perto de 20% das amostras, não dos grupos.
+O resultado depende do raio ε do agrupamento, então fizemos uma análise de sensibilidade de 0,02 a 0,15. O valor 0,05 é o maior que mantém pelo menos 10 grupos por classe e os 20% de teste planejados.
 
-Mesmo assim, o acerto no novo teste continuou muito alto. Sem vazamento entre treino e teste, as duas partes ainda vêm do mesmo conjunto de imagens. Para saber como o modelo se comporta fora dele, faltava um teste com imagens que ele nunca viu.
+<DataTable
+  caption="Sensibilidade ao raio do agrupamento."
+  head={["ε", "Grupos", "Acurácia"]}
+  rows={[
+    ["0,02", "30.266", "99,97%"],
+    ["0,05 (adotado)", "6.270", "97,01%"],
+    ["0,10", "961", "88,13%"],
+    ["0,15", "347", "58,22% (partição instável)"],
+  ]}
+  highlight={1}
+/>
 
-## Validação com imagens reais
+## Teste com imagens de outra fonte
 
-Rodei o modelo final em uma pasta separada de imagens reais. A mão foi detectada em 3.812 delas, cobrindo 15 das 21 letras, e o acerto geral foi de **69%**.
+Um protocolo sem vazamento ainda testa com imagens do mesmo conjunto. Para medir a generalização, usamos o "Brazilian Sign Language Alphabet" (Passos; Fernandes; Comunello, 2020): 4.411 imagens de 15 letras, de outros autores e com outras condições de captura, incluindo iluminação pior. Esse conjunto não entrou no treino nem na escolha de hiperparâmetros.
 
-- **Acertam quase sempre:** B, V, A, I, W e D, com recall acima de 95%. C e O ficam perto de 90%.
-- **Erram quase sempre:** E, M e N não foram reconhecidas; S e U acertaram cerca de 5%, e R, 10%. L ficou em 44%.
-- **Para onde vão os erros:** muitos caem no V, que tem recall de 100% mas precisão de 40%.
+O MediaPipe não encontrou a mão em 599 imagens (13,6%). Nas 3.812 restantes, a acurácia foi de **71,2%** (IC 95%: 69,8%–72,6%), e a acurácia balanceada, de 58,9%.
 
-As letras que mais erram são as que dependem de dedos dobrados ou cruzados, em que a diferença está em qual dedo fica na frente. Foi por isso que a coordenada z entrou nas features, e é onde o TCC continua. Um script de diagnóstico salva as imagens erradas com os pontos desenhados, para ver se o problema é a detecção da mão ou a classificação.
+<Shot
+  layout="column"
+  src="/librasflow/midia-librasflow/fig-matriz-confusao.webp"
+  width={800}
+  height={720}
+  minWidth={560}
+  alt="Matriz de confusão do teste externo, com as classes reais nas linhas e as previstas nas colunas. A diagonal é forte em A, B, C, D, I, O e W. Os maiores erros: E previsto como S em 510 imagens, R como V em 117, S como A em 99, U como V em 89 e L como D em 50."
+  caption="Matriz de confusão do teste externo, com 3.812 imagens. Figura do artigo."
+/>
+
+- **M, N e E seguem outra língua de sinais.** Nesse conjunto, essas letras aparecem na forma da língua de sinais americana (ASL), diferente da forma em Libras usada no treino. O E foi classificado como S em 510 de 552 imagens. Sem M e N, a acurácia vai a 72,6%; sem M, N e E, a **85,3%** (IC 95%: 84,0%–86,4%).
+- **Os erros que sobram estão nos detalhes finos:** pares que diferem por pouco, como S/A, R/V, U/V e L/D.
+- **A profundidade (z) não ajudou.** Com 63 atributos, a acurácia interna não mudou de forma significativa (97,84%; teste de Wilcoxon, p = 0,85), e o teste externo piorou (69,4%; teste de McNemar, p &lt; 0,001). Por isso o modelo adotado usa 42 atributos.
+- **A MLP da versão pública** empata com o Random Forest no teste interno (96,4%), mas cai para 59,4% no externo. Ela é a demonstração funcional, não o modelo validado.
+
+## Desempenho em tempo real
+
+Medido em 300 quadros, num notebook com i5-13420H, sem GPU dedicada, e webcam 720p:
+
+<DataTable
+  caption="Latência média por etapa."
+  head={["Etapa", "Latência média"]}
+  rows={[
+    ["Detecção (MediaPipe)", "16,7 ms"],
+    ["Classificação (Random Forest)", "25,6 ms"],
+    ["Pipeline completo", "40,4 ms (≈ 24,8 FPS)"],
+  ]}
+/>
+
+Com a exibição na tela, a taxa observada de ponta a ponta foi de 19,5 FPS.
 
 ## Stack
 
 - **Visão computacional:** MediaPipe Hands e OpenCV.
-- **Modelo e dados:** scikit-learn (Random Forest e DBSCAN), pandas e NumPy.
-- **Aplicação:** Flask, com o vídeo da webcam processado no servidor.
+- **Modelo e avaliação:** scikit-learn (Random Forest, MLP e DBSCAN), NumPy, pandas e SciPy.
+- **Aplicação do TCC:** Flask, HTML5 e Tailwind CSS.
+- **Versão pública:** MediaPipe Hand Landmarker em WebAssembly e a MLP exportada em JSON, tudo no navegador.
 
 ## Decisões e trade-offs
 
 <Decision
   title="Pontos da mão em vez da imagem"
-  tradeoff="Se o MediaPipe não detecta a mão, não existe predição. Parte dos erros reais pode vir daí, não do classificador."
+  tradeoff="Se o MediaPipe não detecta a mão, não há previsão. No teste externo, isso aconteceu em 13,6% das imagens."
 >
-  Com 63 números por quadro, o modelo é pequeno, roda em tempo real num computador comum e não depende do fundo da imagem.
+  Com 42 números por quadro, o modelo é pequeno, roda em tempo real num computador sem GPU dedicada e depende menos do fundo e da iluminação.
 </Decision>
 
 <Decision
   title="Agrupar antes de dividir"
-  tradeoff="O resultado depende do raio do agrupamento. Com 0,05, todas as letras têm grupos suficientes; raios maiores deixam algumas letras com poucos grupos e o teste instável."
+  tradeoff="O número fica menos bonito e passa a depender do raio do agrupamento; por isso a escolha do ε precisou de uma análise de sensibilidade."
 >
-  Dividir por linha mede memória. Dividir por pose mede se o modelo reconhece um gesto que nunca viu.
+  Dividir por amostra mede memória. Dividir por grupo mede se o modelo reconhece uma pose que nunca viu.
 </Decision>
 
 <Decision
-  title="Medir e treinar em scripts separados"
-  tradeoff="O modelo da aplicação não tem um número de teste próprio; a referência dele é o split por grupo e a validação com imagens reais."
+  title="42 atributos, sem a profundidade"
+  tradeoff="Pares que diferem por detalhes finos, como R/V e U/V, continuam sendo a maior fonte de erro."
 >
-  Um script separa os dados para medir o acerto. Depois disso, o modelo que vai para a aplicação treina com 100% dos dados.
+  A coordenada z não melhorou o teste interno e piorou o externo. Ficar com x e y deixa o modelo mais simples e com melhor resultado fora do conjunto de treino.
+</Decision>
+
+<Decision
+  title="Random Forest no estudo, MLP na demo"
+  tradeoff="No teste externo, a MLP fica em 59,4%, contra 71,2% do Random Forest. Por isso os números do estudo são do Random Forest, e a versão pública é apresentada como demonstração."
+>
+  Na versão pública, a inferência acontece no navegador, com uma MLP exportada em JSON, e nenhuma imagem sai do dispositivo.
 </Decision>
 
 <Decision
@@ -147,14 +210,15 @@ As letras que mais erram são as que dependem de dedos dobrados ou cruzados, em 
 
 ## Resultado
 
-- A aplicação funciona em tempo real e forma palavras pela webcam.
-- A avaliação deixou de depender de quadros repetidos: agora divide os dados por pose e passa por imagens reais.
-- Ficou claro onde o modelo falha (E, M, N, R, S e U) e por quê. É isso que orienta a próxima etapa do TCC.
+- Um reconhecedor que roda em tempo real com uma webcam comum, sem GPU dedicada: 19,5 FPS de ponta a ponta.
+- Uma avaliação em três níveis: 99,96% com vazamento, 97,0% com a divisão por grupos e 71,2% com imagens de outra fonte.
+- Uma explicação para a queda: letras que seguem outra língua de sinais e pares que diferem por detalhes finos.
+- Uma versão pública que qualquer pessoa pode testar no navegador.
 
-Próximos passos: imagens mais variadas para as letras que erram, as letras com movimento (como J, K, X e Z) e o reconhecimento com as duas mãos.
+Próximos passos citados no TCC: avaliação entre usuários diferentes, imagens de Libras com sinalizantes identificados e sinais dinâmicos com modelos temporais (LSTM ou Transformers).
 
 ## Aprendizados
 
-- Acurácia perfeita é sinal de alerta, não de sucesso.
-- Como os dados são divididos importa tanto quanto o modelo.
-- O teste que conta é o feito com dados que se parecem com o uso real.
+- Uma acurácia perto de 100% é sinal para investigar, não para comemorar.
+- A forma de dividir treino e teste mudou o resultado mais do que trocar de modelo: 99,96%, 97,0% ou 71,2%, conforme a amostra de teste fica mais "nova".
+- Generalizar exige dados variados: outras pessoas, iluminação, distância e ângulo. Esse é o principal trabalho futuro.
