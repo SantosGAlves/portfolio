@@ -20,11 +20,12 @@ export function SiteFooter({ locale }: { locale: Locale }) {
             <a
               key={link.label}
               href={link.href}
-              className="rounded-sm py-0.5 transition-colors duration-200 hover:text-foreground"
+              className="inline-flex min-h-8 items-center gap-1 rounded-sm font-semibold text-brand hover:underline hover:underline-offset-4"
               target="_blank"
               rel="noopener noreferrer"
             >
               {link.label}
+              <span aria-hidden="true">↗</span>
               <span className="sr-only"> {ui.opensInNewTab}</span>
             </a>
           ))}

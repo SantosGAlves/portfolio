@@ -17,7 +17,7 @@ export function Section({ id, eyebrow, title, intro, children, className }: Sect
 
   return (
     <section id={id} data-rail aria-labelledby={titleId} className={cn("border-t", className)}>
-      <div className="container-site grid gap-10 py-18 md:py-24">
+      <div className="container-site grid gap-8 py-14 md:py-20">
         <header className="grid max-w-prose gap-3">
           <p className="eyebrow">{eyebrow}</p>
           <h2 id={titleId} className="text-h2">

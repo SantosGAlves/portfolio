@@ -24,19 +24,28 @@ export const site: SiteContent = {
       "Desenvolvedor de software com foco em back-end, IA aplicada e automação: agentes que consultam bancos de dados, automações no n8n e os sistemas por trás deles.",
   },
   hero: {
-    greeting: "olá, eu sou",
     firstName: "Gustavo",
     lastName: "Alves dos Santos",
+    photoAlt: "Foto de Gustavo Alves dos Santos",
     // Opção A (em uso). Opção B: "Desenvolvedor back-end com foco em IA aplicada".
     role: "Desenvolvedor de software · IA aplicada e automação",
     tagline: ["Agentes de IA, automações", "e o back-end que mantém tudo de pé."],
+    keywords: ["Agentes de IA", "Automação", "Back-end", "Machine learning"],
+    proof: [
+      { text: "Agente de IA entregue a cliente", case: "agente-baterias" },
+      { text: "Artigo científico em preparação", case: "librasflow" },
+      { text: "Estágio em automação e IA", section: "experience" },
+    ],
     lede: "Desenvolvo software, principalmente back-end, e gosto de transformar processos manuais em sistemas que rodam sozinhos e chamam uma pessoa quando precisam. Hoje construo agentes de IA que consultam bancos de dados, automações no n8n e os sistemas por trás deles: APIs, painéis e autenticação.",
     ctaProjects: "Ver projetos",
-    facts: [
-      { label: "Agora", value: "Estagiário de Automação e Inovação II · Gaudium" },
-      { label: "Formação", value: "Análise e Desenvolvimento de Sistemas · IFSP Jacareí · dez/2026" },
-      { label: "Foco", value: "Back-end, agentes de IA com dados reais e automação" },
+  },
+  now: {
+    items: [
+      { label: "Trabalho", text: "Estágio de Automação e Inovação II na Gaudium: automações no n8n, agentes de IA e produtos web." },
+      { label: "Estudo", text: "Concluindo Análise e Desenvolvimento de Sistemas no IFSP Jacareí (dez/2026)." },
+      { label: "Pesquisa", text: "Artigo científico do LibrasFlow em preparação para submissão.", case: "librasflow" },
     ],
+    more: "Ver mais sobre o que eu faço",
   },
   signature: {
     title: "agente · atendimento de balcão",
@@ -102,10 +111,10 @@ export const site: SiteContent = {
     },
   },
   sections: {
-    build: { id: "o-que-eu-faco", eyebrow: "O que eu faço", title: "Do agente ao back-end", nav: "O que faço" },
     experience: { id: "experiencia", eyebrow: "Experiência", title: "Trabalho e extensão", nav: "Experiência" },
     stack: { id: "tecnologias", eyebrow: "Tecnologias", title: "Com o que eu trabalho", nav: "Tecnologias" },
     projects: { id: "projetos", eyebrow: "Projetos selecionados", title: "Projetos", nav: "Projetos" },
+    now: { id: "agora", eyebrow: "Agora", title: "O que estou fazendo agora", nav: "Agora" },
     other: { id: "outros-projetos", eyebrow: "Repositórios", title: "Outros projetos", nav: "Outros projetos" },
     education: {
       id: "formacao",
@@ -113,7 +122,7 @@ export const site: SiteContent = {
       title: "Estudo, idiomas e como eu trabalho",
       nav: "Formação",
     },
-    contact: { id: "contato", eyebrow: "Contato", title: "Vamos conversar", nav: "Contato" },
+    contact: { id: "contato", eyebrow: "Contato", title: "Vamos conversar?", nav: "Contato" },
   },
   projects: {
     intro: "Do problema ao sistema em produção: agentes de IA, automações e os sistemas por trás deles.",
@@ -122,7 +131,9 @@ export const site: SiteContent = {
     otherIntro: "Projetos menores e de estudo, com o código no GitHub.",
     repoLink: "Código no GitHub",
     liveLink: "Testar ao vivo (usa a câmera)",
-    demoBadge: "demo interativa",
+    tryDemo: "Testar demo",
+    viewProject: "Ver projeto",
+    viewCode: "Ver código",
     deliveredBadge: "entregue a cliente",
     more: {
       items: [
@@ -298,6 +309,9 @@ export const site: SiteContent = {
     summaryTitle: "Resumo em 30 segundos",
     meta: { role: "Minha função", period: "Período", status: "Status", stack: "Stack" },
     next: "Próximo estudo de caso",
+    tryNow: "Testar agora",
+    code: "Código",
+    details: "Ver detalhes técnicos",
     fallbackNotice: "",
     illustrativeNotice:
       "Texto provisório. Trechos marcados com [CONFIRMAR] ainda serão revisados; dados de exemplo são ilustrativos.",
@@ -313,7 +327,7 @@ export const site: SiteContent = {
       frameTitle: "{titulo}: versão pública ao vivo",
     },
   },
-  nav: ["build", "experience", "stack", "projects", "education", "contact"],
+  nav: ["experience", "projects", "now", "stack", "education", "contact"],
   ui: {
     skipToContent: "Pular para o conteúdo",
     downloadCv: "Baixar CV",
@@ -323,5 +337,7 @@ export const site: SiteContent = {
     themeToDark: "Ativar tema escuro",
     opensInNewTab: "(abre em nova aba)",
     footerNote: "Feito com Next.js e publicado na Vercel.",
+    more: "Ver mais",
+    less: "Ver menos",
   },
 }

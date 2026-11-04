@@ -7,7 +7,7 @@ export const locales = ["pt-BR", "en"] as const
 export type Locale = (typeof locales)[number]
 
 /** Seções da página inicial (a ordem na página fica em components/pages/home-page.tsx). */
-export type SectionKey = "build" | "experience" | "stack" | "projects" | "other" | "education" | "contact"
+export type SectionKey = "experience" | "projects" | "now" | "stack" | "other" | "education" | "contact"
 
 export type SectionHeading = {
   /** Âncora da seção na página inicial (sem #). */
@@ -18,7 +18,11 @@ export type SectionHeading = {
   nav: string
 }
 
-export type Fact = { label: string; value: string }
+/** Fato curto do hero com a prova: link para um estudo de caso (`case`) ou para uma seção da home (`section`). */
+export type ProofFact = { text: string; case?: string; section?: SectionKey }
+
+/** Linha da seção "Agora": rótulo curto e o que estou fazendo; `case` = link para o estudo de caso. */
+export type NowItem = { label: string; text: string; case?: string }
 
 /** Campos que o agente extrai da mensagem na assinatura (as chaves da tabela `aplicacoes`). */
 export type SignatureField = "modelo" | "ano" | "cambio" | "start_stop"
@@ -91,15 +95,26 @@ export type SiteContent = {
   }
   seo: { title: string; description: string }
   hero: {
-    greeting: string
     firstName: string
     lastName: string
+    /** Texto alternativo da foto (public/foto/gustavo-avatar.webp). */
+    photoAlt: string
     role: string
     /** Frase de efeito abaixo do nome; cada item é uma linha. */
     tagline: string[]
+    /** Quatro palavras-chave numa linha, no lugar da antiga seção "O que eu faço". */
+    keywords: string[]
+    /** Três fatos curtos com prova (cada um leva ao caso ou à seção que o comprova). */
+    proof: ProofFact[]
+    /** Parágrafo sobre mim: fica em "Ver mais" na seção "Agora". */
     lede: string
     ctaProjects: string
-    facts: Fact[]
+  }
+  /** "Agora" (como o "Currently" do victrhugo.site): três linhas; o resto fica em "Ver mais". */
+  now: {
+    items: NowItem[]
+    /** Rótulo do "Ver mais" com o parágrafo sobre mim e as quatro áreas (`build`). */
+    more: string
   }
   signature: SignatureContent
   sections: Record<SectionKey, SectionHeading>
@@ -112,8 +127,11 @@ export type SiteContent = {
     repoLink: string
     /** Botão da demonstração pública ao vivo (em nova aba), no topo do caso sem meta.liveEmbed. */
     liveLink: string
-    /** Selo discreto no card da home dos projetos com demo interativa. */
-    demoBadge: string
+    /** Link do card para a demo do caso (/projetos/<slug>#experimente), com "▶". */
+    tryDemo: string
+    /** Rodapé de todo card: "Ver projeto →" (ou "Ver código ↗", sem página de caso). */
+    viewProject: string
+    viewCode: string
     /** Selo do card de projeto entregue a um cliente (meta.badges com "delivered"). */
     deliveredBadge: string
     /** Introdução da seção "Outros projetos". */
@@ -124,7 +142,7 @@ export type SiteContent = {
       allLink: string
     }
   }
-  /** "O que eu faço": quatro áreas, gerais, sem ligar a projetos. */
+  /** "O que eu faço": quatro áreas, gerais, sem ligar a projetos (em "Ver mais" na seção "Agora"). */
   build: {
     intro: string
     areas: CapabilityArea[]
@@ -168,6 +186,11 @@ export type SiteContent = {
     summaryTitle: string
     meta: { role: string; period: string; status: string; stack: string }
     next: string
+    /** Botões do topo: até a demo (#experimente) e o repositório. */
+    tryNow: string
+    code: string
+    /** Bloco fechado com o texto longo (<Details> no MDX). */
+    details: string
     fallbackNotice: string
     /** Aviso de texto provisório (só em casos com `draft: true`). */
     illustrativeNotice: string
@@ -190,5 +213,8 @@ export type SiteContent = {
     themeToDark: string
     opensInNewTab: string
     footerNote: string
+    /** "Ver mais" / "Ver menos" dos blocos recolhidos. */
+    more: string
+    less: string
   }
 }

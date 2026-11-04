@@ -24,22 +24,31 @@ export const site: SiteContent = {
       "Software developer focused on back-end, applied AI and automation: agents that query databases, n8n automations and the systems behind them.",
   },
   hero: {
-    greeting: "hi, I'm",
     firstName: "Gustavo",
     lastName: "Alves dos Santos",
+    photoAlt: "Photo of Gustavo Alves dos Santos",
     // Option A (in use). Option B: "Back-end developer focused on applied AI".
     role: "Software developer · applied AI and automation",
     tagline: ["AI agents, automations,", "and the back-end that keeps it all running."],
+    keywords: ["AI agents", "Automation", "Back-end", "Machine learning"],
+    proof: [
+      { text: "AI agent delivered to a client", case: "agente-baterias" },
+      { text: "Scientific paper in preparation", case: "librasflow" },
+      { text: "Internship in automation and AI", section: "experience" },
+    ],
     lede: "I build software, mostly back-end, and I like turning manual processes into systems that run on their own and call a person when they need one. Right now I build AI agents that query databases, n8n automations and the systems behind them: APIs, dashboards and authentication.",
     ctaProjects: "See projects",
-    facts: [
-      { label: "Now", value: "Automation & Innovation Intern II · Gaudium" },
+  },
+  now: {
+    items: [
+      { label: "Work", text: "Automation & Innovation Intern II at Gaudium: n8n automations, AI agents and web products." },
       {
-        label: "Education",
-        value: "Technology Degree (Tecnólogo) in Systems Analysis and Development · IFSP Jacareí · Dec 2026",
+        label: "Studies",
+        text: "Finishing a Technology Degree (Tecnólogo) in Systems Analysis and Development at IFSP Jacareí (Dec 2026).",
       },
-      { label: "Focus", value: "Back-end, AI agents on real data and automation" },
+      { label: "Research", text: "LibrasFlow scientific paper in preparation for submission.", case: "librasflow" },
     ],
+    more: "More about what I do",
   },
   signature: {
     title: "agent · in-store sales assistant",
@@ -106,10 +115,10 @@ export const site: SiteContent = {
     },
   },
   sections: {
-    build: { id: "what-i-do", eyebrow: "What I do", title: "From agent to back-end", nav: "What I do" },
     experience: { id: "experience", eyebrow: "Experience", title: "Work and extension projects", nav: "Experience" },
     stack: { id: "stack", eyebrow: "Stack", title: "What I work with", nav: "Stack" },
     projects: { id: "projects", eyebrow: "Selected work", title: "Projects", nav: "Projects" },
+    now: { id: "now", eyebrow: "Now", title: "What I'm doing right now", nav: "Now" },
     other: { id: "other-projects", eyebrow: "Repositories", title: "Other projects", nav: "Other projects" },
     education: {
       id: "education",
@@ -117,7 +126,7 @@ export const site: SiteContent = {
       title: "Studies, languages and how I work",
       nav: "Education",
     },
-    contact: { id: "contact", eyebrow: "Contact", title: "Let's talk", nav: "Contact" },
+    contact: { id: "contact", eyebrow: "Contact", title: "Shall we talk?", nav: "Contact" },
   },
   projects: {
     intro: "From the problem to a system in production: AI agents, automations and the systems behind them.",
@@ -126,7 +135,9 @@ export const site: SiteContent = {
     otherIntro: "Smaller and study projects, with the code on GitHub.",
     repoLink: "Code on GitHub",
     liveLink: "Try it live (uses your camera)",
-    demoBadge: "interactive demo",
+    tryDemo: "Try the demo",
+    viewProject: "View project",
+    viewCode: "View code",
     deliveredBadge: "delivered to a client",
     more: {
       items: [
@@ -303,6 +314,9 @@ export const site: SiteContent = {
     summaryTitle: "30-second summary",
     meta: { role: "My role", period: "Period", status: "Status", stack: "Stack" },
     next: "Next case study",
+    tryNow: "Try it now",
+    code: "Code",
+    details: "View technical details",
     fallbackNotice: "This case study is only available in Portuguese for now.",
     illustrativeNotice: "Draft text. Parts marked [CONFIRMAR] are still under review; sample data is illustrative.",
     video: { play: "Play", pause: "Pause" },
@@ -317,7 +331,7 @@ export const site: SiteContent = {
       frameTitle: "{titulo}: live public version",
     },
   },
-  nav: ["build", "experience", "stack", "projects", "education", "contact"],
+  nav: ["experience", "projects", "now", "stack", "education", "contact"],
   ui: {
     skipToContent: "Skip to content",
     downloadCv: "Download CV",
@@ -327,5 +341,7 @@ export const site: SiteContent = {
     themeToDark: "Switch to dark theme",
     opensInNewTab: "(opens in a new tab)",
     footerNote: "Built with Next.js and deployed on Vercel.",
+    more: "Show more",
+    less: "Show less",
   },
 }
