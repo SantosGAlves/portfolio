@@ -29,7 +29,8 @@ export function BookingFlow({
   const [step, setStep] = useState(0)
   const [service, setService] = useState<BarbuServiceId | null>(null)
   const [barber, setBarber] = useState<string | null>(null)
-  const [dayIndex, setDayIndex] = useState(0)
+  // Começa em hoje só se ainda houver horário pela frente; à noite, abre no dia seguinte (sem grade vazia).
+  const [dayIndex, setDayIndex] = useState(() => (allTimes.some((tm) => parseDate(dateString(now), tm).getTime() > now) ? 0 : 1))
   const [time, setTime] = useState<string | null>(null)
   const [checking, setChecking] = useState(false)
 
