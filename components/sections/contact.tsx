@@ -5,13 +5,12 @@ import { buttonVariants } from "@/components/ui/button"
 import { getContent, type Locale } from "@/lib/i18n"
 
 // E-mail em destaque, com "Copiar e-mail" e o botão do WhatsApp (link wa.me; o número não aparece na página).
-// À direita, LinkedIn, GitHub e CV.
+// À direita, LinkedIn e GitHub. O site não tem CV para download, de propósito.
 export function Contact({ locale }: { locale: Locale }) {
   const { sections, contact, profile, ui } = getContent(locale)
   const channels = [
-    { label: "LinkedIn", value: profile.links.linkedin.replace(/^https:\/\/(www\.)?/, "").replace(/\/$/, ""), href: profile.links.linkedin, external: true },
-    { label: "GitHub", value: profile.links.github.replace(/^https:\/\//, ""), href: profile.links.github, external: true },
-    { label: "CV", value: ui.downloadCv, href: profile.links.cv, external: false, download: true },
+    { label: "LinkedIn", value: profile.links.linkedin.replace(/^https:\/\/(www\.)?/, "").replace(/\/$/, ""), href: profile.links.linkedin },
+    { label: "GitHub", value: profile.links.github.replace(/^https:\/\//, ""), href: profile.links.github },
   ]
 
   return (
@@ -46,8 +45,8 @@ export function Contact({ locale }: { locale: Locale }) {
             <li key={c.label} className="border-t border-line last:border-b">
               <a
                 href={c.href}
-                {...(c.external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
-                {...(c.download ? { download: true } : {})}
+                target="_blank"
+                rel="noopener noreferrer"
                 className="group/link grid min-h-14 grid-cols-[6rem_1fr_auto] items-center gap-4 py-3 transition-colors duration-200 hover:text-foreground"
               >
                 <span className="font-mono text-meta text-subtle">{c.label}</span>
@@ -55,9 +54,9 @@ export function Contact({ locale }: { locale: Locale }) {
                   {c.value}
                 </span>
                 <span aria-hidden="true" className="text-brand transition-transform duration-200 group-hover/link:translate-x-0.5">
-                  {c.external ? "↗" : "↓"}
+                  ↗
                 </span>
-                {c.external ? <span className="sr-only">{ui.opensInNewTab}</span> : null}
+                <span className="sr-only">{ui.opensInNewTab}</span>
               </a>
             </li>
           ))}

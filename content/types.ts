@@ -91,7 +91,7 @@ export type SiteContent = {
     availability: string
     email: string
     /** whatsapp: link wa.me, só no botão da seção de contato (o número não aparece escrito na página). */
-    links: { github: string; linkedin: string; whatsapp: string; cv: string }
+    links: { github: string; linkedin: string; whatsapp: string }
   }
   seo: { title: string; description: string }
   hero: {
@@ -109,6 +109,8 @@ export type SiteContent = {
     /** Parágrafo sobre mim: fica em "Ver mais" na seção "Agora". */
     lede: string
     ctaProjects: string
+    /** Botão secundário do hero: abre o LinkedIn em nova aba (o site não tem CV para download, de propósito). */
+    ctaLinkedin: string
   }
   /** "Agora" (como o "Currently" do victrhugo.site): três linhas; o resto fica em "Ver mais". */
   now: {
@@ -206,7 +208,6 @@ export type SiteContent = {
   nav: SectionKey[]
   ui: {
     skipToContent: string
-    downloadCv: string
     navLabel: string
     languageLabel: string
     themeToLight: string

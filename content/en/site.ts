@@ -15,7 +15,6 @@ export const site: SiteContent = {
       github: "https://github.com/SantosGAlves",
       linkedin: "https://www.linkedin.com/in/gustavo-alves-dos-santos-9aa713256/",
       whatsapp: "https://wa.me/5512982972495",
-      cv: "/cv/gustavo-alves-dos-santos-cv-en.pdf", // [CONFIRMAR] English CV does not exist yet
     },
   },
   seo: {
@@ -38,6 +37,7 @@ export const site: SiteContent = {
     ],
     lede: "I build software, mostly back-end, and I like turning manual processes into systems that run on their own and call a person when they need one. Right now I build AI agents that query databases, n8n automations and the systems behind them: APIs, dashboards and authentication.",
     ctaProjects: "See projects",
+    ctaLinkedin: "View LinkedIn",
   },
   now: {
     items: [
@@ -334,7 +334,6 @@ export const site: SiteContent = {
   nav: ["experience", "projects", "now", "stack", "education", "contact"],
   ui: {
     skipToContent: "Skip to content",
-    downloadCv: "Download CV",
     navLabel: "Main navigation",
     languageLabel: "Language",
     themeToLight: "Switch to light theme",

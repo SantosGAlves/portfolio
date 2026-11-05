@@ -8,7 +8,7 @@ import { caseStudyPath } from "@/lib/projects"
 
 // Hero: cabe numa tela (360 × 780 no celular, sob o header). Foto redonda ao lado do nome, função, frase de
 // efeito, quatro palavras-chave, três fatos com prova (cada um leva ao caso ou à seção que o comprova), um
-// botão de destaque ("Ver projetos"), o CV e os links de contato.
+// botão de destaque ("Ver projetos"), "Ver LinkedIn" e os links do GitHub e do e-mail. Sem CV, de propósito.
 // O nome (texto puro, fontes pré-carregadas) é o elemento do LCP; a foto é pequena (avatar de 384 px em
 // .webp, servido pelo next/image no tamanho exibido) e carrega na hora, sem preload no <head>.
 export function Hero({ locale }: { locale: Locale }) {
@@ -108,8 +108,10 @@ export function Hero({ locale }: { locale: Locale }) {
               </a>
             </Button>
             <Button asChild variant="outline">
-              <a href={profile.links.cv} download>
-                {ui.downloadCv}
+              <a href={profile.links.linkedin} target="_blank" rel="noopener noreferrer">
+                {hero.ctaLinkedin}
+                <span aria-hidden="true">↗</span>
+                <span className="sr-only">{ui.opensInNewTab}</span>
               </a>
             </Button>
           </div>
@@ -120,15 +122,6 @@ export function Hero({ locale }: { locale: Locale }) {
                   <path d={siGithub.path} />
                 </svg>
                 GitHub
-                <span className="sr-only">{ui.opensInNewTab}</span>
-              </a>
-            </li>
-            <li>
-              <a href={profile.links.linkedin} target="_blank" rel="noopener noreferrer" className={linkClass}>
-                <span aria-hidden="true" className="grid size-4 place-items-center rounded-[3px] bg-current">
-                  <span className="font-sans text-[0.625rem] leading-none font-bold text-background">in</span>
-                </span>
-                LinkedIn
                 <span className="sr-only">{ui.opensInNewTab}</span>
               </a>
             </li>

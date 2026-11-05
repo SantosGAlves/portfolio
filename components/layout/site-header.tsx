@@ -1,6 +1,6 @@
 import { LanguageSwitch } from "@/components/layout/language-switch"
 import { ThemeToggle } from "@/components/layout/theme-toggle"
-import { Button, buttonVariants } from "@/components/ui/button"
+import { buttonVariants } from "@/components/ui/button"
 import { getContent, homePath, type Locale } from "@/lib/i18n"
 
 // Header fixo e discreto. A borda inferior aparece ao rolar via animação
@@ -38,11 +38,6 @@ export function SiteHeader({ locale }: { locale: Locale }) {
             labels={{ toLight: ui.themeToLight, toDark: ui.themeToDark }}
             className={buttonVariants({ variant: "outline", size: "icon-sm" })}
           />
-          <Button asChild variant="outline" size="sm" className="hidden min-[420px]:inline-flex">
-            <a href={profile.links.cv} download>
-              {ui.downloadCv}
-            </a>
-          </Button>
         </div>
       </div>
     </header>

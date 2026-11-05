@@ -15,7 +15,6 @@ export const site: SiteContent = {
       github: "https://github.com/SantosGAlves",
       linkedin: "https://www.linkedin.com/in/gustavo-alves-dos-santos-9aa713256/",
       whatsapp: "https://wa.me/5512982972495",
-      cv: "/cv/gustavo-alves-dos-santos-cv.pdf", // [CONFIRMAR] arquivo ainda não existe
     },
   },
   seo: {
@@ -38,6 +37,7 @@ export const site: SiteContent = {
     ],
     lede: "Desenvolvo software, principalmente back-end, e gosto de transformar processos manuais em sistemas que rodam sozinhos e chamam uma pessoa quando precisam. Hoje construo agentes de IA que consultam bancos de dados, automações no n8n e os sistemas por trás deles: APIs, painéis e autenticação.",
     ctaProjects: "Ver projetos",
+    ctaLinkedin: "Ver LinkedIn",
   },
   now: {
     items: [
@@ -330,7 +330,6 @@ export const site: SiteContent = {
   nav: ["experience", "projects", "now", "stack", "education", "contact"],
   ui: {
     skipToContent: "Pular para o conteúdo",
-    downloadCv: "Baixar CV",
     navLabel: "Navegação principal",
     languageLabel: "Idioma",
     themeToLight: "Ativar tema claro",

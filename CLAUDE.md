@@ -17,6 +17,9 @@ as decisões já tomadas; mudar qualquer uma delas exige pedido explícito do Gu
 - Todos os dados da assinatura e das conversas de exemplo (veículos, preços, Ah, nomes) são ilustrativos e assim rotulados.
 - Sem clichês de IA: nada de gradiente roxo/azul, glassmorphism, Inter como fonte principal, emoji.
 - Textos ficam só em `content/` (`site.ts` por idioma e um `.mdx` por projeto); componentes não têm texto solto.
+- **O site não tem CV para download, de propósito** (o Gustavo não vai manter um PDF atualizado): nada de botão
+  "Baixar CV", link para `/cv` ou PDF em `public/`. O botão secundário do hero é "Ver LinkedIn"; o header só tem a
+  navegação, o idioma e o tema.
 
 ## Posicionamento
 
@@ -142,7 +145,8 @@ para "Ver menos"). Não aninhar um "Ver mais" dentro de outro.
 
 - Cabe numa tela: no celular (360 × 780) termina em ~700 px. Ordem: disponibilidade (ponto ciano) → foto redonda
   ao lado do nome → função em mono → frase de efeito → palavras-chave → três fatos com prova → "Ver projetos ↓"
-  (destaque) e "Baixar CV" (contorno) → GitHub, LinkedIn e E-mail.
+  (destaque) e "Ver LinkedIn" / "View LinkedIn" (contorno, nova aba) → GitHub e E-mail (o LinkedIn não se repete
+  na linha de links).
 - Nome como `h1`: "Gustavo" em Schibsted bold e "Alves dos Santos" em Newsreader itálico, em linhas separadas
   (com `{" "}` entre os spans para o nome acessível ficar correto). `text-name` é menor desde a reestruturação
   (`clamp(2.25rem, …, 5.5rem)`), porque divide a linha com a foto.
@@ -449,8 +453,7 @@ Chrome DevTools Protocol (`Emulation.setDeviceMetricsOverride` + `localStorage.t
 ## Pendências conhecidas
 
 - Repositório: github.com/SantosGAlves/portfolio (público).
-- CV em PDF (PT e EN): `[CONFIRMAR]` (os botões "Baixar CV" dão 404 até existirem `public/cv/gustavo-alves-dos-santos-cv.pdf`
-  e `-cv-en.pdf`). Contato confirmado: e-mail, LinkedIn, GitHub e WhatsApp (`profile.links.whatsapp`, link wa.me,
+- Contato confirmado: e-mail, LinkedIn, GitHub e WhatsApp (`profile.links.whatsapp`, link wa.me,
   só no botão da seção de contato; o número nunca aparece escrito e não há telefone).
 - 404 personalizada: com vários layouts raiz, o 404 padrão sai sem `lang`; resolver na Fase 3/4
   (`app/global-not-found.tsx`, ainda experimental no Next 16).
