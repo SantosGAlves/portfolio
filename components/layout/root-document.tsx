@@ -1,3 +1,4 @@
+import { Analytics } from "@vercel/analytics/next"
 import type { ReactNode } from "react"
 import { InlineScript } from "@/components/inline-script"
 import { ScrollRail } from "@/components/layout/scroll-rail"
@@ -34,6 +35,9 @@ export function RootDocument({ locale, children }: { locale: Locale; children: R
         </main>
         <SiteFooter locale={locale} />
         <ScrollRail />
+        {/* Vercel Web Analytics: o script (/_vercel/insights/script.js, com defer) só entra depois da hidratação.
+            Só nos builds da Vercel: no `next start` local o endereço não existe e o 404 sujaria o console. */}
+        {process.env.VERCEL ? <Analytics /> : null}
       </body>
     </html>
   )

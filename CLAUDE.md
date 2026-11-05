@@ -445,6 +445,13 @@ de terceiros.
   palavras-chave e o domínio em verde. Gerada a partir do build local (mesmas fontes e tokens) com um script do CDP
   que troca o corpo da home pela composição e tira o print; depois convertida para JPEG (qualidade 88; PNG com
   paleta reduzida trocava o ciano por verde). Se a função ou a frase mudarem, gerar de novo.
+- O site usa **Vercel Web Analytics**, sem cookies e sem guardar dado pessoal (por isso não há banner de cookies).
+  `@vercel/analytics`: `<Analytics />` (de `@vercel/analytics/next`) uma vez, no fim do `<body>` de
+  `components/layout/root-document.tsx`, que os dois layouts raiz usam (PT e `/en`; a 404 fica de fora). O componente
+  põe o script `/_vercel/insights/script.js` com `defer` depois da hidratação: não entra no caminho do LCP. O
+  Analytics precisa estar ligado no painel da Vercel (aba Analytics); sem isso o endereço dá 404 e o console acusa
+  erro. Só entra nos builds da Vercel (`process.env.VERCEL`): no `next start` local o endereço não existe.
+  Medida de 04/11/2026: +1,4 KB gzip no JS inicial; o script é pedido depois do LCP e do evento `load`.
 - Ícones: `app/icon.svg`, `app/favicon.ico` (16/32/48) e `app/apple-icon.png` (180, quadrado), todos do mesmo desenho.
 - 404: `app/global-not-found.tsx` (`experimental.globalNotFound`). Não passa pelos layouts raiz nem sabe o idioma
   do endereço, então mostra PT (h1, `lang="pt-BR"`) e EN (h2, `lang="en"`), importa o `globals.css`, as fontes e o
