@@ -10,7 +10,7 @@ type SectionProps = {
   className?: string
 }
 
-// Seção padrão da página: rótulo mono na cor de destaque, título e conteúdo.
+// Seção padrão da página: rótulo mono cinza, título e conteúdo.
 // data-rail marca a seção na régua de progresso.
 export function Section({ id, eyebrow, title, intro, children, className }: SectionProps) {
   const titleId = `${id}-heading`
@@ -20,7 +20,7 @@ export function Section({ id, eyebrow, title, intro, children, className }: Sect
       <div className="container-site grid gap-8 py-14 md:py-20">
         <header className="grid max-w-prose gap-3">
           <p className="eyebrow">{eyebrow}</p>
-          <h2 id={titleId} className="text-h2">
+          <h2 id={titleId} className="text-h2 text-balance">
             {title}
           </h2>
           {intro ? <div className="text-muted-foreground">{intro}</div> : null}

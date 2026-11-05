@@ -176,11 +176,11 @@ function ProjectCard({ project, locale }: { project: Project; locale: Locale }) 
           {demo ? (
             <a
               href={demoHref}
+              aria-label={`${copy.tryDemo}: ${meta.shortTitle ?? meta.title}`}
               className="relative z-10 inline-flex min-h-9 items-center gap-1.5 rounded-full border border-brand-line px-3 font-mono text-meta text-brand transition-colors hover:bg-brand-soft active:bg-brand-soft"
             >
               <span aria-hidden="true">▶</span>
               {copy.tryDemo}
-              <span className="sr-only">: {meta.shortTitle ?? meta.title}</span>
             </a>
           ) : null}
         </div>

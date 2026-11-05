@@ -55,7 +55,7 @@ export function NewTicketDialog({
           <div className="grid content-start gap-4">
             <label className={labelClass}>
               {f.subject}
-              <input name="title" required maxLength={120} placeholder={f.subjectPlaceholder} className={inputClass} />
+              <input name="title" required maxLength={120} autoComplete="off" placeholder={f.subjectPlaceholder} className={inputClass} />
             </label>
             <label className={labelClass}>
               {f.description}
@@ -237,11 +237,11 @@ export function UsersDialog({
         >
           <label className={labelClass}>
             {u.name}
-            <input name="name" required maxLength={60} className={inputClass} />
+            <input name="name" required maxLength={60} autoComplete="off" className={inputClass} />
           </label>
           <label className={labelClass}>
             {u.email}
-            <input name="email" type="email" required className={inputClass} />
+            <input name="email" type="email" required autoComplete="off" spellCheck={false} className={inputClass} />
           </label>
           <label className={labelClass}>
             {u.sector}

@@ -40,7 +40,7 @@ const components: MDXComponents = {
     )
   },
   code: (props) => (
-    <code className="rounded-md border border-line bg-surface-2 px-1.5 py-0.5 font-mono text-[0.875em] text-foreground" {...props} />
+    <code translate="no" className="rounded-md border border-line bg-surface-2 px-1.5 py-0.5 font-mono text-[0.875em] text-foreground" {...props} />
   ),
   blockquote: (props) => <blockquote className="my-6 border-l-2 border-line-strong pl-4 text-foreground" {...props} />,
   hr: () => <hr className="my-12 border-line" />,

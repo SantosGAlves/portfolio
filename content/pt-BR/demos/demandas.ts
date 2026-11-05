@@ -101,9 +101,9 @@ export const demandas: DemandasDemoContent = {
   form: {
     title: "Abertura de demanda interna",
     subject: "Assunto",
-    subjectPlaceholder: "Ex.: criação de webhook no n8n",
+    subjectPlaceholder: "Ex.: criação de webhook no n8n…",
     description: "Descrição / briefing",
-    descriptionPlaceholder: "Descreva os requisitos ou o problema.",
+    descriptionPlaceholder: "Descreva os requisitos ou o problema…",
     origin: "Seu setor (origem)",
     destination: "Área responsável (destino)",
     priority: "Prioridade",

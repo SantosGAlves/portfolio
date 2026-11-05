@@ -86,7 +86,7 @@ export const ajudaAnimal: AjudaAnimalDemoContent = {
     restart: "Recomeçar a conversa",
     start: "Envie qualquer mensagem para começar.",
     inputLabel: "Mensagem",
-    placeholder: "Mensagem",
+    placeholder: "Mensagem…",
     send: "Enviar",
     typing: "digitando…",
     you: "Você",

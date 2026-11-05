@@ -191,7 +191,7 @@ export function CaseStudyPage({ locale, slug }: { locale: Locale; slug: string }
 
       <header className="mx-auto mt-6 grid max-w-[46rem] gap-4">
         <p className="eyebrow">{meta.kind}</p>
-        <h1 className="text-title">{meta.title}</h1>
+        <h1 className="text-title text-balance">{meta.title}</h1>
         <p className="text-role font-normal text-balance text-muted-foreground">{meta.tagline ?? meta.summary}</p>
         <p className="font-mono text-meta text-subtle">
           {facts.map((fact, i) => (

@@ -319,10 +319,15 @@
   /* Toque: sem a espera do zoom por toque duplo nos controles (o zoom por pinça continua). */
   a,
   button,
+  input,
+  select,
+  textarea,
   label,
   summary,
   [role="button"] {
     touch-action: manipulation;
+    /* Realce de toque discreto e no tom de ação; o retorno visual vem dos estados :active. */
+    -webkit-tap-highlight-color: rgb(var(--brand-rgb) / 0.14);
   }
   ::selection {
     background: var(--brand-soft);
