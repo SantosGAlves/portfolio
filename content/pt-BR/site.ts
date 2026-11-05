@@ -192,13 +192,16 @@ export const site: SiteContent = {
         company: "Gaudium",
         role: "Estagiário de Automação e Inovação II",
         period: "jul/2026 – atual",
-        tags: ["estágio · sob NDA"],
-        // NDA: só descrições gerais; sem clientes, parceiros nem link para estudos de caso.
-        context: "Empresa B2B de tecnologia para mobilidade e entregas. O trabalho é confidencial, então aqui vão só descrições gerais.",
+        tags: ["estágio"],
+        // NDA: só descrições gerais (texto do Gustavo); sem clientes, parceiros nem link para estudos de caso.
+        context:
+          "Na área de Labs (MIL), crio soluções com automação, low/no-code e inteligência artificial para acelerar as entregas de uma plataforma de tecnologia para empreendedores de mobilidade urbana e entregas.",
         highlights: [
-          "Automatizo processos com n8n e integrações via API.",
-          "Aplico agentes de IA e LLMs a processos internos.",
-          "Desenvolvo sites e produtos web, com foco em back-end.",
+          "Desenvolvo aplicações e produtos digitais com plataformas low/no-code e código, com foco em back-end, para necessidades internas e externas.",
+          "Construo automações de processos com n8n e integrações entre sistemas via API, reduzindo trabalho manual das equipes.",
+          "Aplico agentes de IA e LLMs em processos internos, acompanhando resultados e explorando novos usos.",
+          "Mapeio processos com outras áreas e proponho soluções para torná-los mais ágeis, seguros e escaláveis.",
+          "Documento as soluções desenvolvidas para garantir manutenção e reprodutibilidade.",
         ],
       },
       {

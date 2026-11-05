@@ -43,9 +43,11 @@ Não é "só IA": desenvolvimento de produto e back-end tem o mesmo peso.
   agente de IA (GPT-4o mini, WhatsApp) + sistema de gestão (Supabase, Auth, painel HTML/JS + Tailwind, domínio da empresa).
   Resultado sem métricas formais: reverteu o churn do cliente e virou um novo tipo de produto, replicado
   (ex.: carregadores de veículos elétricos). Fonte dos fatos: `docs/conteudo/conteudo-agente-baterias.md`.
-- Gaudium (jul/2026 – atual): empresa B2B de tecnologia para mobilidade e entregas. Só descrições gerais (NDA):
-  automações de processos com n8n e integrações via API; agentes de IA e LLMs aplicados a processos internos;
-  sites e produtos web com foco em back-end. Sem clientes, parceiros nem link para estudo de caso (a plataforma de
+- Gaudium (jul/2026 – atual): área de Labs (MIL), numa plataforma de tecnologia para empreendedores de mobilidade
+  urbana e entregas. Texto do Gustavo (contexto + 5 tópicos): aplicações e produtos com low/no-code e código, foco em
+  back-end; automações com n8n e integrações via API; agentes de IA e LLMs em processos internos; mapeamento de
+  processos com outras áreas; documentação. O selo é só "estágio" / "internship" (sem "sob NDA" na página), mas a
+  regra do NDA continua: só descrições gerais. Sem clientes, parceiros nem link para estudo de caso (a plataforma de
   demandas foi o case técnico do processo seletivo e não pode ser ligada à empresa).
 - Experiência na home: Gaudium, Hunt Sales e o projeto de extensão Ajuda Animal (2026), em tópicos curtos com verbo
   de ação e links para os casos relacionados (`caseStudies`). Texto aprovado: a entrega da Hunt Sales "reverteu o
@@ -132,14 +134,14 @@ entre os links, para caber. Cada seção é uma marca da régua de progresso (`d
 (`components/ui/more.tsx`: `<details>` nativo, fechado por padrão, acessível por teclado e sem JS; o rótulo troca
 para "Ver menos"). Não aninhar um "Ver mais" dentro de outro.
 
-- Experiência: cargo, empresa, período, selo (cinza) e no máximo 2 tópicos (`VISIBLE_HIGHLIGHTS`); o contexto,
-  os outros tópicos e os links dos casos ficam no "Ver mais" da entrada.
+- Experiência: exceção ao "Ver mais", por pedido do Gustavo: tudo à vista (cargo, empresa, período, selo cinza,
+  contexto, todos os tópicos e os links dos casos).
 - Agora (`components/sections/now.tsx`, `site.ts` → `now`): três linhas (trabalho, estudo, pesquisa); no "Ver mais",
   o `hero.lede` e as quatro áreas de `build`.
 - Tecnologias: só a faixa e "Ver por categoria".
 - Formação e competências: uma linha para a formação (com o TCC), uma para os idiomas e uma para "Como eu
   trabalho", cada uma com "Ver mais" para o detalhe.
-- Medidas de 04/11/2026 (PT, escuro): home de 12.589 → 9.374 px a 360 e de 8.346 → 6.567 px a 1440.
+- Medidas de 04/11/2026 (PT, escuro): home de 12.589 → 9.374 px a 360 e de 8.346 → 6.567 px a 1440 (com a Experiência toda aberta, 10.293 px a 360).
 
 ### Hero
 

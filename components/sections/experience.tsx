@@ -1,17 +1,12 @@
 import { Section } from "@/components/layout/section"
 import { Badge } from "@/components/ui/badge"
-import { More } from "@/components/ui/more"
 import { getContent, type Locale } from "@/lib/i18n"
 import { caseStudyPath, getProjects } from "@/lib/projects"
 
-/** Tópicos de resultado à vista em cada entrada; o resto vai para "Ver mais". */
-const VISIBLE_HIGHLIGHTS = 2
-
-// Experiência compacta: cargo, empresa, período, selo e no máximo dois tópicos de resultado. O contexto, os
-// outros tópicos e os links para os estudos de caso ficam em "Ver mais" dentro da entrada (rótulo sempre acima
-// dos links). Gaudium não tem link (NDA).
+// Experiência, tudo à vista (sem "Ver mais"): cargo, empresa, período, selo, contexto, todos os tópicos e os links
+// para os estudos de caso (rótulo sempre acima dos links). Gaudium não tem link (NDA).
 export function Experience({ locale }: { locale: Locale }) {
-  const { sections, experience, ui } = getContent(locale)
+  const { sections, experience } = getContent(locale)
   const projects = getProjects(locale)
   const titleOf = (slug: string) => {
     const meta = projects.find((p) => p.slug === slug)?.meta
@@ -24,8 +19,6 @@ export function Experience({ locale }: { locale: Locale }) {
       <ol className="grid">
         {experience.items.map((item) => {
           const cases = item.caseStudies ?? []
-          const visible = item.highlights.slice(0, VISIBLE_HIGHLIGHTS)
-          const rest = item.highlights.slice(VISIBLE_HIGHLIGHTS)
           return (
             <li
               key={item.company}
@@ -46,43 +39,34 @@ export function Experience({ locale }: { locale: Locale }) {
               </div>
               <div className="grid max-w-[44rem] content-start gap-2.5">
                 <h3 className="text-body font-semibold">{item.role}</h3>
+                <p className="text-small text-muted-foreground">{item.context}</p>
                 <ul className="grid gap-2">
-                  {visible.map((h) => (
+                  {item.highlights.map((h) => (
                     <Highlight key={h}>{h}</Highlight>
                   ))}
                 </ul>
-                <More more={ui.more} less={ui.less} bodyClassName="grid gap-3">
-                  <p className="text-small text-muted-foreground">{item.context}</p>
-                  {rest.length ? (
-                    <ul className="grid gap-2">
-                      {rest.map((h) => (
-                        <Highlight key={h}>{h}</Highlight>
+                {cases.length ? (
+                  <div className="grid gap-1">
+                    <span className="font-mono text-meta text-subtle">
+                      {cases.length === 1 ? experience.caseStudiesLabel.one : experience.caseStudiesLabel.other}
+                    </span>
+                    <ul className="flex flex-wrap gap-x-5">
+                      {cases.map((slug) => (
+                        <li key={slug}>
+                          <a
+                            href={caseStudyPath(locale, slug)}
+                            className="group/case inline-flex min-h-10 items-center rounded-sm text-small font-semibold text-brand hover:underline hover:underline-offset-4"
+                          >
+                            {titleOf(slug)}
+                            <span aria-hidden="true" className="ml-1.5 inline-block transition-transform duration-200 group-hover/case:translate-x-0.5">
+                              →
+                            </span>
+                          </a>
+                        </li>
                       ))}
                     </ul>
-                  ) : null}
-                  {cases.length ? (
-                    <div className="grid gap-1">
-                      <span className="font-mono text-meta text-subtle">
-                        {cases.length === 1 ? experience.caseStudiesLabel.one : experience.caseStudiesLabel.other}
-                      </span>
-                      <ul className="flex flex-wrap gap-x-5">
-                        {cases.map((slug) => (
-                          <li key={slug}>
-                            <a
-                              href={caseStudyPath(locale, slug)}
-                              className="group/case inline-flex min-h-10 items-center rounded-sm text-small font-semibold text-brand hover:underline hover:underline-offset-4"
-                            >
-                              {titleOf(slug)}
-                              <span aria-hidden="true" className="ml-1.5 inline-block transition-transform duration-200 group-hover/case:translate-x-0.5">
-                                →
-                              </span>
-                            </a>
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                  ) : null}
-                </More>
+                  </div>
+                ) : null}
               </div>
             </li>
           )

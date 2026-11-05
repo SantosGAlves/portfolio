@@ -196,14 +196,16 @@ export const site: SiteContent = {
         company: "Gaudium",
         role: "Automation & Innovation Intern II",
         period: "Jul 2026 – present",
-        tags: ["internship · under NDA"],
+        tags: ["internship"],
         // NDA: general descriptions only; no clients, partners or case study links.
         context:
-          "B2B technology company for mobility and deliveries. The work is confidential, so these are general descriptions only.",
+          "In the Labs area (MIL), I build solutions with automation, low/no-code and artificial intelligence to speed up delivery for a technology platform for urban mobility and delivery entrepreneurs.",
         highlights: [
-          "Build process automations with n8n and API integrations.",
-          "Apply AI agents and LLMs to internal processes.",
-          "Develop websites and web products, focused on back-end.",
+          "Develop applications and digital products with low/no-code platforms and code, focused on back-end, for internal and external needs.",
+          "Build process automations with n8n and integrations between systems via API, reducing the teams' manual work.",
+          "Apply AI agents and LLMs to internal processes, tracking results and exploring new uses.",
+          "Map processes with other teams and propose solutions to make them faster, safer and more scalable.",
+          "Document the solutions I build to ensure maintenance and reproducibility.",
         ],
       },
       {
