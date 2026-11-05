@@ -100,8 +100,8 @@ export type SiteContent = {
     /** Texto alternativo da foto (public/foto/gustavo-avatar.webp). */
     photoAlt: string
     role: string
-    /** Frase de efeito abaixo do nome; cada item é uma linha. */
-    tagline: string[]
+    /** Frase abaixo da função, numa linha só (quebra natural no celular, sem palavra sozinha no fim). */
+    tagline: string
     /** Quatro palavras-chave numa linha, no lugar da antiga seção "O que eu faço". */
     keywords: string[]
     /** Três fatos curtos com prova (cada um leva ao caso ou à seção que o comprova). */

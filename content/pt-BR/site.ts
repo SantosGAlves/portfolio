@@ -28,7 +28,7 @@ export const site: SiteContent = {
     photoAlt: "Foto de Gustavo Alves dos Santos",
     // Opção A (em uso). Opção B: "Desenvolvedor back-end com foco em IA aplicada".
     role: "Desenvolvedor de software · IA aplicada e automação",
-    tagline: ["Agentes de IA, automações", "e o back-end que mantém tudo de pé."],
+    tagline: "Desenvolvedor focado em IA aplicada, automação de processos e back-end.",
     keywords: ["Agentes de IA", "Automação", "Back-end", "Machine learning"],
     proof: [
       { text: "Agente de IA entregue a cliente", case: "agente-baterias" },

@@ -19,6 +19,10 @@ export function Hero({ locale }: { locale: Locale }) {
   const linkClass =
     "inline-flex min-h-10 items-center gap-1.5 rounded-sm text-small font-semibold text-brand hover:underline hover:underline-offset-4"
 
+  const words = hero.tagline.split(" ")
+  const taglineHead = words.slice(0, -2).join(" ")
+  const taglineTail = words.slice(-2).join(" ")
+
   return (
     <section id="topo" data-rail aria-labelledby="hero-heading" className="relative isolate overflow-hidden">
       <FlowBackground />
@@ -60,12 +64,9 @@ export function Hero({ locale }: { locale: Locale }) {
             ))}
           </p>
           <p className="text-role text-balance">
-            {/* Frase de efeito: uma linha por item (no celular, a segunda quebra equilibrada). */}
-            {hero.tagline.map((line, i) => (
-              <span key={line} className={i ? "block text-muted-foreground" : "block"}>
-                {line}
-              </span>
-            ))}
+            {/* As duas últimas palavras andam juntas: nenhuma fica sozinha na linha (nem "end." de "back-end"). */}
+            {taglineHead}{" "}
+            <span className="whitespace-nowrap">{taglineTail}</span>
           </p>
           <p className="font-mono text-meta text-subtle">
             {hero.keywords.map((word, i) => (

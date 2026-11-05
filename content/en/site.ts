@@ -28,7 +28,7 @@ export const site: SiteContent = {
     photoAlt: "Photo of Gustavo Alves dos Santos",
     // Option A (in use). Option B: "Back-end developer focused on applied AI".
     role: "Software developer · applied AI and automation",
-    tagline: ["AI agents, automations,", "and the back-end that keeps it all running."],
+    tagline: "Developer focused on applied AI, process automation and back-end.",
     keywords: ["AI agents", "Automation", "Back-end", "Machine learning"],
     proof: [
       { text: "AI agent delivered to a client", case: "agente-baterias" },

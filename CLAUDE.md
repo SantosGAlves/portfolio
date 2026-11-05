@@ -29,8 +29,11 @@ Não é "só IA": desenvolvimento de produto e back-end tem o mesmo peso.
 - Linha de função do hero: opção A, "Desenvolvedor de software · IA aplicada e automação"
   / "Software developer · applied AI and automation". Opção B guardada no comentário de `site.ts`:
   "Desenvolvedor back-end com foco em IA aplicada". A linha só quebra depois do "·".
-- Frase de efeito do hero (`hero.tagline`, uma linha por item): "Agentes de IA, automações / e o back-end que
-  mantém tudo de pé." / "AI agents, automations, / and the back-end that keeps it all running."
+- Frase do hero (`hero.tagline`, um texto só, sem quebra forçada): "Desenvolvedor focado em IA aplicada, automação
+  de processos e back-end." / "Developer focused on applied AI, process automation and back-end." (troca de
+  04/11/2026, pedida pelo Gustavo: a mais neutra, quase uma linha de cargo, para os projetos falarem). As duas
+  últimas palavras ficam num `whitespace-nowrap`, para nenhuma ficar sozinha no celular. Se a frase mudar, gerar
+  de novo a imagem de Open Graph e o texto alternativo dela.
 - "O que eu faço" não é mais uma seção: virou a linha de palavras-chave do hero (Agentes de IA · Automação ·
   Back-end · Machine learning). As quatro áreas (`site.ts` → `build`: título, uma frase, palavras-chave) e o
   parágrafo `hero.lede` ficam no "Ver mais" da seção "Agora".
@@ -146,7 +149,7 @@ para "Ver menos"). Não aninhar um "Ver mais" dentro de outro.
 ### Hero
 
 - Cabe numa tela: no celular (360 × 780) termina em ~700 px. Ordem: disponibilidade (ponto ciano) → foto redonda
-  ao lado do nome → função em mono → frase de efeito → palavras-chave → três fatos com prova → "Ver projetos ↓"
+  ao lado do nome → função em mono → frase → palavras-chave → três fatos com prova → "Ver projetos ↓"
   (destaque) e "Ver LinkedIn" / "View LinkedIn" (contorno, nova aba) → GitHub e E-mail (o LinkedIn não se repete
   na linha de links).
 - Nome como `h1`: "Gustavo" em Schibsted bold e "Alves dos Santos" em Newsreader itálico, em linhas separadas
@@ -438,7 +441,7 @@ de terceiros.
 - Imagem de Open Graph (1200 × 630, JPEG ~75 KB) por convenção de arquivo: `opengraph-image.jpg` + `.alt.txt` em
   `app/(pt)/` e `app/(en)/en/`, com cópias em `projetos/[slug]/` e `projects/[slug]/` (o `openGraph` da página do
   caso substitui o do layout inteiro; sem a cópia o caso fica sem imagem). Composição: fundo escuro com grade de
-  pontos, ponto ciano de disponibilidade, foto, nome (Schibsted + Newsreader), função em mono, frase de efeito,
+  pontos, ponto ciano de disponibilidade, foto, nome (Schibsted + Newsreader), função em mono, frase,
   palavras-chave e o domínio em verde. Gerada a partir do build local (mesmas fontes e tokens) com um script do CDP
   que troca o corpo da home pela composição e tira o print; depois convertida para JPEG (qualidade 88; PNG com
   paleta reduzida trocava o ciano por verde). Se a função ou a frase mudarem, gerar de novo.
