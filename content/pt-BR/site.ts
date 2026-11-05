@@ -331,6 +331,12 @@ export const site: SiteContent = {
     },
   },
   nav: ["experience", "projects", "now", "stack", "education", "contact"],
+  notFound: {
+    title: "Página não encontrada",
+    text: "O endereço pode ter mudado ou estar digitado errado.",
+    home: "Voltar para o início",
+    projects: "Ver projetos",
+  },
   ui: {
     skipToContent: "Pular para o conteúdo",
     navLabel: "Navegação principal",

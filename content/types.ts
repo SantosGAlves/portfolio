@@ -206,6 +206,8 @@ export type SiteContent = {
   }
   /** Ordem dos links do header (seções da página inicial). */
   nav: SectionKey[]
+  /** Página 404 (app/global-not-found.tsx): bilíngue, porque não sabe o idioma do endereço. */
+  notFound: { title: string; text: string; home: string; projects: string }
   ui: {
     skipToContent: string
     navLabel: string

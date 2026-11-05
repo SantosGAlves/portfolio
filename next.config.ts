@@ -11,6 +11,8 @@ const movedDemos: Record<string, string> = {
 
 const nextConfig: NextConfig = {
   cacheComponents: true,
+  // 404 própria para o site todo (app/global-not-found.tsx): com dois layouts raiz, não há um layout único.
+  experimental: { globalNotFound: true },
   partialPrefetching: true,
   poweredByHeader: false,
   // Só no `next dev`: o servidor de desenvolvimento bloqueia o JavaScript de dev pedido por outra origem.
