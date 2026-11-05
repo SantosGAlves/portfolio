@@ -35,8 +35,9 @@ export function RootDocument({ locale, children }: { locale: Locale; children: R
         </main>
         <SiteFooter locale={locale} />
         <ScrollRail />
-        {/* Vercel Web Analytics: o script (/_vercel/insights/script.js, com defer) só entra depois da hidratação. */}
-        <Analytics />
+        {/* Vercel Web Analytics: o script (com defer) só entra depois da hidratação. Só nos builds da Vercel: no
+            `next start` local o endereço do script não existe e o 404 sujaria o console. */}
+        {process.env.VERCEL ? <Analytics /> : null}
       </body>
     </html>
   )

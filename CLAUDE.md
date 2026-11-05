@@ -447,13 +447,12 @@ de terceiros.
   paleta reduzida trocava o ciano por verde). Se a função ou a frase mudarem, gerar de novo.
 - O site usa **Vercel Web Analytics**, sem cookies e sem guardar dado pessoal (por isso não há banner de cookies).
   `@vercel/analytics`: `<Analytics />` (de `@vercel/analytics/next`) uma vez, no fim do `<body>` de
-  `components/layout/root-document.tsx`, que os dois layouts raiz usam (PT e `/en`; a 404 fica de fora). O componente
-  põe o script `/_vercel/insights/script.js` com `defer` depois da hidratação: não entra no caminho do LCP. O
-  Analytics precisa estar ligado no painel da Vercel (aba Analytics); sem isso o endereço dá 404 e o console acusa
-  erro. No `next start` local o endereço não existe: o 404 do script ali é esperado (e tira 4 pontos de "Boas
-  práticas" no Lighthouse local). Não condicionar a `process.env.VERCEL`: testado em 05/11/2026, a variável não chega
-  ao build deste projeto e o Analytics sumiu do site publicado. Medida de 04/11/2026: +1,4 KB gzip no JS inicial; o
-  script é pedido depois do LCP e do evento `load`.
+  `components/layout/root-document.tsx`, que os dois layouts raiz usam (PT e `/en`; a 404 fica de fora). Só entra nos
+  builds da Vercel (`process.env.VERCEL`): no `next start` local o script não existe e o 404 sujaria o console e o
+  Lighthouse. O componente põe o script com `defer` depois da hidratação: não entra no caminho do LCP (+1,4 KB gzip no
+  JS inicial; o script é pedido depois do LCP e do evento `load`). Na Vercel o script não fica em
+  `/_vercel/insights/script.js`: a configuração do build o serve num caminho próprio (`/<hash>/script.js`, com
+  `data-sdkn="@vercel/analytics/next"`). Para conferir, procure esse atributo, não a palavra "insights".
 - Ícones: `app/icon.svg`, `app/favicon.ico` (16/32/48) e `app/apple-icon.png` (180, quadrado), todos do mesmo desenho.
 - 404: `app/global-not-found.tsx` (`experimental.globalNotFound`). Não passa pelos layouts raiz nem sabe o idioma
   do endereço, então mostra PT (h1, `lang="pt-BR"`) e EN (h2, `lang="en"`), importa o `globals.css`, as fontes e o
