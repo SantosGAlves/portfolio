@@ -430,6 +430,23 @@ de terceiros.
 - `shadcn` fica em `devDependencies` (só o build usa o CSS dele). `npm audit --omit=dev` está zerado; os avisos que
   restam (deepmerge, minimatch) vêm do shadcn e do ESLint e só teriam correção com `--force`, que quebra o projeto.
 
+## Domínio, SEO e prévia de link
+
+- Domínio: `https://santosgalves.online` (`SITE_URL` em `lib/site-url.ts`). Todo build de produção (Vercel, prévias
+  e `next start` local) usa o domínio em canônicas, hreflang, sitemap, robots, Open Graph e JSON-LD; só o `next dev`
+  usa localhost. `NEXT_PUBLIC_SITE_URL` sobrepõe os dois.
+- Imagem de Open Graph (1200 × 630, JPEG ~75 KB) por convenção de arquivo: `opengraph-image.jpg` + `.alt.txt` em
+  `app/(pt)/` e `app/(en)/en/`, com cópias em `projetos/[slug]/` e `projects/[slug]/` (o `openGraph` da página do
+  caso substitui o do layout inteiro; sem a cópia o caso fica sem imagem). Composição: fundo escuro com grade de
+  pontos, ponto ciano de disponibilidade, foto, nome (Schibsted + Newsreader), função em mono, frase de efeito,
+  palavras-chave e o domínio em verde. Gerada a partir do build local (mesmas fontes e tokens) com um script do CDP
+  que troca o corpo da home pela composição e tira o print; depois convertida para JPEG (qualidade 88; PNG com
+  paleta reduzida trocava o ciano por verde). Se a função ou a frase mudarem, gerar de novo.
+- Ícones: `app/icon.svg`, `app/favicon.ico` (16/32/48) e `app/apple-icon.png` (180, quadrado), todos do mesmo desenho.
+- 404: `app/global-not-found.tsx` (`experimental.globalNotFound`). Não passa pelos layouts raiz nem sabe o idioma
+  do endereço, então mostra PT (h1, `lang="pt-BR"`) e EN (h2, `lang="en"`), importa o `globals.css`, as fontes e o
+  script do tema. Textos em `site.ts` → `notFound`. O Next já põe `noindex`; não repetir `robots` na metadata.
+
 ## Desenvolvimento e verificação
 
 - Celular na rede local: `npm run dev -- -H 0.0.0.0` e `http://<IP>:3000`. O `next dev` bloqueia o JavaScript de
@@ -449,6 +466,13 @@ Revisão de 04/11/2026 (build de produção): home e 6 casos, PT/EN, escuro/clar
 console, requisição falhando ou rolagem lateral. Lighthouse mobile: Performance 94–96, as outras três categorias 100.
 O LCP de laboratório (~3 s) vem da simulação de 4G lento com o JS do React/Next no caminho; o observado é bem menor.
 
+Revisão de 04/11/2026 no site publicado (depois da reestruturação): as mesmas 112 combinações limpas; Lighthouse
+mobile 97 (home), 99 (agente, LibrasFlow e demandas; uma medida isolada de 94 nas demandas não se repetiu), as outras
+três categorias 100; trace com CPU 4× e 4G rápido: LCP 618 ms, CLS 0; INP de laboratório (toques reais, CPU 4×):
+pior interação 184 ms ("Novo ticket"). Todas as demos usadas com toque (360) e clique (1440), sem erro de console;
+o iframe do LibrasFlow carrega em https com `allow="camera; fullscreen"` e a câmera liga depois de "Ativar câmera".
+Barbú: à noite, quando hoje não tem mais horário, a etapa 3 abre no dia seguinte (antes mostrava a grade vazia).
+
 Headless Chrome não abre janela menor que 500px. Para 360px e para o tema claro, usar o
 Chrome DevTools Protocol (`Emulation.setDeviceMetricsOverride` + `localStorage.theme`).
 
@@ -457,8 +481,8 @@ Chrome DevTools Protocol (`Emulation.setDeviceMetricsOverride` + `localStorage.t
 - Repositório: github.com/SantosGAlves/portfolio (público).
 - Contato confirmado: e-mail, LinkedIn, GitHub e WhatsApp (`profile.links.whatsapp`, link wa.me,
   só no botão da seção de contato; o número nunca aparece escrito e não há telefone).
-- 404 personalizada: com vários layouts raiz, o 404 padrão sai sem `lang`; resolver na Fase 3/4
-  (`app/global-not-found.tsx`, ainda experimental no Next 16).
-- Imagem Open Graph: Fase 4.
+- `www.santosgalves.online` ainda não funciona: o certificado da Vercel cobre só o domínio sem `www` (o navegador
+  acusa erro de TLS antes do redirecionamento). Falta o Gustavo adicionar `www.santosgalves.online` no projeto da
+  Vercel (Settings → Domains) com redirecionamento permanente (308) para `santosgalves.online`.
 - Textos reais dos estudos de caso: agente, LibrasFlow e plataforma de demandas prontos (`draft: false`);
   Barbú e Ajuda Animal prontos.
