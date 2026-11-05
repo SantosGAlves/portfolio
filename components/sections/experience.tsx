@@ -55,10 +55,12 @@ export function Experience({ locale }: { locale: Locale }) {
                         <li key={slug}>
                           <a
                             href={caseStudyPath(locale, slug)}
-                            className="group/case inline-flex min-h-10 items-center rounded-sm text-small font-semibold text-brand hover:underline hover:underline-offset-4"
+                            className="group/case inline-block rounded-sm py-2 text-small leading-6 font-semibold text-brand hover:underline hover:underline-offset-4"
                           >
                             {titleOf(slug)}
-                            <span aria-hidden="true" className="ml-1.5 inline-block transition-transform duration-200 group-hover/case:translate-x-0.5">
+                            {/* espaço que não quebra: a seta fica junto da última palavra */}
+                            {"\u00a0"}
+                            <span aria-hidden="true" className="inline-block transition-transform duration-200 group-hover/case:translate-x-0.5">
                               →
                             </span>
                           </a>

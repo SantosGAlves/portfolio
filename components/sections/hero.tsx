@@ -24,7 +24,7 @@ export function Hero({ locale }: { locale: Locale }) {
       <FlowBackground />
       <div className="container-site grid gap-5 pt-6 pb-10 sm:gap-6 sm:pt-10 lg:pt-14 lg:pb-16">
         <StatusIndicator>
-          {profile.availability} · {profile.location}
+          {profile.availability} · <span className="whitespace-nowrap">{profile.location}</span>
         </StatusIndicator>
 
         <div className="flex items-center gap-4 sm:gap-6">
